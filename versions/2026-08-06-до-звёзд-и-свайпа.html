@@ -137,25 +137,11 @@
            font:700 15px/1 var(--ft);font-style:normal}
   .block{margin-top:28px}
   /* --- заезд / номер (restored from the bundle screen) --- */
+  .checkin{padding-top:34px}
   .lbl{font:400 15px/20px var(--ft);color:var(--ink40)}
   .big{margin-top:2px;font:600 28px/34px var(--fh);letter-spacing:-.4px;color:var(--ink)}
-  /* --- карточка номера: текст и строки сверху, фото под ними ---
-     Замеры из макета: подпись 16 (та же, что у строк), заголовок 20 вместо 28,
-     шаг строк 43, фото 329x120 r12 по сетке, до фото 12 */
-  /* воздух под фото такой же, как над карточкой: сверху 40 от билета + 34
-     свои, снизу 40 свои + 34 у заголовка «Что взять с собой» */
-  .room{padding-top:34px;padding-bottom:40px}
-  /* тег тот же, что у события после брони: 28 в высоту, поэтому по центру
-     строки заголовка он встаёт отступом 18 (20 подписи + 12 до середины) */
-  .room-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-  .room-head-txt{min-width:0}
-  .room-head .chip-book{margin-top:18px;border:0;cursor:pointer}
-  .room .lbl{margin-top:0;font-size:16px}
-  .room .big{margin-top:0;font:600 20px/24px var(--fh);letter-spacing:-.2px}
-  .room .navs{margin-top:4px}
-  .room .nav{height:42px}
-  .room img{display:block;width:329px;height:120px;margin:12px 32px 0;
-            border-radius:12px;object-fit:cover}
+  .room img{display:block;width:100%;margin-top:44px}
+  .room .lbl{margin-top:17px}
   /* строки подтянуты к заголовку «Бунгало с террасой» */
   .navs{margin-top:8px}
   /* --- авиабилет: замеры из Frame.svg, чип 167×24 r12, дорожка из 9 точек
@@ -178,17 +164,14 @@
   .tkt-mid{position:relative;flex:1;height:34px;margin:0 8px}
   /* линия прочерчивается слева направо, самолёт едет по ней и садится в центре:
      ни резкого появления, ни вылета за край */
-  /* дорожка выключена по центру: шаг 15 отсчитывается от середины, поэтому
-     у обоих городов остаётся одинаковый обрез, а не целая точка слева и
-     срезанная справа. Серый тот же, что у кодов аэропортов рядом */
   .tkt-dots{position:absolute;left:0;right:0;top:16px;height:2px;
-            background-image:radial-gradient(circle,#BCBCBC 1px,transparent 1px);
-            background-size:15px 2px;background-repeat:repeat-x;
-            background-position:center}
+            background-image:radial-gradient(circle,#D9D9D9 1px,transparent 1px);
+            background-size:15px 2px;background-repeat:repeat-x}
   /* самолёт летит слева направо по пунктиру и уходит, потом заново.
-     Подложки нет: он идёт прямо по точкам */
+     Белая подложка под ним закрывает точки, через которые он проходит */
   /* полёт живёт в скрипте: пружина той же модели, что spring() в motion */
   .tkt-plane{position:absolute;top:10px;left:50%;width:17px;height:15px;color:var(--ink);
+             background:#fff;padding:0 7px;box-sizing:content-box;
              transform:translateX(-50%);will-change:transform,opacity}
   @media (prefers-reduced-motion: reduce){
   }
@@ -244,78 +227,148 @@
      Замеры кадра: круг 40 фоном #EBF7EB, спаркл 16 цветом #5CCE4B,
      пилюля 44 с градиентом в #CCFDDD, правый край по сетке 361 --- */
   /* блок не занимает высоту: висит поверх стыка карточек и не сдвигает их вниз */
-  /* агент живёт в узкой полосе между блоками. Высота ФИКСИРОВАННАЯ: любое
-     состояние — звезда, одна строка, две — центрируется в этих 46 и лишнее
-     симметрично выступает поверх соседних отступов, не двигая контент.
-     Ровно поэтому здесь height, а не min-height: полоса никогда не дышит */
-  .nudge{position:relative;z-index:3;display:flex;justify-content:flex-end;
-         align-items:center;height:24px;padding:0 32px}
+  .nudge{position:relative;height:0;margin-top:0;z-index:3}
   /* --- агент-баббл: порт из agent-bubble-animation.html.
      Свёрнутое состояние без стекла и без белой подложки — только спаркла
      и уходящая волна; раскрытое надевает стекло с блюром --- */
   /* баббл у правого края сетки, растёт влево; текст в нём выключен влево —
      у button по умолчанию text-align:center, из-за него текст стоял по центру */
-  /* --- сообщение агента: карточка по фигме + звезда рядом ---
-     Карточка: до 295, поля 20/16, r16, белый 85% с блюром и тенью, текст 18.
-     Звезда — отдельный слот 38 справа от карточки, зазор 10; лотти живёт в нём.
-     Состояния: st-idle — только звезда (pulse), st-msg — только карточка,
-     st-wait — карточка + звезда (float), st-think — только звезда (rotate). */
-  /* в потоке своей полосы, прижат к правому краю сетки её флексом */
-  .abub{position:relative;display:flex;align-items:center;
-        gap:10px;border:0;padding:0;background:none;cursor:pointer;text-align:left}
-  /* стекло: белый 65% + blur 20, тень 0/4/24 на 8% из фигмы.
-     Радиус: капсула 100, при переносе на вторую строку — 20 (ставится классом) */
-  .abub .tx{display:none;box-sizing:border-box;max-width:295px;padding:16px 20px;
-            border-radius:100px;background:rgba(255,255,255,.65);
-            -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
-            box-shadow:0 4px 24px rgba(0,0,0,.08);
-            font:400 16px/21px var(--ft);letter-spacing:-.01em;color:var(--ink);
-            transform-origin:right center;will-change:transform,opacity,filter}
-  .abub.wrap .tx{border-radius:20px}
-  .abub .tx{transition:border-radius .3s cubic-bezier(.4,0,.2,1)}
-  .abub .sp{display:none;flex:0 0 38px;width:38px;height:38px;position:relative}
-  .abub.st-msg .tx,.abub.st-wait .tx{display:block}
-  .abub.st-idle .sp,.abub.st-wait .sp,.abub.st-think .sp{display:block}
-  /* запасная статичная звезда, если лотти не поднялся */
-  .abub .sp > svg{display:block;width:24px;height:24px;margin:7px}
-  .sp.lot > svg{display:none}
-  /* холст больше слота: кольца пульсации и подскок float живут за его краем */
-  .star-lot{position:absolute;left:50%;top:50%;width:72px;height:72px;
-            margin:-36px 0 0 -36px;pointer-events:none}
-  .star-lot svg{display:block}
+  .abub{position:absolute;right:0;left:auto;top:-19px;display:flex;align-items:center;
+        text-align:left;
+        height:38px;width:38px;border:0;padding:0;border-radius:100px;overflow:visible;
+        white-space:nowrap;cursor:pointer;background:none;
+        transition:background .28s cubic-bezier(.4,0,.2,1),box-shadow .28s cubic-bezier(.4,0,.2,1)}
+  /* обрезка нужна только раскрытому, пока ширина едет; у свёрнутого она резала
+     кольцо пульсации */
+  /* не шире контентной сетки: длинный ответ переносится, а не уезжает за край */
+  /* стиль как у кнопки волны: белый фон и мягкая тень, без стекла и блюра.
+     Уже сетки на 44, чтобы слева оставался воздух */
+  /* ширина по содержимому: инлайновое значение нужно только на время пружины,
+     иначе после перехода оставался пустой хвост справа */
+  /* предел 70% ширины экрана: 393 × 0.7 = 275 */
+  .abub.glass{overflow:hidden;width:auto;max-width:275px;height:auto;min-height:38px;
+              background:#fff;box-shadow:0 6px 20px rgba(6,7,8,.14)}
+  /* одна строка — капсула 100, перенос на вторую — 16; как в мессенджерах */
+  .abub.wrap{border-radius:16px}
+  .abub .sp{flex:0 0 38px;height:38px;display:grid;place-items:center;border-radius:19px;
+            transition:flex-basis .2s cubic-bezier(.4,0,.2,1),opacity .18s linear}
+  /* сообщение агента без иконки: спаркла живёт только в свёрнутом состоянии */
+  /* min-width:0 обязателен: иначе flex не даёт сжаться ниже 24px svg,
+     и слева оставался пустой зазор */
+  .abub.glass .sp{flex-basis:0;width:0;min-width:0;opacity:0;overflow:hidden}
+  /* поля 10 по вертикали и 20 по горизонтали: 10 + 18 строка + 10 = 38 */
+  .abub .tx{font:400 15px/18px var(--ft);letter-spacing:-.01em;color:var(--ink);text-align:left;
+            padding:10px 20px;opacity:0}
+  .abub.glass .tx{white-space:normal;line-height:18px;padding:10px 20px}
+  /* спаркла дышит squash-and-stretch, кадры один в один из твоего файла */
+  /* новое событие: от картинки в стороны расходится мятная волна,
+     два кольца со сдвигом — сигнал «этот элемент только что появился» */
+  .ev.is-new{overflow:hidden;transition:height .42s cubic-bezier(.33,0,.15,1),
+                                        opacity .34s cubic-bezier(.4,0,.2,1)}
+  .media{position:relative}
+  .ping{position:absolute;inset:-14px;border-radius:26px;pointer-events:none;z-index:-1;
+        background:radial-gradient(58% 58% at 50% 50%,rgba(92,206,75,.42),rgba(92,206,75,0) 72%);
+        animation:mediaPing 1.15s cubic-bezier(.2,.7,.3,1) both}
+  .ping.b{animation-delay:.2s}
+  @keyframes mediaPing{
+    0%{opacity:0;transform:scale(.88)}
+    22%{opacity:1}
+    100%{opacity:0;transform:scale(1.42)}
+  }
+  @media (prefers-reduced-motion: reduce){ .ping{display:none} }
+  .ev.is-new{overflow:hidden;transition:height .42s cubic-bezier(.33,0,.15,1),
+                                        opacity .34s cubic-bezier(.4,0,.2,1)}
+  /* агент думает: три точки переливаются волной */
+  /* пока агент думает, точки стоят по центру пилюли */
+  .abub.is-think .tx{display:flex;justify-content:center;align-items:center}
+  .abub .dots{display:inline-flex;align-items:center;gap:5px;height:15px}
+  .abub .dots i{width:5px;height:5px;border-radius:50%;background:var(--ink);
+                animation:dotWave 1.15s ease-in-out infinite}
+  .abub .dots i:nth-child(2){animation-delay:.14s}
+  .abub .dots i:nth-child(3){animation-delay:.28s}
+  @keyframes dotWave{
+    0%,100%{opacity:.22;transform:translateY(0) scale(.9)}
+    40%{opacity:1;transform:translateY(-2px) scale(1)}
+  }
+  /* ответ печатается по буквам тем же приёмом, что заголовок города */
+  /* буквы обёрнуты в <i>, поэтому явно снимаем курсив */
+  .abub .tx i.ch{display:inline-block;font-style:normal;white-space:pre;
+                 animation:heroLetter .24s cubic-bezier(.2,.7,.3,1) both;
+                 animation-delay:calc(var(--i) * 18ms)}
+  @media (prefers-reduced-motion: reduce){
+    .abub .dots i,.abub .tx i.ch{animation:none;opacity:1}
+  }
+  /* пока агент думает, его строка идёт тем же бегущим блеском, что у брони */
+  .abub .tx.is-wait{background:linear-gradient(90deg,#14202A 16%,#34DDC6 50%,#14202A 84%);
+                    background-size:220% 100%;
+                    -webkit-background-clip:text;background-clip:text;
+                    -webkit-text-fill-color:transparent;color:transparent;
+                    animation:shimmer 2.4s linear infinite}
+  @media (prefers-reduced-motion: reduce){
+    .abub .tx.is-wait{animation:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
+  }
+  .abub .sp svg{display:block;width:24px;height:24px;transform-origin:center;
+                will-change:transform;animation:squash 2.4s infinite}
+  @keyframes squash{
+    0%{transform:scale(1,1)}
+    28%{transform:scale(1.24,.82);animation-timing-function:cubic-bezier(.34,1.6,.5,1)}
+    52%{transform:scale(.86,1.18);animation-timing-function:cubic-bezier(.34,1.6,.5,1)}
+    72%{transform:scale(1.09,.94);animation-timing-function:cubic-bezier(.3,1.4,.5,1)}
+    86%{transform:scale(.97,1.03)}
+    100%{transform:scale(1,1)}}
+  /* волна идёт от свёрнутого состояния, у раскрытого её нет;
+     кольцо рождается на самой звезде, без подложки-круга */
+  .abub:not(.glass) .sp svg{border-radius:50%;
+    animation:squash 2.4s infinite,nudgePulseBig 2.4s ease-out infinite}
+  @keyframes nudgePulseBig{
+    0%{box-shadow:0 0 0 0 rgba(92,206,75,.42)}
+    70%{box-shadow:0 0 0 26px rgba(92,206,75,0)}
+    100%{box-shadow:0 0 0 0 rgba(92,206,75,0)}
+  }
+  @keyframes nudgePulse{
+    0%{box-shadow:0 0 0 0 rgba(92,206,75,.42)}
+    70%{box-shadow:0 0 0 22px rgba(92,206,75,0)}
+    100%{box-shadow:0 0 0 0 rgba(92,206,75,0)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .abub .sp svg,.abub:not(.glass) .sp svg{animation:none}
+  }
   .nudge-pill.leave{opacity:0;transform:translateY(4px) scale(.97);
                     transition:opacity .32s cubic-bezier(.4,0,.2,1),
                                transform .32s cubic-bezier(.4,0,.2,1)}
   @media (prefers-reduced-motion: reduce){
     .nudge-dot.pulse{animation:nudgeIn .42s cubic-bezier(.2,.7,.3,1) both}
   }
-  /* --- свайп по событию: карточка едет влево, из-под неё выходят действия ---
-     Замеры из Frame.svg: пилюля 81x49 r24.5 #D9FFD9, зазор 16, правый край сетки 361,
-     иконка 24 цветом #1CA658, под пилюлей подпись 13.5.
-     Группа по центру карточки: от верха заголовка до низа картинки.
-     Открытое положение — сдвиг тела на 206 (178 действий + 28 воздуха). */
-  .ev{position:relative;touch-action:pan-y;
-      transition:opacity .28s cubic-bezier(.4,0,.2,1)}
+  /* long-press как в бандле: 380мс удержания, фокус scale 1.03 и z 30,
+     остальные карточки тухнут до 0.12, справа кнопка-карандаш */
+  .ev{position:relative;
+      transition:opacity .28s cubic-bezier(.4,0,.2,1),transform .28s cubic-bezier(.2,.9,.25,1.02)}
   .lp-dim{opacity:.12}
   .tabs,.hero,.wx,.sec,.dishes,.nudge,.tkt,.room,.list,.films{
     transition:opacity .28s cubic-bezier(.4,0,.2,1)}
-  /* тело едет поверх действий: картинка непрозрачная и держит их скрытыми,
-     пока свайп не начался */
-  .sw-body{position:relative;z-index:1;will-change:transform}
-  /* ничего не обрезаем: в покое действия стоят за правым краем экрана,
-     их прячет сама рамка. Правый край группы по сетке 361 */
-  .sw-acts{position:absolute;right:32px;display:flex;gap:16px;z-index:0;
-           pointer-events:none;will-change:transform}
-  .ev.sw-on .sw-acts{pointer-events:auto}
-  .sw-act{flex:0 0 81px;width:81px;padding:0;border:0;background:none;cursor:pointer;
-          display:flex;flex-direction:column;align-items:center;gap:6px;
-          will-change:opacity,transform}
-  .sw-act span{width:81px;height:49px;border-radius:24.5px;background:#D9FFD9;
-               display:grid;place-items:center;
-               transition:transform .16s cubic-bezier(.2,.7,.3,1)}
-  .sw-act:active span{transform:scale(1.06)}
-  .sw-act svg{display:block;width:24px;height:24px}
-  .sw-cap{font:400 13.5px/1 var(--ft);font-style:normal;color:#999999;white-space:nowrap}
+  .ev.lp-focus{z-index:30;transform:scale(1.03)}
+  .lp-scrim{position:absolute;inset:0;z-index:20;display:none}
+  /* подложку больше не показываем: она перехватывала касания и страница
+     не скроллилась. Фокус снимается любым новым жестом */
+  .lp-scrim{display:none}
+  /* лифт карточки поднимает её на z 30, а липкая строка табов стояла на z 5 —
+     карточка выезжала поверх табов и они смешивались. Поднимаем строку выше
+     карточки и тушим только подписи, фон остаётся плотным белым */
+  body.lp-on .tabbar{z-index:40}
+  /* на время фокуса убираем всё, что висит поверх: сообщение агента,
+     крестик брони и кнопку «?». Прячем прозрачностью, чтобы не дёргать раскладку */
+  body.lp-on .nudge,
+  body.lp-on .book-x,
+  body.lp-on .ask-fab{opacity:0;pointer-events:none;
+                      transition:opacity .2s cubic-bezier(.4,0,.2,1)}
+  /* кнопка ставится по точке касания, а не по краю карточки: у .ev паддинг 32
+     и масштаб 1.03, из-за них правый край срезал кнопку */
+  .lp-edit{position:absolute;z-index:31;width:48px;height:48px;padding:0;
+           border:0;border-radius:24px;background:var(--ink);display:grid;place-items:center;
+           cursor:pointer;box-shadow:0 8px 22px rgba(6,7,8,.24);
+           animation:lpIn .28s cubic-bezier(.2,.9,.25,1.02) both}
+  .lp-edit svg{display:block;width:20px;height:20px}
+  @keyframes lpIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
   .ev-t{margin:0;padding-top:28px;font:700 17px/20px var(--fh);letter-spacing:-.1px;color:var(--ink)}
   .ev-d{margin:2px 0 0;font:400 15px/19.5px var(--ft);color:var(--ink40)}
   .media{position:relative;margin-top:5px;height:130px;border-radius:12px;overflow:hidden;background:var(--ph)}
@@ -372,8 +425,7 @@
   @media (prefers-reduced-motion: reduce){
     .book-state.is-done .ring{animation:none;stroke-dashoffset:0}
   }
-  /* один кегль со строками номера («Удобства в номере»): 16, не 17 */
-  .book-state span{font:400 16px/1 var(--ft);color:var(--ink)}
+  .book-state span{font:400 17px/1 var(--ft);color:var(--ink)}
   /* бегущий градиент по тексту — тот же, что у «думает» в бандле:
      linear-gradient(90deg,#14202A 16%,#34DDC6 50%,#14202A 84%), 220% ширины,
      обрезка по тексту и shimmer 2.4s linear infinite */
@@ -595,10 +647,8 @@
              border-bottom-left-radius:6px;box-shadow:0 6px 22px rgba(20,32,42,.12)}
   /* действия по левому краю вместе с сообщением: полное скругление,
      поля 20 по горизонтали и 10 по вертикали, между кнопками 2px */
-  /* ширина по тексту: кнопка не тянется до ширины сообщения агента,
-     иначе рядом с длинной репликой все три становились одинаковыми плашками */
-  .bub-pill{align-self:flex-start;width:auto;max-width:90%;box-sizing:border-box;
-            display:inline-flex;align-items:center;justify-content:center;
+  .bub-pill{align-self:flex-start;max-width:90%;box-sizing:border-box;
+            display:flex;align-items:center;justify-content:center;
             padding:10px 20px;border:0;border-radius:100px;cursor:pointer;
             background:rgba(6,7,8,.78);color:#fff;text-align:center;
             font:400 15px/1.4 var(--ft);
@@ -651,8 +701,8 @@
 <div class="stage">
 <div class="frame" id="frame">
   <div class="hero">
-      <img src="assets/img/hero-photo.webp" alt="" class="hero-photo">
-      <img src="assets/img/hero-art.webp" alt="" class="hero-art">
+      <img src="../assets/img/hero-photo.webp" alt="" class="hero-photo">
+      <img src="../assets/img/hero-art.webp" alt="" class="hero-art">
       <button class="hero-btn hero-back" aria-label="Назад">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4.5 7.5 12 15 19.5"/></svg>
       </button>
@@ -677,7 +727,7 @@
         <div class="terr" data-terr>
           <div class="terr-box" data-terrbox>
             <div class="terr-plane" data-plane>
-              <img src="assets/img/territory-map.webp" alt="" draggable="false">
+              <img src="../assets/img/territory-map.webp" alt="" draggable="false">
               <div class="terr-tip" data-tip hidden>
                 <div data-tiptext></div>
                 <button class="terr-more" data-tipmore>Подробнее</button>
@@ -693,37 +743,26 @@
             </div>
           </div>
         </div>
-              <div class="pad nudge" data-nudge data-noevent data-follow="Отметите пару мест из плана — соберу маршрут. Начнём?" data-done="Готово, собрал черновик плана — он в днях 15 и 16 авг">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Собрать план поездки под вас?</span>
-            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
-        </div>
       </div>
       <div class="pane" data-tab="prep">
         <div class="pad tkt" data-ticket="dep"></div>
+        <div class="pad checkin">
+          <div class="lbl">Заезд</div>
+          <div class="big" data-checkin>Пятница, 14 авг · 12:00</div>
+        </div>
+
         <div class="room">
-          <div class="pad room-head">
-            <div class="room-head-txt">
-              <div class="lbl">Заезд</div>
-              <div class="big">Бунгало с террасой</div>
-            </div>
-            <button class="chip-book" data-checkin>заезд 12:00</button>
+          <img src="../assets/img/room-bungalow.webp" alt="Бунгало с террасой">
+          <div class="pad">
+            <div class="lbl">Ваш номер</div>
+            <div class="big">Бунгало с террасой</div>
           </div>
           <div class="pad navs">
             <button class="nav">Удобства в номере<i>›</i></button>
             <button class="nav">Инструкция по заселению<i>›</i></button>
           </div>
-          <img src="assets/img/room-bungalow.webp" alt="Бунгало с террасой">
         </div>
 
-
-        <div class="pad nudge" data-nudge data-noevent data-follow="Могу договориться к 10:00 — подойдёт?" data-done="Договорился о раннем заезде к 10:00, обновил время">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Устроить ранний заезд?</span>
-            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
-        </div>
 
         <div class="pad prep-head"><h2 class="h2">Что взять с собой в дорогу</h2></div>
 
@@ -738,22 +777,16 @@
 
         <div class="pad films-head"><h2 class="h2">Что посмотреть в дороге</h2></div>
         <div class="films" id="films">
-          <div class="film cap"><img src="assets/img/film-spb-guide.webp" alt=""><span>САНКТ-ПЕТЕРБУРГ, РОССИЯ | 39 лучших достопримечательностей Петербурга</span></div>
-          <div class="film"><img src="assets/img/film-rating-72.webp" alt=""><em>7.2</em></div>
-          <div class="film"><img src="assets/img/film-rating-64.webp" alt=""><em>6.4</em></div>
-          <div class="film"><img src="assets/img/film-rating-79.webp" alt=""><em>7.9</em></div>
+          <div class="film cap"><img src="../assets/img/film-spb-guide.webp" alt=""><span>САНКТ-ПЕТЕРБУРГ, РОССИЯ | 39 лучших достопримечательностей Петербурга</span></div>
+          <div class="film"><img src="../assets/img/film-rating-72.webp" alt=""><em>7.2</em></div>
+          <div class="film"><img src="../assets/img/film-rating-64.webp" alt=""><em>6.4</em></div>
+          <div class="film"><img src="../assets/img/film-rating-79.webp" alt=""><em>7.9</em></div>
         </div>
 
         <div class="prep-tail"></div>
       </div>
       <div class="pane" data-tab="out">
         <div class="pad tkt" data-ticket="ret"></div>
-        <div class="pad nudge" data-nudge data-noevent data-follow="Сколько боксов подготовить?" data-done="Заказал завтрак-боксы, будут на ресепшене к 10:00">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Собрать завтрак-боксы к выезду?</span>
-            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
-        </div>
       </div>
       <div class="pane" data-tab="today">
 
@@ -778,7 +811,7 @@
             </div>
             <span class="chip-book" data-bookchip hidden></span>
           </div>
-          <div class="media"><img src="assets/img/ev-prosa-breakfast.webp" alt=""></div>
+          <div class="media"><img src="../assets/img/ev-prosa-breakfast.webp" alt=""></div>
           <div class="book" data-bookrow>
             <div data-bookask>
               <div class="book-label">Забронировать стол</div>
@@ -802,16 +835,16 @@
         </div>
 
         <div class="pad nudge" data-nudge>
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
+          <button class="abub" data-nudgebtn aria-label="Сообщение агента">
+            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#5CCE4B" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
             <span class="tx" data-nudgetx>Сходим на конную прогулку?</span>
-            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
           </button>
         </div>
 
         <div class="ev">
           <h3 class="ev-t">Новая Голландия</h3>
           <p class="ev-d">Атмосферное место для шоппинга и прогулок с детьми</p>
-          <div class="media"><img src="assets/img/ev-novaya-gollandiya.webp" alt=""><span class="chip dark">на территории отеля</span></div>
+          <div class="media"><img src="../assets/img/ev-novaya-gollandiya.webp" alt=""><span class="chip dark">на территории отеля</span></div>
           <div class="row">
             <button class="pill" data-audio="Новая Голландия, историческая территория" data-dur="881"><svg class="ic-play" viewBox="0 0 12 14" fill="currentColor"><path d="M11 6.13a1 1 0 0 1 0 1.74l-9 5.2A1 1 0 0 1 .5 12.2V1.8A1 1 0 0 1 2 .93l9 5.2Z"/></svg><svg class="ic-pause" viewBox="0 0 12 14" fill="currentColor"><path d="M1 1h3.4v12H1zM7.6 1H11v12H7.6z"/></svg>Аудиогид</button>
           </div>
@@ -822,20 +855,13 @@
         <div class="ev">
           <h3 class="ev-t">Тропа к роднику</h3>
           <p class="ev-d">Ровная тропа через кедровник к холодному роднику</p>
-          <div class="media"><img src="assets/img/ev-spring-trail.webp" alt=""></div>
+          <div class="media"><img src="../assets/img/ev-spring-trail.webp" alt=""></div>
         </div>
 
         <div class="ev">
           <h3 class="ev-t">Новая Голландия</h3>
           <p class="ev-d">Атмосферное место для шоппинга и прогулок с детьми</p>
-          <div class="media"><img src="assets/img/ev-novaya-gollandiya.webp" alt=""><span class="chip dark">на территории отеля</span></div>
-        </div>
-
-        <div class="pad nudge" data-nudge data-noevent data-follow="К 19:00, за час до костра — подойдёт?" data-done="Записал баню на 19:00, перед костром">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Затопить баню перед костром?</span>
-            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          <div class="media"><img src="../assets/img/ev-novaya-gollandiya.webp" alt=""><span class="chip dark">на территории отеля</span></div>
         </div>
 
         <div class="sec gap-l">Вечер</div>
@@ -844,24 +870,24 @@
           <div class="deck-face" data-face>
             <h3 class="ev-t">Как насчет роллов вечером?</h3>
             <div class="deck"><i></i><i></i>
-              <div class="media"><img src="assets/img/deck-rolls.webp" alt=""></div>
+              <div class="media"><img src="../assets/img/deck-rolls.webp" alt=""></div>
             </div>
           </div>
           <div class="deck-rest" data-rest>
             <div>
               <h3 class="ev-t">Subzero</h3>
               <p class="ev-d">Стильный минималистичный ресторан на улице Рубинштейна</p>
-              <div class="media"><img src="assets/img/ev-subzero.webp" alt=""><span class="chip dark">на территории отеля</span></div>
+              <div class="media"><img src="../assets/img/ev-subzero.webp" alt=""><span class="chip dark">на территории отеля</span></div>
             </div>
             <div>
               <h3 class="ev-t">Важная Рыба</h3>
               <p class="ev-d">Популярная доставка и суши-бары с большим выбором блюд ресторанного уровня</p>
-              <div class="media"><img src="assets/img/ev-vazhnaya-ryba.webp" alt=""><span class="chip">доставка</span></div>
+              <div class="media"><img src="../assets/img/ev-vazhnaya-ryba.webp" alt=""><span class="chip">доставка</span></div>
             </div>
             <div>
               <h3 class="ev-t">Gills</h3>
               <p class="ev-d">Уютное японское кафе на Казанской улице</p>
-              <div class="media"><img src="assets/img/deck-rolls.webp" alt=""></div>
+              <div class="media"><img src="../assets/img/deck-rolls.webp" alt=""></div>
             </div>
             <div class="deck-hide"><button class="pill" data-hide>Скрыть список</button></div>
           </div>
@@ -872,12 +898,12 @@
           <p class="ev-d">Авторская русская кухня, переосмысленная через локальные продукты и сезонные ингредиенты</p>
         </div>
         <div class="dishes" data-rail>
-          <div class="dish"><img src="assets/img/dish-oysters-yuzu.webp" alt=""><div class="dish-n">Устрицы с юдзу</div><div class="dish-p">690 ₽</div></div>
-          <div class="dish"><img src="assets/img/dish-creme-brulee-miso.webp" alt=""><div class="dish-n">Крем-брюле с мисо</div><div class="dish-p">890 ₽</div></div>
-          <div class="dish"><img src="assets/img/dish-syrniki-lingonberry.webp" alt=""><div class="dish-n">Сырники с брусникой</div><div class="dish-p">640 ₽</div></div>
-          <div class="dish"><img src="assets/img/dish-salmon-roll.webp" alt=""><div class="dish-n">Ролл с лососем</div><div class="dish-p">720 ₽</div></div>
-          <div class="dish"><img src="assets/img/dish-tuna-tartare.webp" alt=""><div class="dish-n">Тартар из тунца</div><div class="dish-p">890 ₽</div></div>
-          <div class="dish"><img src="assets/img/dish-evening-set.webp" alt=""><div class="dish-n">Сет «Вечерний»</div><div class="dish-p">1 890 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-oysters-yuzu.webp" alt=""><div class="dish-n">Устрицы с юдзу</div><div class="dish-p">690 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-creme-brulee-miso.webp" alt=""><div class="dish-n">Крем-брюле с мисо</div><div class="dish-p">890 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-syrniki-lingonberry.webp" alt=""><div class="dish-n">Сырники с брусникой</div><div class="dish-p">640 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-salmon-roll.webp" alt=""><div class="dish-n">Ролл с лососем</div><div class="dish-p">720 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-tuna-tartare.webp" alt=""><div class="dish-n">Тартар из тунца</div><div class="dish-p">890 ₽</div></div>
+          <div class="dish"><img src="../assets/img/dish-evening-set.webp" alt=""><div class="dish-n">Сет «Вечерний»</div><div class="dish-p">1 890 ₽</div></div>
         </div>
 
         <div class="ev" data-deck>
@@ -890,14 +916,14 @@
               <div class="sun-time">21:31</div>
             </div>
             <div class="deck"><i></i><i></i>
-              <div class="media"><img src="assets/img/deck-sunset.webp" alt=""></div>
+              <div class="media"><img src="../assets/img/deck-sunset.webp" alt=""></div>
             </div>
           </div>
           <div class="deck-rest" data-rest>
             <div>
               <h3 class="ev-t">Крыша на Казанской</h3>
               <p class="ev-d">Открытый вид на Исаакий, вход по записи</p>
-              <div class="media"><img src="assets/img/deck-sunset.webp" alt=""><span class="chip">21:31</span></div>
+              <div class="media"><img src="../assets/img/deck-sunset.webp" alt=""><span class="chip">21:31</span></div>
             </div>
             <div>
               <h3 class="ev-t">Стрелка Васильевского</h3>
@@ -919,6 +945,7 @@
     </div>
     </div>
   </div>
+  <div class="lp-scrim" data-lpscrim></div>
   <button class="ask-fab" data-ask aria-label="Спросить"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13.0938C4.77604 13.0938 4.58594 13.0182 4.42969 12.8672C4.27865 12.7109 4.20312 12.5208 4.20312 12.2969V10.4219C4.20312 10.1979 4.27865 10.0078 4.42969 9.85156C4.58594 9.6901 4.77604 9.60938 5 9.60938C5.22396 9.60938 5.41406 9.6901 5.57031 9.85156C5.73177 10.0078 5.8125 10.1979 5.8125 10.4219V12.2969C5.8125 12.5208 5.73177 12.7109 5.57031 12.8672C5.41406 13.0182 5.22396 13.0938 5 13.0938ZM7.79688 15C7.57292 15 7.38281 14.9245 7.22656 14.7734C7.07552 14.6172 7 14.4271 7 14.2031V8.51562C7 8.29167 7.07552 8.10156 7.22656 7.94531C7.38281 7.78385 7.57292 7.70312 7.79688 7.70312C8.02604 7.70312 8.21875 7.78385 8.375 7.94531C8.53125 8.10156 8.60938 8.29167 8.60938 8.51562V14.2031C8.60938 14.4271 8.53125 14.6172 8.375 14.7734C8.21875 14.9245 8.02604 15 7.79688 15ZM10.5938 17.8438C10.3698 17.8438 10.1797 17.7656 10.0234 17.6094C9.8724 17.4531 9.79688 17.263 9.79688 17.0391V5.67969C9.79688 5.45573 9.8724 5.26562 10.0234 5.10938C10.1797 4.95312 10.3698 4.875 10.5938 4.875C10.8229 4.875 11.0156 4.95312 11.1719 5.10938C11.3281 5.26562 11.4062 5.45573 11.4062 5.67969V17.0391C11.4062 17.263 11.3281 17.4531 11.1719 17.6094C11.0156 17.7656 10.8229 17.8438 10.5938 17.8438ZM13.3906 13.9844C13.1667 13.9844 12.9766 13.9089 12.8203 13.7578C12.6693 13.6016 12.5938 13.4115 12.5938 13.1875V9.53125C12.5938 9.30729 12.6693 9.11719 12.8203 8.96094C12.9766 8.80469 13.1667 8.72656 13.3906 8.72656C13.6146 8.72656 13.8047 8.80469 13.9609 8.96094C14.1224 9.11719 14.2031 9.30729 14.2031 9.53125V13.1875C14.2031 13.4115 14.1224 13.6016 13.9609 13.7578C13.8047 13.9089 13.6146 13.9844 13.3906 13.9844ZM16.1953 16.2031C15.9661 16.2031 15.7734 16.125 15.6172 15.9688C15.4661 15.8125 15.3906 15.625 15.3906 15.4062V7.32031C15.3906 7.09635 15.4661 6.90625 15.6172 6.75C15.7734 6.58854 15.9661 6.50781 16.1953 6.50781C16.4193 6.50781 16.6094 6.58854 16.7656 6.75C16.9219 6.90625 17 7.09635 17 7.32031V15.4062C17 15.625 16.9219 15.8125 16.7656 15.9688C16.6094 16.125 16.4193 16.2031 16.1953 16.2031ZM18.9844 13.0625C18.7604 13.0625 18.5703 12.9844 18.4141 12.8281C18.263 12.6719 18.1875 12.4818 18.1875 12.2578V10.5469C18.1875 10.3229 18.263 10.1328 18.4141 9.97656C18.5703 9.8151 18.7604 9.73438 18.9844 9.73438C19.2135 9.73438 19.4062 9.8151 19.5625 9.97656C19.7188 10.1328 19.7969 10.3229 19.7969 10.5469V12.2578C19.7969 12.4818 19.7188 12.6719 19.5625 12.8281C19.4062 12.9844 19.2135 13.0625 18.9844 13.0625Z" fill="currentColor"/></svg></button>
   <div class="player" data-player hidden>
     <i class="player-grab"></i>
@@ -964,7 +991,6 @@
 </div>
 </div>
 
-<script src="assets/lottie_light.min.js"></script>
 <script>
 (function(){
   var WX_ICON = "<svg viewBox=\"0 0 40 40\" fill=\"none\"><path d=\"M29.0806 19.7335C28.8905 18.4773 28.4566 17.3657 27.7789 16.3988C27.1012 15.4236 26.2376 14.6467 25.188 14.0682C24.1384 13.4814 22.9566 13.1426 21.6426 13.0517C21.4442 12.6798 21.2252 12.3368 20.9855 12.0227C20.7541 11.7004 20.5021 11.3988 20.2293 11.1178C20.7417 10.25 21.469 9.53926 22.4112 8.98554C23.3616 8.42355 24.4112 8.14256 25.5599 8.14256C26.7252 8.14256 27.7831 8.42769 28.7335 8.99793C29.6921 9.56818 30.4525 10.3326 31.0145 11.2913C31.5847 12.2417 31.8698 13.2955 31.8698 14.4525C31.8698 15.5434 31.6178 16.5517 31.1136 17.4773C30.6095 18.3946 29.9318 19.1467 29.0806 19.7335Z\" fill=\"#F3B53A\"/> <path d=\"M17.8988 8.61364L16.2252 6.94008C15.9773 6.69215 15.8492 6.3905 15.8409 6.03512C15.8409 5.67975 15.9649 5.3781 16.2128 5.13017C16.4607 4.88223 16.7624 4.75826 17.1178 4.75826C17.4814 4.75826 17.7831 4.88223 18.0227 5.13017L19.6963 6.82851C19.9442 7.07645 20.0682 7.3781 20.0682 7.73347C20.0764 8.08058 19.9566 8.3781 19.7087 8.62603C19.469 8.87397 19.1674 8.99793 18.8037 8.99793C18.4483 8.99793 18.1467 8.86983 17.8988 8.61364Z\" fill=\"#F3B53A\"/> <path d=\"M25.5475 6.19628C25.2004 6.19628 24.8988 6.07231 24.6426 5.82438C24.3946 5.56818 24.2707 5.2624 24.2707 4.90702V2.53926C24.2707 2.18388 24.3946 1.88223 24.6426 1.6343C24.8988 1.3781 25.2004 1.25 25.5475 1.25C25.9029 1.25 26.2045 1.3781 26.4525 1.6343C26.7004 1.88223 26.8244 2.18388 26.8244 2.53926V4.90702C26.8244 5.2624 26.7004 5.56818 26.4525 5.82438C26.2045 6.07231 25.9029 6.19628 25.5475 6.19628Z\" fill=\"#F3B53A\"/> <path d=\"M31.3988 8.63843C31.1508 8.3905 31.0269 8.08884 31.0269 7.73347C31.0269 7.36983 31.1508 7.06818 31.3988 6.82851L33.0971 5.15496C33.345 4.89876 33.6426 4.77066 33.9897 4.77066C34.345 4.77066 34.6467 4.8905 34.8946 5.13017C35.1426 5.3781 35.2665 5.68388 35.2665 6.04752C35.2665 6.40289 35.1426 6.70455 34.8946 6.95248L33.2087 8.62603C32.9607 8.87397 32.655 9.00207 32.2913 9.01033C31.9359 9.01033 31.6384 8.88636 31.3988 8.63843Z\" fill=\"#F3B53A\"/> <path d=\"M35.0806 15.7293C34.7335 15.7293 34.4318 15.6095 34.1756 15.3698C33.9194 15.1219 33.7913 14.8202 33.7913 14.4649C33.7913 14.1178 33.9194 13.8161 34.1756 13.5599C34.4318 13.3037 34.7335 13.1756 35.0806 13.1756H37.4607C37.8161 13.1756 38.1178 13.3037 38.3657 13.5599C38.6219 13.8161 38.75 14.1178 38.75 14.4649C38.75 14.8202 38.6219 15.1219 38.3657 15.3698C38.1178 15.6095 37.8161 15.7293 37.4607 15.7293H35.0806Z\" fill=\"#F3B53A\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6.59297 27.593C5.53512 27.593 4.60537 27.3864 3.80372 26.9731C3.00207 26.5517 2.37397 25.969 1.91942 25.2252C1.47314 24.4814 1.25 23.6178 1.25 22.6343C1.25 21.469 1.58058 20.4525 2.24174 19.5847C2.91116 18.7087 3.79959 18.1178 4.90702 17.812C4.99793 16.7459 5.27066 15.7583 5.72521 14.8492C6.18802 13.9401 6.79132 13.1467 7.53512 12.469C8.28719 11.7913 9.13843 11.2665 10.0888 10.8946C11.0393 10.5145 12.0517 10.3244 13.126 10.3244C14.3161 10.3244 15.3822 10.5227 16.3244 10.9194C17.2748 11.3079 18.0971 11.8409 18.7913 12.5186C19.4938 13.188 20.0682 13.9442 20.5145 14.7872C21.812 14.7872 22.969 15.0682 23.9855 15.6302C25.0021 16.1921 25.8037 16.9566 26.3905 17.9236C26.9773 18.8905 27.2707 19.9938 27.2707 21.2335C27.2707 22.4401 26.9897 23.5227 26.4277 24.4814C25.874 25.4401 25.1219 26.2004 24.1715 26.7624C23.2211 27.3161 22.1467 27.593 20.9483 27.593H6.59297ZM6.95248 33.7417C6.82025 33.9566 6.6343 34.1012 6.39463 34.1756C6.15496 34.2583 5.92355 34.2335 5.70041 34.1012C5.46901 33.969 5.32438 33.7831 5.26653 33.5434C5.21694 33.3037 5.25413 33.0764 5.3781 32.8616L6.95248 30.1219C7.09297 29.8905 7.27893 29.7376 7.51033 29.6632C7.74174 29.5971 7.97314 29.6302 8.20455 29.7624C8.42769 29.8946 8.56818 30.0806 8.62603 30.3202C8.68388 30.5682 8.64669 30.8037 8.51446 31.0269L6.95248 33.7417ZM10.8574 37.2252C10.7252 37.4401 10.5393 37.5847 10.2996 37.6591C10.0682 37.7335 9.83678 37.7087 9.60537 37.5847C9.37397 37.4442 9.22934 37.2541 9.17149 37.0145C9.1219 36.7831 9.15909 36.5558 9.28306 36.3326L10.8574 33.6054C10.9979 33.374 11.1839 33.2211 11.4153 33.1467C11.6467 33.0806 11.8781 33.1136 12.1095 33.2459C12.3326 33.3781 12.4731 33.564 12.531 33.8037C12.5888 34.0434 12.5517 34.2748 12.4194 34.4979L10.8574 37.2252ZM16.8202 33.7293C16.688 33.9525 16.5021 34.1012 16.2624 34.1756C16.0227 34.25 15.7913 34.2211 15.5682 34.0888C15.3368 33.9566 15.1921 33.7707 15.1343 33.531C15.0847 33.2913 15.1219 33.064 15.2459 32.8492L16.8202 30.1219C16.9607 29.8822 17.1467 29.7252 17.3781 29.6508C17.6095 29.5847 17.8368 29.6178 18.0599 29.75C18.2913 29.8905 18.4359 30.0806 18.4938 30.3202C18.5517 30.5599 18.5186 30.7913 18.3946 31.0145L16.8202 33.7293ZM20.7128 37.2128C20.5888 37.4359 20.407 37.5847 20.1674 37.6591C19.9277 37.7335 19.6963 37.7045 19.4731 37.5723C19.2417 37.4401 19.0971 37.2541 19.0393 37.0145C18.9897 36.7748 19.0269 36.5475 19.1508 36.3326L20.7252 33.6054C20.8657 33.3657 21.0517 33.2087 21.2831 33.1343C21.5145 33.0682 21.7459 33.1012 21.9773 33.2335C22.2087 33.3657 22.3492 33.5517 22.3988 33.7913C22.4566 34.0393 22.4236 34.2748 22.2996 34.4979L20.7128 37.2128Z\" fill=\"#9ABAF2\"/> <path d=\"M33.0847 23.7996L31.3988 22.1136C31.1508 21.874 31.0227 21.5764 31.0145 21.2211C31.0145 20.8574 31.1384 20.5558 31.3864 20.3161C31.6343 20.0682 31.9359 19.9442 32.2913 19.9442C32.655 19.9442 32.9566 20.0682 33.1963 20.3161L34.8822 22.0021C35.1219 22.25 35.2459 22.5517 35.2541 22.907C35.2624 23.2624 35.1426 23.564 34.8946 23.812C34.6467 24.0517 34.345 24.1715 33.9897 24.1715C33.6343 24.1715 33.3326 24.0475 33.0847 23.7996Z\" fill=\"#F3B53A\"/></svg>";
@@ -1135,16 +1161,16 @@
     var activePin = null, offsetMinutes = 0, mapDate = new Date();
 
     var PIN_SETS = [
-      [ { label:"Кино", x:39, y:31, scale:1, photo:"assets/img/pin-cinema.webp", text:"Через 5 минут начнется кинопоказ «Мой сосед Тоторо»" },
-        { label:"Чай", x:58, y:55, scale:1.18, photo:"assets/img/pin-tea.webp", text:"Через 25 минут у костра будет травяной чай и пледы" } ],
-      [ { label:"Закат", x:51, y:76, scale:1.3, photo:"assets/img/pin-sunset.webp", text:"Через 20 минут начнется закат — отсюда лучший вид" },
-        { label:"Йога", x:45, y:45, scale:1.1, photo:"assets/img/pin-yoga.webp", text:"Через 40 минут начнется мягкая йога на поляне" },
-        { label:"Ресторан", x:34, y:63, scale:1.2, photo:"assets/img/pin-restaurant.webp", text:"Через 15 минут откроется вечернее меню в ресторане" } ],
-      [ { label:"Баня", x:61, y:56, scale:1.22, photo:"assets/img/pin-banya.webp", text:"Через 30 минут начнется коллективное парение. Приходите погреться!" },
-        { label:"Маршрут", x:47, y:70, scale:1.05, photo:"assets/img/pin-yoga.webp", text:"Через 10 минут стартует короткая прогулка к роднику" } ],
-      [ { label:"Костер", x:54, y:42, scale:1.3, photo:"assets/img/pin-tea.webp", text:"Через 15 минут начнется вечер у костра с гитарой" },
-        { label:"Смотровая", x:66, y:69, scale:1.16, photo:"assets/img/pin-sunset.webp", text:"Через 35 минут гид поведет на смотровую над Катунью" },
-        { label:"СПА", x:36, y:50, scale:1.08, photo:"assets/img/pin-banya.webp", text:"Свободное окно на массаж" } ]
+      [ { label:"Кино", x:39, y:31, scale:1, photo:"../assets/img/pin-cinema.webp", text:"Через 5 минут начнется кинопоказ «Мой сосед Тоторо»" },
+        { label:"Чай", x:58, y:55, scale:1.18, photo:"../assets/img/pin-tea.webp", text:"Через 25 минут у костра будет травяной чай и пледы" } ],
+      [ { label:"Закат", x:51, y:76, scale:1.3, photo:"../assets/img/pin-sunset.webp", text:"Через 20 минут начнется закат — отсюда лучший вид" },
+        { label:"Йога", x:45, y:45, scale:1.1, photo:"../assets/img/pin-yoga.webp", text:"Через 40 минут начнется мягкая йога на поляне" },
+        { label:"Ресторан", x:34, y:63, scale:1.2, photo:"../assets/img/pin-restaurant.webp", text:"Через 15 минут откроется вечернее меню в ресторане" } ],
+      [ { label:"Баня", x:61, y:56, scale:1.22, photo:"../assets/img/pin-banya.webp", text:"Через 30 минут начнется коллективное парение. Приходите погреться!" },
+        { label:"Маршрут", x:47, y:70, scale:1.05, photo:"../assets/img/pin-yoga.webp", text:"Через 10 минут стартует короткая прогулка к роднику" } ],
+      [ { label:"Костер", x:54, y:42, scale:1.3, photo:"../assets/img/pin-tea.webp", text:"Через 15 минут начнется вечер у костра с гитарой" },
+        { label:"Смотровая", x:66, y:69, scale:1.16, photo:"../assets/img/pin-sunset.webp", text:"Через 35 минут гид поведет на смотровую над Катунью" },
+        { label:"СПА", x:36, y:50, scale:1.08, photo:"../assets/img/pin-banya.webp", text:"Свободное окно на массаж" } ]
     ];
     var setIdx = new Date().getHours() % 4;
     var pins = PIN_SETS[setIdx];
@@ -1299,28 +1325,17 @@
       if (reduce || !pl.animate) return;
       var w = pl.parentNode.offsetWidth;
       if (!w) return;                       /* панель скрыта — взлетим при показе */
-      /* путь почти во всю дорожку: отступ 2 от края блока, плюс половина
-         самолёта 8.5 — до времени и городов рядом остаётся зазор.
-         Раньше отступ был 12 и ход выходил заметно короче */
-      var PAD = 2;
-      var from = -w / 2 + PAD, to = w / 2 - PAD;
-      /* пружину здесь не берём: её длинный хвост и давал ощущение, что самолёт
-         повис. Плавный glide на smoothstep — тот же изинг, что в остальном
-         моушене, только растянутый на 1.7 с */
-      var DUR = 1700, n = 48;
+      var from = -w / 2 - 24, to = w / 2 + 24;
+      var frames = springFrames(from, to, { stiffness: 90, damping: 22 });
+      var n = frames.length;
       pl.getAnimations().forEach(function(a){ a.cancel(); });
-      var keys = [];
-      for (var i = 0; i < n; i++){
-        var t = i / (n - 1);
-        var x = from + (to - from) * smoothstep(t);
-        /* кренится на взлёте, растворяется на последней трети и исчезает
-           раньше, чем ход заканчивается */
-        var tilt = -7 * Math.max(0, 1 - t * 2.4);
-        var o = Math.min(1, t * 7) * Math.min(1, (1 - t) / .3);
-        keys.push({ transform: "translateX(calc(-50% + " + x.toFixed(1) + "px)) rotate(" + tilt.toFixed(2) + "deg)",
-                    opacity: o, offset: t });
-      }
-      pl.animate(keys, { duration: DUR, fill: "forwards", easing: "linear" });
+      pl.animate(frames.map(function(x, i){
+        var t = n > 1 ? i / (n - 1) : 1;
+        /* кренится на взлёте и растворяется на последней четверти пути */
+        var tilt = -7 * Math.max(0, 1 - t * 1.8);
+        return { transform: "translateX(calc(-50% + " + x.toFixed(1) + "px)) rotate(" + tilt.toFixed(2) + "deg)",
+                 opacity: Math.min(1, t * 6) * Math.min(1, (1 - t) * 4), offset: t };
+      }), { duration: n / 60 * 1000, fill: "forwards", easing: "linear" });
     });
   }
 
@@ -1395,6 +1410,14 @@
       b.style.animationDelay = ((list.length - 1 - i) * 0.05) + "s";
       b.onclick = function(){ onPick(txt); };
       msgsBox.appendChild(b);
+    });
+    /* тянем кнопки до ширины сообщения агента, если оно есть */
+    requestAnimationFrame(function(){
+      var msg = msgsBox.querySelector(".bub-agent");
+      if (!msg) return;
+      var w = msg.offsetWidth;
+      if (!w) return;
+      [].forEach.call(msgsBox.querySelectorAll(".bub-pill"), function(p){ p.style.width = w + "px"; });
     });
   }
   function openSheet(){
@@ -1680,209 +1703,105 @@
   }
   [].forEach.call(document.querySelectorAll("[data-book]"), initBooking);
 
-  /* тег заезда работает как тег брони у события: тап открывает разговор,
-     где время можно передвинуть */
+  /* ---- long press on event cards ----
+     Ported from lp() in ChiposhBooking.jsx: 380ms hold, cancelled by a 10px move,
+     focused card scales to 1.03 on z-index 30 while the others drop to 0.12,
+     a pencil button opens the chat with «На что заменим …» and lifts the card up. */
+  var PLAN_EDIT = ["Йога", "Посидеть у костра", "Баня", "Массаж", "Экскурсия"];
   (function(){
-    var chip = document.querySelector("[data-checkin]");
-    if (!chip) return;
-    chip.onclick = function(){
-      openAskSheet("\u0417\u0430\u0435\u0437\u0434 \u0432 12:00. \u041c\u043e\u0433\u0443 \u0443\u0441\u0442\u0440\u043e\u0438\u0442\u044c \u0440\u0430\u043d\u043d\u0438\u0439 \u2014 \u0432\u043e \u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0443\u0434\u043e\u0431\u043d\u043e?",
-        ["\u041a 9:00", "\u041a 10:00", "\u041a 11:00", "\u041e\u0441\u0442\u0430\u0432\u0438\u0442\u044c 12:00"]);
-    };
-  })();
-
-  /* ---- свайп по событию ----
-     Как в iOS Mail: горизонтальная тяга 1:1 до открытого положения, за ним
-     резинка UIScrollView (c = 0.55), отпускание решается по скорости, снап
-     пружиной с лёгким овершутом (k 340 / c 34 — та же модель, что springFrames,
-     но с начальной скоростью броска). Действия выезжают из-под карточки на
-     половинной скорости: тот же параллакс, что у нативных swipe actions.
-     Открыта всегда одна карточка; прокрутка, тап мимо и смена таба закрывают. */
-  var PLAN_TIME = ["\u0423\u0442\u0440\u043e\u043c", "\u041f\u043e\u0441\u043b\u0435 \u043e\u0431\u0435\u0434\u0430", "\u0412\u0435\u0447\u0435\u0440\u043e\u043c", "\u0414\u0440\u0443\u0433\u043e\u0435 \u0432\u0440\u0435\u043c\u044f"];
-  var PLAN_ASK  = ["\u0427\u0442\u043e \u0432\u0437\u044f\u0442\u044c \u0441 \u0441\u043e\u0431\u043e\u0439", "\u0421\u043a\u043e\u043b\u044c\u043a\u043e \u043f\u043e \u0432\u0440\u0435\u043c\u0435\u043d\u0438", "\u041c\u043e\u0436\u043d\u043e \u0441 \u0434\u0435\u0442\u044c\u043c\u0438", "\u041d\u0430 \u0447\u0442\u043e \u0437\u0430\u043c\u0435\u043d\u0438\u0442\u044c"];
-  (function(){
-    var frame = document.getElementById("frame");
-    if (!frame) return;
-    var OPEN = 206, LOCK = 8;
-    /* в покое группа должна уйти за правый край рамки: от её левого края (183)
-       до 393 ровно 210, плюс 4 запаса. Отставание меньше 4% — действия читаются
-       приклеенными к карточке и уходят точно так же, как появились */
-    var PARA = (OPEN + 8) / OPEN;
-    var SLOW = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var ICO = {
-      talk: '<svg viewBox="4 4 24 24" fill="none"><path d="M16.4902 24.5723C14.3353 24.5723 12.4017 24.1816 10.6895 23.4004C10.1882 23.765 9.60872 24.0514 8.95117 24.2598C8.29362 24.4681 7.62956 24.5723 6.95898 24.5723C6.74414 24.5723 6.57812 24.5267 6.46094 24.4355C6.34375 24.3444 6.28516 24.2305 6.28516 24.0938C6.29167 23.9635 6.36979 23.8333 6.51953 23.7031C6.8125 23.4297 7.02409 23.1562 7.1543 22.8828C7.28451 22.6029 7.34961 22.2741 7.34961 21.8965C7.34961 21.5449 7.27799 21.2129 7.13477 20.9004C6.99154 20.5814 6.8125 20.2493 6.59766 19.9043C6.38281 19.5592 6.16797 19.1719 5.95312 18.7422C5.73828 18.306 5.55924 17.7982 5.41602 17.2188C5.27279 16.6393 5.20117 15.959 5.20117 15.1777C5.20117 13.8171 5.47786 12.5638 6.03125 11.418C6.59115 10.2721 7.37565 9.2793 8.38477 8.43945C9.40039 7.5931 10.5951 6.9388 11.9688 6.47656C13.349 6.01432 14.8561 5.7832 16.4902 5.7832C18.1243 5.7832 19.6283 6.01432 21.002 6.47656C22.3822 6.9388 23.5801 7.5931 24.5957 8.43945C25.6113 9.2793 26.3958 10.2721 26.9492 11.418C27.5091 12.5638 27.7891 13.8171 27.7891 15.1777C27.7891 16.5384 27.5091 17.7917 26.9492 18.9375C26.3958 20.0833 25.6113 21.0794 24.5957 21.9258C23.5866 22.7656 22.3919 23.4167 21.0117 23.8789C19.638 24.3411 18.1309 24.5723 16.4902 24.5723ZM11.8418 16.6816C12.2454 16.6816 12.5905 16.5384 12.877 16.252C13.1634 15.9655 13.3066 15.6204 13.3066 15.2168C13.3066 14.8132 13.1602 14.4681 12.8672 14.1816C12.5807 13.8952 12.2389 13.752 11.8418 13.752C11.4382 13.752 11.0931 13.8952 10.8066 14.1816C10.5202 14.4681 10.377 14.8132 10.377 15.2168C10.377 15.6204 10.5202 15.9655 10.8066 16.252C11.0931 16.5384 11.4382 16.6816 11.8418 16.6816ZM16.5391 16.6816C16.9492 16.6816 17.2943 16.5384 17.5742 16.252C17.8607 15.9655 18.0039 15.6204 18.0039 15.2168C18.0039 14.8132 17.8607 14.4681 17.5742 14.1816C17.2943 13.8952 16.9492 13.752 16.5391 13.752C16.1354 13.752 15.7904 13.8952 15.5039 14.1816C15.224 14.4681 15.084 14.8132 15.084 15.2168C15.084 15.6204 15.224 15.9655 15.5039 16.252C15.7904 16.5384 16.1354 16.6816 16.5391 16.6816ZM21.2461 16.6816C21.6432 16.6816 21.985 16.5384 22.2715 16.252C22.5645 15.9655 22.7109 15.6204 22.7109 15.2168C22.7109 14.8132 22.5645 14.4681 22.2715 14.1816C21.985 13.8952 21.6432 13.752 21.2461 13.752C20.8424 13.752 20.4974 13.8952 20.2109 14.1816C19.9245 14.4681 19.7812 14.8132 19.7812 15.2168C19.7812 15.6204 19.9245 15.9655 20.2109 16.252C20.4974 16.5384 20.8424 16.6816 21.2461 16.6816Z" fill="#1CA658"/></svg>',
-      move: '<svg viewBox="4 4 24 24" fill="none"><path d="M16.5 25.2949C15.3086 25.2949 14.1921 25.0703 13.1504 24.6211C12.1087 24.1784 11.1908 23.5632 10.3965 22.7754C9.60872 21.9811 8.99023 21.0632 8.54102 20.0215C8.09831 18.9798 7.87695 17.8633 7.87695 16.6719C7.87695 15.4805 8.09831 14.3639 8.54102 13.3223C8.99023 12.2806 9.60872 11.3659 10.3965 10.5781C11.1908 9.78385 12.1087 9.16536 13.1504 8.72266C14.1921 8.27344 15.3086 8.04883 16.5 8.04883C17.0208 8.04883 17.5286 8.0944 18.0234 8.18555C18.5182 8.27669 18.9902 8.4069 19.4395 8.57617C19.5762 8.62826 19.7161 8.70964 19.8594 8.82031C20.0026 8.93099 20.071 9.11003 20.0645 9.35742C20.0645 9.55924 20.0059 9.72526 19.8887 9.85547C19.778 9.97917 19.638 10.0605 19.4688 10.0996C19.2995 10.1322 19.1335 10.1159 18.9707 10.0508C18.5801 9.90755 18.1797 9.80013 17.7695 9.72852C17.3594 9.65039 16.9362 9.61133 16.5 9.61133C15.5299 9.61133 14.6185 9.79362 13.7656 10.1582C12.9128 10.5228 12.1608 11.0306 11.5098 11.6816C10.8652 12.3262 10.3607 13.0749 9.99609 13.9277C9.63151 14.7806 9.44922 15.6921 9.44922 16.6621C9.44922 17.6387 9.63151 18.5534 9.99609 19.4062C10.3607 20.2591 10.8652 21.0078 11.5098 21.6523C12.1608 22.2969 12.9128 22.8014 13.7656 23.166C14.6185 23.5306 15.5299 23.7129 16.5 23.7129C17.4766 23.7129 18.3913 23.5306 19.2441 23.166C20.097 22.8014 20.8457 22.2969 21.4902 21.6523C22.1348 21.0078 22.6393 20.2591 23.0039 19.4062C23.3685 18.5534 23.5508 17.6387 23.5508 16.6621C23.5508 16.4473 23.6289 16.265 23.7852 16.1152C23.9414 15.959 24.127 15.8809 24.3418 15.8809C24.5566 15.8809 24.7389 15.959 24.8887 16.1152C25.0449 16.265 25.123 16.4473 25.123 16.6621C25.123 17.86 24.8984 18.9798 24.4492 20.0215C24.0065 21.0632 23.388 21.9811 22.5938 22.7754C21.806 23.5632 20.8913 24.1784 19.8496 24.6211C18.8079 25.0703 17.6914 25.2949 16.5 25.2949ZM19.1465 9.2207L15.5918 5.68555C15.5137 5.60742 15.4583 5.51953 15.4258 5.42188C15.3932 5.32422 15.377 5.22331 15.377 5.11914C15.377 4.89779 15.4486 4.70898 15.5918 4.55273C15.7415 4.39648 15.9238 4.31836 16.1387 4.31836C16.36 4.31836 16.5521 4.39974 16.7148 4.5625L20.7285 8.64453C20.8978 8.80729 20.9824 9.0026 20.9824 9.23047C20.9824 9.34115 20.9629 9.44531 20.9238 9.54297C20.8848 9.64062 20.8197 9.73177 20.7285 9.81641L16.7051 13.8594C16.5488 14.0091 16.36 14.084 16.1387 14.084C15.9238 14.084 15.7415 14.0091 15.5918 13.8594C15.4486 13.7096 15.377 13.5208 15.377 13.293C15.377 13.1953 15.3932 13.0977 15.4258 13C15.4583 12.9023 15.5169 12.8177 15.6016 12.7461L19.1465 9.2207Z" fill="#1CA658"/></svg>'
-    };
-    var opened = null, g = null;
-    /* пилюля с иконкой и подпись под ней */
-    function act(key, cap){
-      return '<button class="sw-act" data-act="' + key + '" aria-label="' + cap + '">' +
-             '<span>' + ICO[key] + '</span><i class="sw-cap">' + cap + '</i></button>';
-    }
-
+    var scrim = document.querySelector("[data-lpscrim]");
+    /* карточки не перечисляем заранее: план пополняется на ходу (агент добавляет
+       события), поэтому подходящую карточку ищем в момент касания */
     function cardOf(node){
       var ev = node && node.closest ? node.closest(".pane .ev") : null;
       if (!ev || ev.hasAttribute("data-deck") || !ev.querySelector(".media")) return null;
       return ev;
     }
-    /* готовим карточку в момент касания: план пополняется на ходу, агент
-       добавляет события уже после загрузки */
-    function prep(ev){
-      if (ev.__sw) return ev.__sw;
-      var body = document.createElement("div");
-      body.className = "sw-body";
-      while (ev.firstChild) body.appendChild(ev.firstChild);
-      ev.appendChild(body);
-      var acts = document.createElement("div");
-      acts.className = "sw-acts";
-      acts.innerHTML =
-        act("talk", "\u041e\u0431\u0441\u0443\u0434\u0438\u0442\u044c") +
-        act("move", "\u041f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438");
-      ev.appendChild(acts);
-      var st = ev.__sw = { ev: ev, body: body, acts: acts, x: 0, raf: 0 };
-      acts.querySelector('[data-act="talk"]').onclick = function(e){ e.stopPropagation(); talk(st); };
-      acts.querySelector('[data-act="move"]').onclick = function(e){ e.stopPropagation(); move(st); };
-      place(st);
-      paint(st, 0);
-      return st;
-    }
-    /* по центру карточки: от верха заголовка до низа картинки.
-       Ряд действий под картинкой в счёт не идёт — иначе пилюли уезжают ниже
-       и вылезают из-под картинки, за которой прячутся в покое */
-    function place(st){
-      var m = st.ev.querySelector(".media");
-      var h = st.body.querySelector(".ev-t") || st.body.firstElementChild;
-      if (!m || !h) return;
-      var top = h.offsetTop + parseFloat(getComputedStyle(h).paddingTop || 0);
-      var bot = m.offsetTop + m.offsetHeight;
-      st.acts.style.top = Math.round(top + (bot - top - 49) / 2) + "px";
-    }
-    /* проявление: каждая кнопка догоняет своё место справа и всплывает из
-       непрозрачности. Правая идёт первой, левая с задержкой 12% хода — вместе
-       это читается как «вытянули одну за другой», но на грани заметности:
-       свой ход всего 8px и 4% масштаба */
-    var LAG = [.12, 0];
-    function c01(v){ return v < 0 ? 0 : v > 1 ? 1 : v; }
-    function reveal(st, p){
-      [].forEach.call(st.acts.children, function(b, i){
-        var lag = LAG[i] || 0;
-        var t = smoothstep(c01((p - lag) / (.82 - lag)));
-        b.style.opacity = t;
-        b.style.transform = "translate3d(" + (8 * (1 - t)).toFixed(2) + "px,0,0) scale(" +
-                            (.96 + .04 * t).toFixed(3) + ")";
-      });
-    }
-    function paint(st, x){
-      st.x = x;
-      st.body.style.transform = "translate3d(" + (-x) + "px,0,0)";
-      st.acts.style.transform = "translate3d(" + ((OPEN - x) * PARA) + "px,0,0)";
-      reveal(st, x / OPEN);
-    }
-    /* резинка за пределами хода: чем дальше тянут, тем меньше отдача */
-    function rub(d){ return (1 - 1 / (d * .55 / OPEN + 1)) * OPEN; }
-    function band(x){
-      if (x < 0) return -rub(-x);
-      if (x <= OPEN) return x;
-      return OPEN + rub(x - OPEN);
-    }
-    function cancel(st){ if (st.raf){ cancelAnimationFrame(st.raf); st.raf = 0; } }
-    function anim(st, to, v0){
-      cancel(st);
-      if (SLOW){ paint(st, to); return; }
-      var k = 340, c = 34, x = st.x, v = -(v0 || 0) * 1000, last = 0;
-      st.raf = requestAnimationFrame(function step(ts){
-        if (!last) last = ts;
-        var dt = Math.min(.032, (ts - last) / 1000); last = ts;
-        v += (-k * (x - to) - c * v) * dt;
-        x += v * dt;
-        if (Math.abs(x - to) < .3 && Math.abs(v) < 14){ st.raf = 0; paint(st, to); return; }
-        paint(st, x);
-        st.raf = requestAnimationFrame(step);
-      });
-    }
-    function open(st, v){
-      if (opened && opened !== st) close(opened);
-      opened = st; st.ev.classList.add("sw-on"); anim(st, OPEN, v);
-    }
-    function close(st, v){
-      if (!st) return;
-      if (opened === st) opened = null;
-      st.ev.classList.remove("sw-on");
-      anim(st, 0, v);
-    }
-    function closeAll(){ if (opened) close(opened); }
+    if (!scrim) return;
+    var PENCIL = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"' +
+                 ' stroke-linecap="round" stroke-linejoin="round">' +
+                 '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+    var frame = document.getElementById("frame");
+    var focused = null, t = null, start = null;
 
-    function q(t){ return "\u00ab" + t + "\u00bb"; }
-    function titleOf(st){ var h = st.ev.querySelector(".ev-t"); return h ? h.textContent.trim() : ""; }
-    /* карточка подтягивается под шторку, чтобы разговор шёл на её месте */
-    function lift(ev){
+    function unfocus(){
+      if (!focused) return;
+      var btn = frame.querySelector(".lp-edit");
+      if (btn) btn.remove();
+      [].forEach.call(document.querySelectorAll(".lp-dim"), function(e){ e.classList.remove("lp-dim"); });
+      [].forEach.call(document.querySelectorAll(".lp-focus"), function(c){ c.classList.remove("lp-focus"); });
+      document.body.classList.remove("lp-on");
+      focused = null;
+    }
+    function focus(ev){
+      unfocus();
+      focused = ev;
+      document.body.classList.add("lp-on");
+      /* тухнет весь экран, кроме выбранной карточки: соседние блоки панели,
+         строка табов и герой — а не только карточки событий */
+      var pane = ev.closest(".pane");
+      [].forEach.call(pane.children, function(c){ if (c !== ev) c.classList.add("lp-dim"); });
+      [".tabbar .tabs", ".hero"].forEach(function(sel){
+        var el = document.querySelector(sel);
+        if (el) el.classList.add("lp-dim");
+      });
+      var btn = document.createElement("button");
+      btn.className = "lp-edit";
+      btn.setAttribute("aria-label", "Изменить");
+      btn.innerHTML = PENCIL;
+      btn.onclick = function(e){ e.stopPropagation(); edit(ev); };
+      /* под карточкой, а не поверх неё: правый край по краю медиа, сверху зазор 10.
+         Считаем до масштаба, иначе 1.03 сдвинет точку */
+      var SZ = 48, GAP = 10;
+      var fr = frame.getBoundingClientRect();
+      var cr = ev.getBoundingClientRect();
+      var x = cr.right - fr.left - 32 - SZ;
+      var y = cr.bottom - fr.top + GAP;
+      btn.style.left = Math.max(8, Math.min(x, fr.width - SZ - 8)) + "px";
+      btn.style.top  = Math.max(8, Math.min(y, fr.height - SZ - 8)) + "px";
+      frame.appendChild(btn);
+      ev.classList.add("lp-focus");
+    }
+    function edit(ev){
+      var h3 = ev.querySelector(".ev-t");
+      var title = h3 ? h3.textContent.trim() : "";
+      var quoted = title.slice(-1) === "\u00bb" ? "\u00ab" + title : "\u00ab" + title + "\u00bb";
+      unfocus();
+      openAskSheet("На что заменим " + quoted + "? Учту любые пожелания.", PLAN_EDIT);
       var sc = document.getElementById("scroller");
-      if (!sc) return;
       setTimeout(function(){
         var top = sc.scrollTop + ev.getBoundingClientRect().top - sc.getBoundingClientRect().top - 8;
         if (sc.scrollTo) sc.scrollTo({ top: top, behavior: "smooth" });
         else sc.scrollTop = top;
       }, 90);
     }
-    function talk(st){
-      var t = titleOf(st); close(st);
-      openAskSheet("\u0421\u043f\u0440\u043e\u0448\u0443 \u043f\u0440\u043e " + q(t) + ". \u0427\u0442\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c?", PLAN_ASK);
-      lift(st.ev);
-    }
-    function move(st){
-      var t = titleOf(st); close(st);
-      openAskSheet("\u041d\u0430 \u043a\u0430\u043a\u043e\u0435 \u0432\u0440\u0435\u043c\u044f \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438 " + q(t) + "?", PLAN_TIME);
-      lift(st.ev);
-    }
-
+    /* один набор обработчиков на кадр: работает и на карточках, добавленных позже */
     frame.addEventListener("pointerdown", function(e){
-      if (e.pointerType === "mouse" && e.button !== 0) return;
       if (!e.target || !e.target.closest) return;
-      if (e.target.closest(".sw-act")) return;
+      if (e.target.closest("button, .times, .dishes")) return;
       var ev = cardOf(e.target);
-      if (!ev || e.target.closest("button, .times, .dishes")){ closeAll(); return; }
-      var st = prep(ev);
-      /* касание другой карточки закрывает открытую, даже если это просто тап */
-      if (opened && opened !== st) close(opened);
-      place(st);
-      g = { st: st, id: e.pointerId, x0: e.clientX, y0: e.clientY,
-            base: st.x, lock: 0, lx: e.clientX, lt: e.timeStamp, v: 0 };
+      if (!ev) return;
+      start = { x: e.clientX, y: e.clientY };
+      clearTimeout(t);
+      t = setTimeout(function(){ focus(ev); }, 380);
     });
     frame.addEventListener("pointermove", function(e){
-      if (!g || e.pointerId !== g.id) return;
-      var dx = e.clientX - g.x0, dy = e.clientY - g.y0;
-      if (!g.lock){
-        if (Math.abs(dy) > LOCK && Math.abs(dy) >= Math.abs(dx)){ g = null; return; }
-        if (Math.abs(dx) < LOCK) return;
-        g.lock = 1;
-        cancel(g.st);
-        if (opened && opened !== g.st) close(opened);
-      }
-      var dt = e.timeStamp - g.lt;
-      if (dt > 0){ g.v = (e.clientX - g.lx) / dt; g.lx = e.clientX; g.lt = e.timeStamp; }
-      paint(g.st, band(g.base - dx));
-    }, { passive: true });
-    function release(){
-      if (!g) return;
-      var st = g.st, lock = g.lock, v = g.v;
-      g = null;
-      if (!lock){ if (st.x > 1) close(st); return; }
-      /* бросок решает направление, спокойное отпускание — половина хода */
-      var toOpen = v < -.45 ? true : v > .45 ? false : st.x > OPEN * .5;
-      if (toOpen) open(st, v); else close(st, v);
-    }
-    ["pointerup", "pointercancel", "pointerleave"].forEach(function(n){
-      frame.addEventListener(n, release);
+      if (!start) return;
+      if (Math.abs(e.clientX - start.x) > 10 || Math.abs(e.clientY - start.y) > 10) clearTimeout(t);
     });
-    /* открытая карточка не должна ловить тап по телу: он её закрывает */
-    frame.addEventListener("click", function(e){
-      if (!opened) return;
-      if (e.target && e.target.closest && e.target.closest(".sw-act")) return;
-      if (cardOf(e.target) === opened.ev){ e.stopPropagation(); e.preventDefault(); }
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function(n){
+      frame.addEventListener(n, function(){ clearTimeout(t); });
+    });
+    /* любое новое касание мимо карандаша снимает фокус, поэтому свайп сразу
+       становится обычной прокруткой, а не глохнет в подложке */
+    document.addEventListener("pointerdown", function(e){
+      if (!focused) return;
+      if (e.target && e.target.closest && e.target.closest(".lp-edit")) return;
+      unfocus();
     }, true);
     var sc0 = document.getElementById("scroller");
-    if (sc0) sc0.addEventListener("scroll", closeAll, { passive: true });
-    document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeAll(); });
+    if (sc0) sc0.addEventListener("scroll", function(){ if (focused) unfocus(); }, { passive: true });
+    document.addEventListener("keydown", function(e){ if (e.key === "Escape") unfocus(); });
   })();
 
   /* ---- audio guide player ----
@@ -2002,150 +1921,84 @@
   [].forEach.call(document.querySelectorAll("[data-nudge]"), function(n){
     var bub = n.querySelector("[data-nudgebtn]");
     var tx = n.querySelector("[data-nudgetx]");
-    var sp = n.querySelector(".sp");
-    var HOLD = 3600, busy = false, added = false;
-    /* тексты и поведение задаются атрибутами: у каждого места свой сценарий,
-       конная прогулка остаётся сценарием по умолчанию */
-    var DONE = n.getAttribute("data-done") || "Записал конную прогулку на 17:00, добавил в план";
-    var FOLLOW = n.getAttribute("data-follow") || "Есть окно в 17:00, перед костром. Подойдёт?";
-    /* data-noevent: агент только договаривается, в план ничего не встаёт */
-    var makeEvent = !n.hasAttribute("data-noevent");
-    /* сколько шагов диалога пройдено: 0 — ждём первый ответ, 1 — уточнение */
-    var stage = 0, dismissed = false, fold = null;
+    var text = tx.textContent.trim();
+    var HOLD = 3600, busy = false, cycle = null, added = false;
+    /* что агент отвечает и что добавляет в план после раздумий */
+    var DONE = "Записал конную прогулку на 17:00, добавил в план";
     var NEW_EV = { t: "Конная прогулка", d: "Спокойный маршрут по кедровнику с инструктором", chip: "17:00" };
-    var RM = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* --- лотти-звезда: pulse в покое, float в диалоге, rotate в раздумьях.
-       Данные клонируем: lottie мутирует переданный объект. Запасная статичная
-       звезда в разметке остаётся, если плеер не поднялся */
-    var lotBox = null, lot = null, lotName = "";
-    function setStar(name){
-      if (!window.lottie || !sp || name === lotName) return;
-      lotName = name || "";
-      if (lot){ lot.destroy(); lot = null; }
-      if (!name) return;
-      if (!lotBox){
-        lotBox = document.createElement("span");
-        lotBox.className = "star-lot";
-        sp.appendChild(lotBox);
-        sp.classList.add("lot");
+    /* в раскрытом виде иконки нет, поэтому только текст и поля по 18 */
+    /* ширина ровно по тексту и его полям 20+20, но не шире сетки 329:
+       мерим в одну строку, поэтому перенос не искажает замер */
+    /* до 70% экрана баббл тянется в одну строку; если текст длиннее — переносим,
+       но ширину держим ровно на 70%, а не по самой длинной строке */
+    var MAXW = Math.round(393 * 0.7);
+    var wraps = false;
+    function fullWidth(){
+      var prev = tx.style.whiteSpace;
+      tx.style.whiteSpace = "nowrap";
+      var w = tx.scrollWidth;   /* padding уже внутри: box-sizing border-box */
+      tx.style.whiteSpace = prev;
+      wraps = w > MAXW;
+      /* одна строка — капсула, две — 16px; ширина при переносе держится на 70%
+         и не сужается по самой длинной строке */
+      bub.classList.toggle("wrap", wraps);
+      return Math.min(w, MAXW);
+    }
+    function stop(el){ if (el.getAnimations) el.getAnimations().forEach(function(a){ a.cancel(); }); }
+    /* конечное состояние выставляем стилями, а не полагаемся на fill анимации:
+       иначе после повторного show текст оставался прозрачным */
+    function show(){
+      stop(bub); stop(tx);
+      bub.classList.add("glass");
+      bub.style.transformOrigin = "right center";
+      bub.style.opacity = 1;
+      tx.style.opacity = 1;
+      tx.style.filter = "none";
+      tx.style.transform = "none";
+      tx.style.whiteSpace = "";
+      var w = fullWidth();
+      if (bub.animate){
+        bub.animate([{ opacity: 0, transform: "scale(.55) translateY(4px)" },
+                     { opacity: 1, transform: "scale(1) translateY(0)" }],
+                    { duration: 460, easing: "cubic-bezier(.25,1.25,.4,1)" });
+        /* текст без блюра: мягкий fade с лёгким подъёмом, ease-out */
+        tx.animate([{ opacity: 0, transform: "translateY(4px)" },
+                    { opacity: 1, transform: "translateY(0)" }],
+                   { duration: 380, delay: 120, easing: "cubic-bezier(.25,.1,.25,1)" });
       }
-      lot = lottie.loadAnimation({
-        container: lotBox, renderer: "svg", loop: true, autoplay: !RM,
-        animationData: JSON.parse(JSON.stringify(STAR_ANIMS[name]))
-      });
-      if (RM) lot.goToAndStop(0, true);
+      if (!w){ bub.style.width = ""; return; }   /* панель скрыта — мерить нечего */
+      bub.style.width = w + "px";
+      springTo(bub, "width", 38, w, { stiffness: 220, damping: 26 })
+        .then(function(){
+          /* при переносе оставляем 70%, иначе отдаём ширину содержимому */
+          if (bub.classList.contains("glass")) bub.style.width = wraps ? MAXW + "px" : "";
+        });
     }
-
-    /* --- состояния: карточка и звезда включаются классами, между состояниями
-       мягкий поп на входящем элементе. Ширина больше не анимируется — карточка
-       фиксированная по фигме, поэтому вся старая пружина ширины не нужна */
-    /* вход: масштаб еле заметный (0.94), проявление из блюра, долгий выдох
-       ease-out-quint — движение читается как «сфокусировался», а не «выпрыгнул» */
-    function pop(el, delay){
-      if (!el.animate || RM) return;
-      el.animate([{ opacity: 0, filter: "blur(6px)", transform: "scale(.94) translateY(6px)" },
-                  { opacity: 1, filter: "blur(0)", transform: "scale(1) translateY(0)" }],
-                 { duration: 620, delay: delay || 0, fill: "backwards",
-                   easing: "cubic-bezier(.22,1,.36,1)" });
+    /* подгоняем ширину под новый текст, не переигрывая появление */
+    function resize(){
+      var from = parseFloat(getComputedStyle(bub).width) || 38;
+      var to = fullWidth();
+      if (!to){ bub.style.width = ""; return; }
+      bub.style.width = to + "px";
+      springTo(bub, "width", from, to, { stiffness: 240, damping: 28 })
+        .then(function(){
+          /* при переносе оставляем 70%, иначе отдаём ширину содержимому */
+          if (bub.classList.contains("glass")) bub.style.width = wraps ? MAXW + "px" : "";
+        });
     }
-    /* уход зеркальный и короче: внимание отпускается быстрее, чем берётся */
-    function fadeOut(el){
-      if (!el.animate || RM) return Promise.resolve();
-      return el.animate([{ opacity: 1, filter: "blur(0)", transform: "scale(1) translateY(0)" },
-                         { opacity: 0, filter: "blur(5px)", transform: "scale(.96) translateY(4px)" }],
-                        { duration: 300, easing: "cubic-bezier(.4,0,.2,1)" })
-               .finished.catch(function(){});
-    }
-    var stateTok = 0;
-    function setState(st, starName){
-      var tok = ++stateTok;
-      var had = { tx: bub.classList.contains("st-msg") || bub.classList.contains("st-wait"),
-                  sp: bub.classList.contains("st-idle") || bub.classList.contains("st-wait") ||
-                      bub.classList.contains("st-think") };
-      var hasTx = st === "st-msg" || st === "st-wait";
-      var hasSp = st !== "st-msg";
-      /* сначала мягко гасим то, что уходит, и только потом переключаем классы:
-         элементы не пропадают со щелчком */
-      var leaving = [];
-      if (had.tx && !hasTx) leaving.push(fadeOut(tx));
-      if (had.sp && !hasSp) leaving.push(fadeOut(sp));
-      Promise.all(leaving).then(function(){
-        if (tok !== stateTok) return;      /* состояние успело смениться ещё раз */
-        bub.classList.remove("st-idle", "st-msg", "st-wait", "st-think");
-        bub.classList.add(st);
-        setStar(starName || null);
-        if (hasTx){ fitRadius(); if (!had.tx) pop(tx); }
-        if (hasSp && !had.sp) pop(sp, hasTx ? 70 : 0);
-      });
-    }
-
-    /* одна строка — капсула 100, перенос — 20; меряем по фактической высоте */
-    function fitRadius(){
-      bub.classList.toggle("wrap", tx.offsetHeight > 60);
-    }
-    /* смена текста: старый мягко уплывает из фокуса, новый проявляется из
-       лёгкого блюра с подъёмом — то же blur-to-focus, что в AI-оверлее */
-    function say(str){
-      if (!tx.animate || RM || !tx.textContent.trim()){
-        tx.textContent = str; fitRadius(); return;
+    /* мой ответ отправлен: сначала три точки, потом реплика печатается по буквам */
+    function typeOut(str){
+      tx.classList.remove("is-wait");
+      bub.classList.remove("is-think");
+      tx.textContent = str;
+      if (tx.animate){
+        tx.animate([{ opacity: 0, transform: "translateY(3px)" },
+                    { opacity: 1, transform: "translateY(0)" }],
+                   { duration: 380, easing: "cubic-bezier(.25,.1,.25,1)" });
       }
-      tx.animate([{ opacity: 1, filter: "blur(0)", transform: "translateY(0)" },
-                  { opacity: 0, filter: "blur(4px)", transform: "translateY(-3px)" }],
-                 { duration: 220, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" })
-        .finished.then(function(){
-          tx.textContent = str;
-          fitRadius();
-          tx.animate([{ opacity: 0, filter: "blur(5px)", transform: "translateY(5px)" },
-                      { opacity: 1, filter: "blur(0)", transform: "translateY(0)" }],
-                     { duration: 460, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
-        }).catch(function(){ tx.textContent = str; fitRadius(); });
+      resize();
     }
-
-    function hide(){ setState("st-idle", "pulse"); }
-
-    function think(answer){
-      clearTimeout(fold);
-      setState("st-think", "rotate");
-      setTimeout(function(){
-        /* всё уже добавлено — обычный ответ и обычное сворачивание к пульсу */
-        if (added){
-          var reply = agentReply(answer);
-          setState("st-msg");
-          say(reply);
-          fold = setTimeout(hide, HOLD + reply.length * 18);
-          return;
-        }
-        if (stage === 0){ stage = 1; followUp(); }
-        else finish();
-      }, 1600);
-    }
-    /* агент подумал и уточняет; ответить можно с клавиатуры, «Пропустить»
-       продолжает без ответа — оба пути ведут в think второй раз */
-    function followUp(){
-      setState("st-wait", "float");
-      say(FOLLOW);
-      setTimeout(function(){
-        openCompose("Ответьте или пропустите", n,
-          function(a){ think(a); },
-          function(){ think(""); });
-      }, 380);
-    }
-    /* итог: звезда пропадает, событие встаёт в план, и после паузы
-       сообщение растворяется целиком — разговор закрыт */
-    function finish(){
-      setState("st-msg");
-      say(DONE);
-      added = true;
-      if (makeEvent) addEvent();
-      fold = setTimeout(vanish, HOLD + DONE.length * 18);
-    }
-    function vanish(){
-      dismissed = true;
-      fadeOut(bub).then(function(){ n.hidden = true; });
-      if (RM){ n.hidden = true; }
-    }
-
     /* новое событие в плане: своя картинка, стандартный блок брони как везде,
        и расходящаяся от фото волна в момент появления */
     function addEvent(){
@@ -2158,9 +2011,10 @@
       ev.innerHTML =
         '<h3 class="ev-t">' + NEW_EV.t + "</h3>" +
         '<p class="ev-d">' + NEW_EV.d + "</p>" +
-        '<div class="media"><img src="assets/img/ev-agent-added.webp" alt="">' +
+        '<div class="media"><img src="../assets/img/ev-agent-added.webp" alt="">' +
         '<i class="ping"></i><i class="ping b"></i></div>' +
         (proto ? proto.querySelector("[data-bookrow]").outerHTML : "");
+      /* блок брони копируем у соседа, поэтому он приходит уже в нужном состоянии */
       var row = ev.querySelector("[data-bookrow]");
       if (row){
         row.hidden = false;
@@ -2181,31 +2035,72 @@
         ev.style.height = full + "px";
         ev.style.opacity = "1";
       });
-      setTimeout(function(){
-        ev.style.height = ""; ev.style.overflow = "";
-        /* класс держит overflow:hidden — он бы срезал действия свайпа */
-        ev.classList.remove("is-new");
-      }, 480);
+      setTimeout(function(){ ev.style.height = ""; ev.style.overflow = ""; }, 480);
     }
-
+    function think(answer){
+      clearTimeout(fold); clearInterval(cycle);
+      tx.classList.remove("is-wait");
+      bub.classList.add("is-think");
+      tx.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
+      show();
+      setTimeout(function(){
+        var reply = added ? agentReply(answer) : DONE;
+        typeOut(reply);
+        if (!added){ added = true; addEvent(); }
+        fold = setTimeout(hide, HOLD + reply.length * 18);
+      }, 1600);
+    }
+    function hide(){
+      clearInterval(cycle);
+      tx.classList.remove("is-wait");
+      bub.classList.remove("is-think");
+      stop(tx);
+      /* текст фиксируем в одну строку и гасим ДО схлопывания:
+         иначе он переносился и было видно, как уезжает */
+      tx.style.whiteSpace = "nowrap";
+      if (tx.animate){
+        tx.animate([{ opacity: 1 }, { opacity: 0 }],
+                   { duration: 180, easing: "cubic-bezier(.4,0,.2,1)" });
+      }
+      setTimeout(function(){ tx.style.opacity = 0; }, 170);
+      setTimeout(function(){
+        var w = parseFloat(getComputedStyle(bub).width) || fullWidth();
+        stop(bub);
+        /* белый фон и тень уходят вместе с шириной, а не после:
+           под звездой не остаётся белого круга */
+        bub.style.background = "transparent";
+        bub.style.boxShadow = "none";
+        springTo(bub, "width", w, 38, { stiffness: 200, damping: 24 }).then(function(){
+          bub.style.transition = "none";
+          bub.classList.remove("glass", "wrap");
+          requestAnimationFrame(function(){
+            bub.style.transition = "";
+            bub.style.background = "";
+            bub.style.boxShadow = "";
+            tx.style.whiteSpace = "";
+          });
+        });
+      }, 170);
+    }
+    /* сначала видно сообщение, потом оно сворачивается в спарклу */
+    var fold = null, dismissed = false;
     /* цикл запускается при показе панели: иначе сообщение успевало свернуться,
        пока экран был скрыт */
     n.__run = function(){
       if (dismissed) return;
       clearTimeout(fold);
-      setState("st-msg");
-      fitRadius();
+      show();
       fold = setTimeout(hide, HOLD);
     };
     n.__dismiss = function(){ dismissed = true; clearTimeout(fold); n.hidden = true; };
     nudgeFolders.push(function(){
       clearTimeout(fold);
-      if (bub.classList.contains("st-msg")) hide();
+      if (bub.classList.contains("glass")) hide();
     });
     bub.onclick = function(){
       if (busy) return;
       clearTimeout(fold);
-      setState("st-wait", "float");
+      show();                       /* баббл раскрыт и остаётся на своём месте */
       /* подтягиваем экран только если сообщение вне удобной зоны:
          выше края или под композером/клавиатурой */
       var sc = document.getElementById("scroller");
@@ -2220,7 +2115,6 @@
       }
       openCompose("Ответьте агенту", n, function(answer){ think(answer); }, n.__dismiss);
     };
-    setState("st-msg");
   });
 
   /* ---- checklist ---- */
