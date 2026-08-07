@@ -15,6 +15,22 @@
     --ph:#CCCCCC;
     --lime:#EFFF5D;
     --ease:cubic-bezier(.6,0,.4,1);
+    /* --- типографика: 8 ролей на весь продукт ---
+       display 38 / title-xl 34 / title-l 28 / title-m 20 — заголовки, --fh
+       heading 17 700 — заголовки карточек и секций контента, --fh
+       body 16 400, второй строкой 16/20 — весь читаемый текст, минимум по ДС
+       caption 13.5 — чипы, бейджи, подписи под кнопками
+       overline 12 600 + трекинг — только капсовые ярлыки.
+       Трекинг только положительный и только в капсе: отрицательного кернинга
+       в системе нет, кегли живут на своих метриках */
+    --t-display:700 38px/40px var(--fh);
+    --t-title-xl:600 34px/1 var(--fh);
+    --t-title-l:600 28px/34px var(--fh);
+    --t-title-m:600 20px/24px var(--fh);
+    --t-heading:700 17px/20px var(--fh);
+    --t-body:400 16px/20px var(--ft);
+    --t-body-strong:600 16px/20px var(--ft);
+    --t-caption:400 13.5px/1 var(--ft);
     --fh:"SF Pro Display","SF Pro",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
     --ft:"SF Pro Text","SF Pro",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
     --sky:linear-gradient(180deg,#fff 0%,#C5CFD8 55.7355%,#FEA875 83.1003%,#BCAEAD 100%);
@@ -85,13 +101,19 @@
              transform:translateX(-50%);box-shadow:0 0 0 6px rgba(255,255,255,.16)}
   /* табы поверх карты */
   .tab-map svg{width:20px;height:20px;color:currentColor}
+  /* --- капсовые микроярлыки: один стиль на весь продукт ---
+     Табы, «Утро/День/Вечер», дни и градусы в погоде. Раньше объявление
+     повторялось трижды, и в погоде забылся uppercase — теперь оно одно,
+     менять голос капса надо только здесь */
+  .tab,.sec,.wx-day b,.wx-day i{
+       font:600 13.5px/1 var(--fh);letter-spacing:2.5px;text-transform:uppercase}
   .tab{position:relative;flex:0 0 auto;display:flex;align-items:center;padding:0 8.5px;background:none;border:0;
-       font:600 13.5px/1 var(--fh);letter-spacing:2.5px;text-transform:uppercase;color:var(--ink30);cursor:pointer}
+       color:var(--ink30);cursor:pointer}
   .tab.is-on{color:var(--ink)}
   .tab.is-on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:var(--ink)}
 
   /* ---------- shared type ---------- */
-  .h2{margin:0;font:700 17px/20px var(--fh);letter-spacing:-.1px;color:var(--ink)}
+  .h2{margin:0;font:var(--t-heading);color:var(--ink)}
   .pad{padding:0 32px}
 
   /* ---------- prep: checklist ---------- */
@@ -103,7 +125,7 @@
   .li i{flex:0 0 23px;width:23px;height:23px;margin-left:.5px;border:1px solid var(--hair);border-radius:50%;
         display:grid;place-items:center;transition:background .2s var(--ease),border-color .2s var(--ease)}
   .li i svg{width:13px;height:13px;display:block;opacity:0;transition:opacity .2s var(--ease)}
-  .li b{margin-left:9px;font:400 16px/20px var(--ft);font-weight:400;color:var(--ink)}
+  .li b{margin-left:9px;font:var(--t-body);font-weight:400;color:var(--ink)}
   .li.on i{background:var(--ink);border-color:var(--ink)}
   .li.on i svg{opacity:1}
   .li.add i{border-color:var(--hair)}
@@ -127,36 +149,35 @@
   .film.cap::after{content:"";position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;
         background:linear-gradient(180deg,rgba(0,0,0,0) 58.4%,rgba(0,0,0,1) 100%)}
   .film.cap span{position:absolute;z-index:1;left:16px;right:16px;bottom:14px;
-             font:700 16px/21.5px var(--ft);color:#fff;
+             font:600 16px/21px var(--ft);color:#fff;
              display:-webkit-box;-webkit-box-orient:vertical;
              -webkit-line-clamp:2;line-clamp:2;
              height:43px;max-height:43px;overflow:hidden;text-overflow:ellipsis;
              word-break:break-word}
   .film em{position:absolute;z-index:1;left:16px;top:14px;height:24px;display:flex;align-items:center;
            padding:0 10px;border-radius:12px;background:var(--lime);color:var(--ink);
-           font:700 15px/1 var(--ft);font-style:normal}
+           font:600 16px/1 var(--ft);font-style:normal}
   .block{margin-top:28px}
-  /* --- заезд / номер (restored from the bundle screen) --- */
-  .lbl{font:400 15px/20px var(--ft);color:var(--ink40)}
-  .big{margin-top:2px;font:600 28px/34px var(--fh);letter-spacing:-.4px;color:var(--ink)}
-  /* --- карточка номера: текст и строки сверху, фото под ними ---
-     Замеры из макета: подпись 16 (та же, что у строк), заголовок 20 вместо 28,
-     шаг строк 43, фото 329x120 r12 по сетке, до фото 12 */
-  /* воздух под фото такой же, как над карточкой: сверху 40 от билета + 34
-     свои, снизу 40 свои + 34 у заголовка «Что взять с собой» */
-  .room{padding-top:34px;padding-bottom:40px}
-  /* тег тот же, что у события после брони: 28 в высоту, поэтому по центру
-     строки заголовка он встаёт отступом 18 (20 подписи + 12 до середины) */
-  .room-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-  .room-head-txt{min-width:0}
-  .room-head .chip-book{margin-top:18px;border:0;cursor:pointer}
-  .room .lbl{margin-top:0;font-size:16px}
-  .room .big{margin-top:0;font:600 20px/24px var(--fh);letter-spacing:-.2px}
+  /* --- заезд / номер: замеры из Frame.svg, 1 в 1 ---
+     Отдельным блоком «Заезд» с крупной датой сверху (без тега), затем номер:
+     фото 329×201 r12 во весь ряд, заголовок, две строки. Раньше это было
+     смёрстано в одну шапку с тегом брони — по новому макету тега здесь нет,
+     тег остаётся только у бронирования события. */
+  .lbl{font:var(--t-body);color:var(--ink40)}
+  .big{font:var(--t-title-m);color:var(--ink)}
+  .checkin{padding-top:34px}
+  .checkin .big{margin-top:4px}
+  /* дата заезда кликабельна — тем же чатом, что раньше открывал тег */
+  .checkin .big{border:0;background:none;padding:0;text-align:left;cursor:pointer}
+  /* воздух над фото 32 от даты заезда; снизу 40 своих + 34 у заголовка
+     «Что взять с собой» */
+  .room{padding-top:32px;padding-bottom:40px}
+  .room img{display:block;width:329px;height:201px;margin:0 32px;
+            border-radius:12px;object-fit:cover}
+  /* заголовок номера — та же роль, что у даты заезда, но с воздухом от фото */
+  .room .big{margin-top:20px}
   .room .navs{margin-top:4px}
   .room .nav{height:42px}
-  .room img{display:block;width:329px;height:120px;margin:12px 32px 0;
-            border-radius:12px;object-fit:cover}
-  /* строки подтянуты к заголовку «Бунгало с террасой» */
   .navs{margin-top:8px}
   /* --- авиабилет: замеры из Frame.svg, чип 167×24 r12, дорожка из 9 точек
      шагом 15 от x146.5, гейт-пилюля 53×26 r13 --- */
@@ -167,46 +188,78 @@
      поля по 10, текст 13.5 регуляром — как у остальных чипов */
   .tkt-badge{flex:0 0 auto;height:24px;display:flex;align-items:center;padding:0 10px;
              border-radius:12px;background:var(--lime);color:var(--ink);
-             font:400 13.5px/1 var(--ft);letter-spacing:-.05px;white-space:nowrap}
-  .tkt-no{font:400 15px/1 var(--ft);color:#7D7D7D}
+             font:var(--t-caption);white-space:nowrap}
+  .tkt-no{font:400 16px/1 var(--ft);color:#7D7D7D}
+  /* строка брони: код рейса нужен на стойке и в поддержке, поэтому он крупный
+     и с копированием — тап по коду кладёт его в буфер */
+  .tkt-pnr{display:flex;align-items:center;gap:8px;margin-top:14px}
+  .tkt-pnr u{text-decoration:none;font:400 16px/1 var(--ft);color:#A7A7A7}
+  .tkt-pnr b{font:var(--t-body-strong);color:var(--ink);letter-spacing:.4px}
+  .tkt-copy{width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;
+            display:grid;place-items:center;color:#BCBCBC}
+  .tkt-copy svg{display:block;width:16px;height:16px}
+  .tkt-copy.done{color:#1CA658}
+  .tkt-pax{margin-left:auto;font:400 16px/1 var(--ft);color:#7D7D7D}
   .tkt-route{display:flex;align-items:flex-start;justify-content:space-between;margin-top:19px}
   .tkt-side{min-width:0}
   .tkt-side.right{text-align:right}
-  .tkt-time{font:600 34px/1 var(--fh);letter-spacing:-.6px;color:var(--ink)}
-  .tkt-city{margin-top:14px;font:400 17px/1 var(--ft);color:#595959}
-  .tkt-iata{margin-top:6px;font:400 15px/1 var(--ft);color:#BCBCBC}
-  .tkt-mid{position:relative;flex:1;height:34px;margin:0 8px}
+  .tkt-time{font:var(--t-title-xl);color:var(--ink)}
+  .tkt-city{margin-top:14px;font:400 16px/1 var(--ft);color:#595959}
+  .tkt-iata{margin-top:6px;font:400 16px/1 var(--ft);color:#BCBCBC}
+  /* дата рейса под кодом аэропорта: без неё непонятно, тот же это день или
+     уже следующий — особенно у ночных перелётов */
+  .tkt-date{margin-top:6px;font:var(--t-caption);color:#BCBCBC}
+  /* колонка выросла: сверху время в пути, под ним дорожка с самолётом.
+     Ряд выключен по flex-start, поэтому рост колонки не двигает города */
+  .tkt-mid{position:relative;flex:1;height:52px;margin:0 8px}
+  .tkt-dur{position:absolute;left:0;right:0;top:4px;text-align:center;
+           font:var(--t-caption);color:#7D7D7D;white-space:nowrap}
   /* линия прочерчивается слева направо, самолёт едет по ней и садится в центре:
      ни резкого появления, ни вылета за край */
   /* дорожка выключена по центру: шаг 15 отсчитывается от середины, поэтому
      у обоих городов остаётся одинаковый обрез, а не целая точка слева и
      срезанная справа. Серый тот же, что у кодов аэропортов рядом */
-  .tkt-dots{position:absolute;left:0;right:0;top:16px;height:2px;
+  .tkt-dots{position:absolute;left:0;right:0;top:34px;height:2px;
             background-image:radial-gradient(circle,#BCBCBC 1px,transparent 1px);
             background-size:15px 2px;background-repeat:repeat-x;
             background-position:center}
   /* самолёт летит слева направо по пунктиру и уходит, потом заново.
      Подложки нет: он идёт прямо по точкам */
   /* полёт живёт в скрипте: пружина той же модели, что spring() в motion */
-  .tkt-plane{position:absolute;top:10px;left:50%;width:17px;height:15px;color:var(--ink);
-             transform:translateX(-50%);will-change:transform,opacity}
+  /* слот везёт самолёт по горизонтали, svg внутри отвечает за масштаб
+     и прозрачность — у них разные кривые, поэтому разные элементы */
+  .tkt-plane{position:absolute;top:28px;left:50%;width:17px;height:15px;color:var(--ink);
+             transform:translateX(-50%);will-change:transform}
   @media (prefers-reduced-motion: reduce){
   }
-  .tkt-plane svg{display:block;width:17px;height:15px}
+  .tkt-plane svg{display:block;width:17px;height:15px;will-change:transform,opacity}
   .tkt-foot{display:flex;align-items:flex-start;gap:26px;margin-top:15px;padding-top:15px;
             border-top:1px solid var(--ink10)}
-  .tkt-foot u{display:block;text-decoration:none;font:400 15px/1 var(--ft);color:#A7A7A7}
+  .tkt-foot u{display:block;text-decoration:none;font:400 16px/1 var(--ft);color:#A7A7A7}
   .tkt-foot b{display:block;margin-top:7px;font:600 16px/1 var(--ft);color:var(--ink)}
   /* по вектору внутри пилюли слева 7.5 до иконки и 4.5 между иконкой и числом;
      круглой стрелке нужно меньше воздуха, чем цифрам, поэтому слева 6, справа 9 */
   .tkt-gate{margin-left:auto;display:flex;align-items:center;gap:5px;height:26px;
             padding:0 9px 0 6px;
-            border-radius:13px;background:var(--ink);color:#fff;font:600 15px/1 var(--ft)}
+            border-radius:13px;background:var(--ink);color:#fff;font:var(--t-body-strong)}
   .tkt-gate svg{display:block;width:16px;height:16px}
+  /* багаж отдельной строкой: норму провоза ищут перед выездом чаще, чем гейт */
+  .tkt-bag{display:flex;align-items:center;gap:9px;margin-top:15px;padding-top:15px;
+           border-top:1px solid var(--ink10);font:400 16px/1 var(--ft);color:var(--ink)}
+  .tkt-bag svg{flex:0 0 18px;display:block;width:18px;height:18px;color:#A7A7A7}
+  /* --- маршрут с пересадкой ---
+     Сегменты идут друг за другом, между ними строка ожидания. Она приглушена
+     и с отбивкой сверху: рейс — это событие, пересадка — пауза между ними */
+  .tkt-stop{display:flex;align-items:center;gap:9px;margin-top:15px;padding-top:15px;
+            border-top:1px solid var(--ink10);font:400 16px/1 var(--ft);color:var(--ink40)}
+  .tkt-stop svg{flex:0 0 18px;display:block;width:18px;height:18px;color:#BCBCBC}
+  /* второй сегмент начинается со своего шильдика регистрации — ему нужен
+     тот же воздух, что между блоками внутри одного рейса */
+  .tkt-stop + .tkt-top{margin-top:19px}
   /* one row style for both lists: same height, divider, type and grey */
   .nav{display:flex;align-items:center;justify-content:space-between;width:100%;height:52px;
        padding:0;background:none;border:0;border-bottom:1px solid var(--ink10);
-       font:400 16px/20px var(--ft);color:var(--ink);text-align:left;cursor:pointer}
+       font:var(--t-body);color:var(--ink);text-align:left;cursor:pointer}
   .nav:last-child{border-bottom:0}
   .nav i{flex:0 0 auto;margin-left:12px;font-style:normal;font-size:20px;line-height:1;
          color:var(--hair)}
@@ -224,15 +277,20 @@
   .wx-track{display:flex;align-items:flex-start;padding-left:32px}
   .wx-now{flex:0 0 99.3px;padding-top:31.8px}
   .wx-now svg{display:block;width:40px;height:40px}
-  .wx-temp{margin-top:8.5px;font:600 48px/48px var(--fh);letter-spacing:-1.5px;color:var(--ink)}
+  .wx-temp{margin-top:8.5px;font:600 48px/48px var(--fh);color:var(--ink)}
   .wx-days{display:flex;padding-top:31.3px}
   .wx-day{flex:0 0 64px;width:64px;text-align:center}
-  .wx-day b{display:block;font:400 16px/19px var(--ft);color:var(--ink)}
+  /* то же начертание, что у табов «Подготовка · Сегодня»: 13.5/600,
+     трекинг 2.5 — мелкие числа полосы погоды получают тот же голос */
+  /* дни недели приглушены до --ink40 — тот же серый, что у описаний событий:
+     это подпись над иконкой, а не самостоятельное значение */
+  .wx-day b{display:block;color:var(--ink40)}
   .wx-day svg{display:block;width:40px;height:40px;margin:12px auto 0}
-  .wx-day i{display:block;margin-top:11.5px;font:400 16px/19px var(--ft);font-style:normal;color:var(--ink)}
+  .wx-day i{display:block;margin-top:11.5px;font-style:normal;color:var(--ink)}
 
+  /* тот же голос, что у табов «Подготовка · Сегодня»: 13.5/600, трекинг 2.5 */
   .sec{display:flex;align-items:center;height:38px;margin:0 32px;border-bottom:1px solid var(--ink10);
-       font:600 12px/1 var(--fh);letter-spacing:2px;text-transform:uppercase;color:var(--ink30)}
+       color:var(--ink30)}
   .sec.gap-l{margin-top:48px}
   /* «Утро» идёт сразу за погодой — ему нужен свой воздух сверху */
   .wx + .sec{margin-top:12px}
@@ -266,14 +324,43 @@
   /* стекло: белый 65% + blur 20, тень 0/4/24 на 8% из фигмы.
      Радиус: капсула 100, при переносе на вторую строку — 20 (ставится классом) */
   .abub .tx{display:none;box-sizing:border-box;max-width:295px;padding:16px 20px;
-            border-radius:100px;background:rgba(255,255,255,.65);
+            border-radius:100px;background-color:rgba(255,255,255,.65);
+            /* лёгкий блик, который бежит по стеклу слева направо и обратно —
+             сама карточка не мигает и не темнеет, поверх неё только полоса света */
+            background-image:linear-gradient(100deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);
+            background-size:260% 100%;background-position:130% 0;
+            animation:msgShine 3.6s ease-in-out infinite;
             -webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
             box-shadow:0 4px 24px rgba(0,0,0,.08);
-            font:400 16px/21px var(--ft);letter-spacing:-.01em;color:var(--ink);
+            font:400 16px/21px var(--ft);color:var(--ink);
             transform-origin:right center;will-change:transform,opacity,filter}
+  @keyframes msgShine{0%,12%{background-position:130% 0}88%,100%{background-position:-30% 0}}
+  @media (prefers-reduced-motion: reduce){ .abub .tx{animation:none} }
   .abub.wrap .tx{border-radius:20px}
   .abub .tx{transition:border-radius .3s cubic-bezier(.4,0,.2,1)}
-  .abub .sp{display:none;flex:0 0 38px;width:38px;height:38px;position:relative}
+  /* звезду прячем принудительно во всех состояниях, а не удаляем —
+     достаточно снять !important ниже, чтобы вернуть её обратно */
+  .abub .sp{flex:0 0 38px;width:38px;height:38px;position:relative}
+  .abub .sp{display:none!important}
+  /* крестик лежит внутри карточки, в её правом верхнем углу — не отдельным
+     слотом рядом, а частью самого сообщения */
+  /* по центру правого края, а не в углу — так же ровно смотрится и в одну,
+     и в две строки */
+  .abub .x{position:absolute;top:50%;right:12px;transform:translateY(-50%);
+           width:22px;height:22px;border:0;background:none;
+           padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;
+           color:var(--ink30);z-index:1}
+  .abub .x svg{display:block;width:14px;height:14px}
+  /* оборачивает карточку и ловит клик по всей ей, кроме крестика (stopPropagation) */
+  .abub .nudge-msg{position:relative;cursor:pointer}
+  /* текстовому полю нужен запас справа под крестик, иначе он ложится на буквы */
+  .abub .tx{padding-right:36px}
+  /* мягкое рассеянное свечение под карточкой: размытое пятно того же оттенка,
+     что и текст, на 6px ниже и позади — воздух вокруг сообщения, а не рамка */
+  .abub .nudge-msg::before{content:"";position:absolute;left:10%;right:10%;top:14px;bottom:-10px;
+                           background:rgba(6,7,8,.08);filter:blur(14px);z-index:-1;
+                           border-radius:inherit;pointer-events:none}
+  @media (prefers-reduced-motion: reduce){ .abub .nudge-msg::before{display:none} }
   .abub.st-msg .tx,.abub.st-wait .tx{display:block}
   .abub.st-idle .sp,.abub.st-wait .sp,.abub.st-think .sp{display:block}
   /* запасная статичная звезда, если лотти не поднялся */
@@ -315,18 +402,19 @@
                transition:transform .16s cubic-bezier(.2,.7,.3,1)}
   .sw-act:active span{transform:scale(1.06)}
   .sw-act svg{display:block;width:24px;height:24px}
-  .sw-cap{font:400 13.5px/1 var(--ft);font-style:normal;color:#999999;white-space:nowrap}
-  .ev-t{margin:0;padding-top:28px;font:700 17px/20px var(--fh);letter-spacing:-.1px;color:var(--ink)}
-  .ev-d{margin:2px 0 0;font:400 15px/19.5px var(--ft);color:var(--ink40)}
+  .sw-cap{font:var(--t-caption);font-style:normal;color:#999999;white-space:nowrap}
+  .ev-t{margin:0;padding-top:28px;font:var(--t-heading);color:var(--ink)}
+  .ev-d{margin:2px 0 0;font:var(--t-body);color:var(--ink40)}
   .media{position:relative;margin-top:5px;height:130px;border-radius:12px;overflow:hidden;background:var(--ph)}
   .media img{display:block;width:100%;height:100%;object-fit:cover}
+  /* единый тёмный тег: акцент, а не время — время стоит справа от заголовка,
+     как у брони. Раньше «доставка» была лаймовой — второй вариант убрали */
   .chip{position:absolute;left:4px;bottom:4px;height:24px;display:flex;align-items:center;padding:0 12px;
-        border-radius:12px;font:400 13px/1 var(--ft);background:var(--lime);color:var(--ink)}
-  .chip.dark{background:rgba(0,0,0,.4);color:#fff}
-  .row{display:flex;align-items:center;gap:6px;margin-top:8.5px;height:36px}
-  .row-l{padding-right:6px;font:400 15px/1 var(--ft);color:var(--ink40)}
+        border-radius:12px;font:var(--t-caption);background:rgba(0,0,0,.4);color:#fff}
+  .row{display:flex;align-items:center;gap:6px;margin-top:12.5px;height:36px}
+  .row-l{padding-right:6px;font:400 16px/1 var(--ft);color:var(--ink40)}
   .pill{display:flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 18px;
-        border:1px solid var(--ink10);border-radius:18px;font:500 15px/1 var(--ft);color:var(--ink);
+        border:1px solid var(--ink10);border-radius:18px;font:400 16px/1 var(--ft);color:var(--ink);
         background:none;cursor:pointer}
   .pill svg{display:block;width:12px;height:14px}
   /* пилюля аудиогида повторяет состояние плеера: играет — пауза, стоит — треугольник */
@@ -345,15 +433,15 @@
   .ev-head-txt{min-width:0}
   .chip-book{flex:0 0 auto;margin-top:26px;height:28px;display:flex;align-items:center;
              padding:0 12px;border-radius:14px;background:var(--lime);color:var(--ink);
-             font:400 15px/1 var(--ft);white-space:nowrap}
+             font:400 16px/1 var(--ft);white-space:nowrap}
   .book{margin-top:12px;transition:opacity .34s cubic-bezier(.4,0,.2,1)}
   .book.fade{opacity:0}
   /* по инспектору: блок предложения 58 в высоту (20 подпись + 2 + 36 пилюли),
      строка состояния 37 */
   /* та же типографика, что у описания события (.ev-d) */
-  .book-label{margin-bottom:4px;font:400 15px/19.5px var(--ft);color:var(--ink40)}
+  .book-label{margin-bottom:4px;font:var(--t-body);color:var(--ink40)}
   .book .times{height:36px;gap:4px}
-  .book .times .pill{height:36px;border-radius:18px;padding:0 18px;font:400 15px/1 var(--ft)}
+  .book .times .pill{height:36px;border-radius:18px;padding:0 18px;font:400 16px/1 var(--ft)}
   .book-state{display:flex;align-items:center;justify-content:space-between;gap:12px;height:37px}
   .book-x{flex:0 0 24px;width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;
           opacity:0;pointer-events:none;transition:opacity .28s cubic-bezier(.4,0,.2,1)}
@@ -423,7 +511,8 @@
   @media (prefers-reduced-motion: reduce){
     .deck-face,.deck i,.deck-rest,.deck-rest > *{transition:none}
   }
-  .dishes{display:flex;gap:8px;padding:0 32px;overflow-x:auto;overflow-y:hidden;
+  /* больше воздуха над рядом блюд: раньше он стоял почти впритык к описанию */
+  .dishes{margin-top:20px;display:flex;gap:8px;padding:0 32px;overflow-x:auto;overflow-y:hidden;
           scrollbar-width:none;-webkit-overflow-scrolling:touch;
           overscroll-behavior-x:contain;touch-action:pan-x}
   .dishes::-webkit-scrollbar{display:none}
@@ -433,11 +522,13 @@
   .dish{width:135px;flex:0 0 135px}
   .dish img{display:block;-webkit-user-drag:none;user-select:none;pointer-events:none;width:135px;height:135px;border-radius:50%;object-fit:cover;background:var(--ph)}
   /* от фото блюда до подписи 12 */
-  .dish-n{margin-top:12px;text-align:center;font:400 15px/19.5px var(--ft);color:var(--ink)}
-  .dish-p{margin-top:2px;text-align:center;font:400 15px/19.5px var(--ft);color:var(--ink40)}
-  .sun-head{display:flex;align-items:flex-start;justify-content:space-between;padding-top:24px}
+  .dish-n{margin-top:12px;text-align:center;font:var(--t-body);color:var(--ink)}
+  .dish-p{margin-top:2px;text-align:center;font:var(--t-body);color:var(--ink40)}
+  /* было 24 — столько же, сколько между обычными карточками; блок заката
+     ощущался слишком близко к ряду блюд, подняли до 40 */
+  .sun-head{display:flex;align-items:flex-start;justify-content:space-between;padding-top:40px}
   /* один стиль с временем вылета в билете: 34/600, трекинг -0.6 */
-  .sun-time{font:600 34px/34px var(--fh);letter-spacing:-.6px;color:var(--ink)}
+  .sun-time{font:var(--t-title-xl);color:var(--ink)}
   .tail{height:47px}
 
   /* sky layers */
@@ -479,8 +570,8 @@
                                     width:393px;height:290px;object-fit:cover}
   body[data-app="travel"] .hero-city{display:block;position:absolute;left:0;right:0;top:118px;
                                      z-index:1;text-align:center}
-  body[data-app="travel"] .hero-city h1{margin:0;font:700 38px/40px var(--fh);
-                                        letter-spacing:-1px;color:var(--ink)}
+  body[data-app="travel"] .hero-city h1{margin:0;font:var(--t-display);
+                                        color:var(--ink)}
   body[data-app="travel"] .hero-city p{margin:6px 0 0;font:400 18px/22px var(--ft);color:var(--ink)}
   /* проявление заголовка как в записи: фронт бежит по буквам с шагом 20мс,
      каждая буква всплывает из размытия за 260мс; даты подхватывают следом.
@@ -516,7 +607,7 @@
   .map{margin:13px 32px 0;height:320px;border-radius:12px;overflow:hidden;background:var(--ph);position:relative}
   .map img{width:100%;height:100%;object-fit:cover;display:block}
   .map b{position:absolute;left:12px;bottom:12px;height:24px;display:flex;align-items:center;padding:0 12px;
-         border-radius:12px;background:var(--lime);font:400 13px/1 var(--ft);color:var(--ink)}
+         border-radius:12px;background:var(--lime);font:var(--t-caption);color:var(--ink)}
   .home-tail{height:60px}
 
   /* ---------- agent sheet ---------- */
@@ -542,8 +633,8 @@
   .player-ic{flex:0 0 30px;color:var(--ink);margin-top:2px}
   .player-ic svg{display:block;width:30px;height:30px}
   .player-txt{flex:1;min-width:0}
-  .player-txt u{display:block;text-decoration:none;font:400 15px/20px var(--ft);color:var(--ink40)}
-  .player-txt b{display:block;margin-top:1px;font:700 20px/25px var(--fh);color:var(--ink);
+  .player-txt u{display:block;text-decoration:none;font:var(--t-body);color:var(--ink40)}
+  .player-txt b{display:block;margin-top:1px;font:600 20px/25px var(--fh);color:var(--ink);
                 display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
                 line-clamp:2;overflow:hidden}
   .player-seek{position:relative;height:22px;margin-top:18px;cursor:pointer;touch-action:none}
@@ -553,7 +644,7 @@
   .player-thumb{position:absolute;top:0;left:0;width:22px;height:22px;margin-left:-11px;
                 border-radius:11px;background:#fff;box-shadow:0 2px 8px rgba(6,7,8,.28)}
   .player-times{display:flex;justify-content:space-between;margin-top:8px;
-                font:400 15px/1 var(--ft);color:var(--ink40)}
+                font:400 16px/1 var(--ft);color:var(--ink40)}
   .player-ctl{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:16px}
   /* при зажатии элемент слегка подрастает — общий отклик на нажатие */
   .player-play,.player-step,.player-x,.pill,.bub-pill,.ask-fab,.nav,.li,
@@ -589,7 +680,7 @@
   .chat-msgs{display:flex;flex-direction:column;gap:8px;padding:0 16px 12px;
              max-height:52vh;overflow-y:auto;scrollbar-width:none}
   .chat-msgs::-webkit-scrollbar{display:none}
-  .bub{max-width:90%;padding:12px 16px;font:400 15px/1.4 var(--ft);border-radius:20px;
+  .bub{max-width:90%;padding:12px 16px;font:400 16px/21px var(--ft);border-radius:20px;
        animation:bubIn .34s cubic-bezier(.2,.9,.25,1.02) both}
   .bub-agent{align-self:flex-start;background:#fff;color:#14202A;
              border-bottom-left-radius:6px;box-shadow:0 6px 22px rgba(20,32,42,.12)}
@@ -601,7 +692,7 @@
             display:inline-flex;align-items:center;justify-content:center;
             padding:10px 20px;border:0;border-radius:100px;cursor:pointer;
             background:rgba(6,7,8,.78);color:#fff;text-align:center;
-            font:400 15px/1.4 var(--ft);
+            font:400 16px/21px var(--ft);
             animation:pillIn .46s cubic-bezier(.2,.7,.3,1) both}
   /* зазор между кнопками 8 — тот же, что у списка сообщений */
   /* моё сообщение светло-серым: отличается от белых реплик агента,
@@ -642,8 +733,8 @@
   .blocks button{display:flex;align-items:center;justify-content:space-between;width:100%;height:52px;
         padding:0;background:none;border:0;border-bottom:1px solid var(--ink10);cursor:pointer;text-align:left}
   .blocks button:last-child{border-bottom:0}
-  .blocks b{font:400 16px/20px var(--ft);font-weight:400;color:var(--ink)}
-  .blocks u{text-decoration:none;font:400 15px/20px var(--ft);color:var(--ink40)}
+  .blocks b{font:var(--t-body);font-weight:400;color:var(--ink)}
+  .blocks u{text-decoration:none;font:var(--t-body);color:var(--ink40)}
 </style>
 </head>
 <body>
@@ -694,35 +785,42 @@
           </div>
         </div>
               <div class="pad nudge" data-nudge data-noevent data-follow="Отметите пару мест из плана — соберу маршрут. Начнём?" data-done="Готово, собрал черновик плана — он в днях 15 и 16 авг">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Собрать план поездки под вас?</span>
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Собрать план поездки под вас?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
             <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          </div>
         </div>
       </div>
       <div class="pane" data-tab="prep">
         <div class="pad tkt" data-ticket="dep"></div>
+        <div class="pad checkin">
+          <div class="lbl">Заезд</div>
+          <button class="big" data-checkin>Пятница, 14 августа • с 12:00</button>
+        </div>
+
         <div class="room">
-          <div class="pad room-head">
-            <div class="room-head-txt">
-              <div class="lbl">Заезд</div>
-              <div class="big">Бунгало с террасой</div>
-            </div>
-            <button class="chip-book" data-checkin>заезд 12:00</button>
+          <img src="assets/img/room-bungalow.webp" alt="Бунгало с террасой">
+          <div class="pad">
+            <div class="big">Бунгало с террасой</div>
           </div>
           <div class="pad navs">
             <button class="nav">Удобства в номере<i>›</i></button>
             <button class="nav">Инструкция по заселению<i>›</i></button>
           </div>
-          <img src="assets/img/room-bungalow.webp" alt="Бунгало с террасой">
         </div>
 
 
         <div class="pad nudge" data-nudge data-noevent data-follow="Могу договориться к 10:00 — подойдёт?" data-done="Договорился о раннем заезде к 10:00, обновил время">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Устроить ранний заезд?</span>
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Устроить ранний заезд?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
             <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          </div>
         </div>
 
         <div class="pad prep-head"><h2 class="h2">Что взять с собой в дорогу</h2></div>
@@ -749,10 +847,13 @@
       <div class="pane" data-tab="out">
         <div class="pad tkt" data-ticket="ret"></div>
         <div class="pad nudge" data-nudge data-noevent data-follow="Сколько боксов подготовить?" data-done="Заказал завтрак-боксы, будут на ресепшене к 10:00">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Собрать завтрак-боксы к выезду?</span>
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Собрать завтрак-боксы к выезду?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
             <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          </div>
         </div>
       </div>
       <div class="pane" data-tab="today">
@@ -779,7 +880,7 @@
             <span class="chip-book" data-bookchip hidden></span>
           </div>
           <div class="media"><img src="assets/img/ev-prosa-breakfast.webp" alt=""></div>
-          <div class="book" data-bookrow>
+          <div class="book" data-bookrow hidden>
             <div data-bookask>
               <div class="book-label">Забронировать стол</div>
               <div class="times" data-times data-rail>
@@ -802,10 +903,13 @@
         </div>
 
         <div class="pad nudge" data-nudge>
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Сходим на конную прогулку?</span>
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Сходим на конную прогулку?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
             <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          </div>
         </div>
 
         <div class="ev">
@@ -832,10 +936,13 @@
         </div>
 
         <div class="pad nudge" data-nudge data-noevent data-follow="К 19:00, за час до костра — подойдёт?" data-done="Записал баню на 19:00, перед костром">
-          <button class="abub st-msg" data-nudgebtn aria-label="Сообщение агента">
-            <span class="tx" data-nudgetx>Затопить баню перед костром?</span>
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Затопить баню перед костром?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
             <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
-          </button>
+          </div>
         </div>
 
         <div class="sec gap-l">Вечер</div>
@@ -863,7 +970,7 @@
               <p class="ev-d">Уютное японское кафе на Казанской улице</p>
               <div class="media"><img src="assets/img/deck-rolls.webp" alt=""></div>
             </div>
-            <div class="deck-hide"><button class="pill" data-hide>Скрыть список</button></div>
+            <div class="deck-hide"><button class="pill" data-hide>Свернуть</button></div>
           </div>
         </div>
 
@@ -909,7 +1016,7 @@
               <p class="ev-d">Тихая набережная почти без туристов</p>
               <div class="media"></div>
             </div>
-            <div class="deck-hide"><button class="pill" data-hide>Скрыть список</button></div>
+            <div class="deck-hide"><button class="pill" data-hide>Свернуть</button></div>
           </div>
         </div>
 
@@ -965,6 +1072,9 @@
 </div>
 
 <script src="assets/lottie_light.min.js"></script>
+<script>
+var STAR_ANIMS={"pulse":{"v":"5.12.1","fr":60,"ip":0,"op":180,"w":512,"h":512,"nm":"star_pulsating","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Shape Layer 4","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":-70,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":10,"s":[30]},{"t":90,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":-90,"s":[0,0,100]},{"t":90,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":-90,"op":90,"st":-90,"ct":1,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Shape Layer 3","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":110,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":190,"s":[30]},{"t":270,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":90,"s":[0,0,100]},{"t":270,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":90,"op":270,"st":90,"ct":1,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 2","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":20,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":100,"s":[30]},{"t":180,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":0,"s":[0,0,100]},{"t":180,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"Shape Layer 1","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":0,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":22,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":45,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":67,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":90,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":112,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":135,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":157,"s":[14.608,20.944,100]},{"t":180,"s":[17.952,13.2,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}},"float":{"v":"5.12.1","fr":60,"ip":0,"op":180,"w":512,"h":512,"nm":"star_thinking 2","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[425,425,100],"ix":6,"l":2}},"ao":0,"ip":-90,"op":270,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[8,8,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 1","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":0,"s":[60,60,0],"to":[0,-145.833,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":28.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":60,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":88.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":120,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":148.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,-145.833,0]},{"t":180,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":0,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":13,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":29,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":44,"s":[301.8,221.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":60,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":73,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":89,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":104,"s":[301.8,221.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":120,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":133,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":149,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":164,"s":[301.8,221.8,100]},{"t":180,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}},"rotate":{"v":"5.12.1","fr":60,"ip":0,"op":60,"w":512,"h":512,"nm":"star_thinking","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[425,425,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[8,8,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 3","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":120,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":159,"s":[-200]},{"t":175,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":120,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":165,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":120,"s":[261.8,261.8,100]},{"t":180,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":120,"op":120.606060606061,"st":120,"ct":1,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"Shape Layer 2","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":60,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":99,"s":[-200]},{"t":115,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":60,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":105,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":60,"s":[261.8,261.8,100]},{"t":120,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":60,"op":60.6060606060606,"st":60,"ct":1,"bm":0},{"ddd":0,"ind":5,"ty":4,"nm":"Shape Layer 1","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":0,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":39,"s":[-200]},{"t":55,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":0,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":45,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":0,"s":[261.8,261.8,100]},{"t":60,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}}};
+</script>
 <script>
 (function(){
   var WX_ICON = "<svg viewBox=\"0 0 40 40\" fill=\"none\"><path d=\"M29.0806 19.7335C28.8905 18.4773 28.4566 17.3657 27.7789 16.3988C27.1012 15.4236 26.2376 14.6467 25.188 14.0682C24.1384 13.4814 22.9566 13.1426 21.6426 13.0517C21.4442 12.6798 21.2252 12.3368 20.9855 12.0227C20.7541 11.7004 20.5021 11.3988 20.2293 11.1178C20.7417 10.25 21.469 9.53926 22.4112 8.98554C23.3616 8.42355 24.4112 8.14256 25.5599 8.14256C26.7252 8.14256 27.7831 8.42769 28.7335 8.99793C29.6921 9.56818 30.4525 10.3326 31.0145 11.2913C31.5847 12.2417 31.8698 13.2955 31.8698 14.4525C31.8698 15.5434 31.6178 16.5517 31.1136 17.4773C30.6095 18.3946 29.9318 19.1467 29.0806 19.7335Z\" fill=\"#F3B53A\"/> <path d=\"M17.8988 8.61364L16.2252 6.94008C15.9773 6.69215 15.8492 6.3905 15.8409 6.03512C15.8409 5.67975 15.9649 5.3781 16.2128 5.13017C16.4607 4.88223 16.7624 4.75826 17.1178 4.75826C17.4814 4.75826 17.7831 4.88223 18.0227 5.13017L19.6963 6.82851C19.9442 7.07645 20.0682 7.3781 20.0682 7.73347C20.0764 8.08058 19.9566 8.3781 19.7087 8.62603C19.469 8.87397 19.1674 8.99793 18.8037 8.99793C18.4483 8.99793 18.1467 8.86983 17.8988 8.61364Z\" fill=\"#F3B53A\"/> <path d=\"M25.5475 6.19628C25.2004 6.19628 24.8988 6.07231 24.6426 5.82438C24.3946 5.56818 24.2707 5.2624 24.2707 4.90702V2.53926C24.2707 2.18388 24.3946 1.88223 24.6426 1.6343C24.8988 1.3781 25.2004 1.25 25.5475 1.25C25.9029 1.25 26.2045 1.3781 26.4525 1.6343C26.7004 1.88223 26.8244 2.18388 26.8244 2.53926V4.90702C26.8244 5.2624 26.7004 5.56818 26.4525 5.82438C26.2045 6.07231 25.9029 6.19628 25.5475 6.19628Z\" fill=\"#F3B53A\"/> <path d=\"M31.3988 8.63843C31.1508 8.3905 31.0269 8.08884 31.0269 7.73347C31.0269 7.36983 31.1508 7.06818 31.3988 6.82851L33.0971 5.15496C33.345 4.89876 33.6426 4.77066 33.9897 4.77066C34.345 4.77066 34.6467 4.8905 34.8946 5.13017C35.1426 5.3781 35.2665 5.68388 35.2665 6.04752C35.2665 6.40289 35.1426 6.70455 34.8946 6.95248L33.2087 8.62603C32.9607 8.87397 32.655 9.00207 32.2913 9.01033C31.9359 9.01033 31.6384 8.88636 31.3988 8.63843Z\" fill=\"#F3B53A\"/> <path d=\"M35.0806 15.7293C34.7335 15.7293 34.4318 15.6095 34.1756 15.3698C33.9194 15.1219 33.7913 14.8202 33.7913 14.4649C33.7913 14.1178 33.9194 13.8161 34.1756 13.5599C34.4318 13.3037 34.7335 13.1756 35.0806 13.1756H37.4607C37.8161 13.1756 38.1178 13.3037 38.3657 13.5599C38.6219 13.8161 38.75 14.1178 38.75 14.4649C38.75 14.8202 38.6219 15.1219 38.3657 15.3698C38.1178 15.6095 37.8161 15.7293 37.4607 15.7293H35.0806Z\" fill=\"#F3B53A\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6.59297 27.593C5.53512 27.593 4.60537 27.3864 3.80372 26.9731C3.00207 26.5517 2.37397 25.969 1.91942 25.2252C1.47314 24.4814 1.25 23.6178 1.25 22.6343C1.25 21.469 1.58058 20.4525 2.24174 19.5847C2.91116 18.7087 3.79959 18.1178 4.90702 17.812C4.99793 16.7459 5.27066 15.7583 5.72521 14.8492C6.18802 13.9401 6.79132 13.1467 7.53512 12.469C8.28719 11.7913 9.13843 11.2665 10.0888 10.8946C11.0393 10.5145 12.0517 10.3244 13.126 10.3244C14.3161 10.3244 15.3822 10.5227 16.3244 10.9194C17.2748 11.3079 18.0971 11.8409 18.7913 12.5186C19.4938 13.188 20.0682 13.9442 20.5145 14.7872C21.812 14.7872 22.969 15.0682 23.9855 15.6302C25.0021 16.1921 25.8037 16.9566 26.3905 17.9236C26.9773 18.8905 27.2707 19.9938 27.2707 21.2335C27.2707 22.4401 26.9897 23.5227 26.4277 24.4814C25.874 25.4401 25.1219 26.2004 24.1715 26.7624C23.2211 27.3161 22.1467 27.593 20.9483 27.593H6.59297ZM6.95248 33.7417C6.82025 33.9566 6.6343 34.1012 6.39463 34.1756C6.15496 34.2583 5.92355 34.2335 5.70041 34.1012C5.46901 33.969 5.32438 33.7831 5.26653 33.5434C5.21694 33.3037 5.25413 33.0764 5.3781 32.8616L6.95248 30.1219C7.09297 29.8905 7.27893 29.7376 7.51033 29.6632C7.74174 29.5971 7.97314 29.6302 8.20455 29.7624C8.42769 29.8946 8.56818 30.0806 8.62603 30.3202C8.68388 30.5682 8.64669 30.8037 8.51446 31.0269L6.95248 33.7417ZM10.8574 37.2252C10.7252 37.4401 10.5393 37.5847 10.2996 37.6591C10.0682 37.7335 9.83678 37.7087 9.60537 37.5847C9.37397 37.4442 9.22934 37.2541 9.17149 37.0145C9.1219 36.7831 9.15909 36.5558 9.28306 36.3326L10.8574 33.6054C10.9979 33.374 11.1839 33.2211 11.4153 33.1467C11.6467 33.0806 11.8781 33.1136 12.1095 33.2459C12.3326 33.3781 12.4731 33.564 12.531 33.8037C12.5888 34.0434 12.5517 34.2748 12.4194 34.4979L10.8574 37.2252ZM16.8202 33.7293C16.688 33.9525 16.5021 34.1012 16.2624 34.1756C16.0227 34.25 15.7913 34.2211 15.5682 34.0888C15.3368 33.9566 15.1921 33.7707 15.1343 33.531C15.0847 33.2913 15.1219 33.064 15.2459 32.8492L16.8202 30.1219C16.9607 29.8822 17.1467 29.7252 17.3781 29.6508C17.6095 29.5847 17.8368 29.6178 18.0599 29.75C18.2913 29.8905 18.4359 30.0806 18.4938 30.3202C18.5517 30.5599 18.5186 30.7913 18.3946 31.0145L16.8202 33.7293ZM20.7128 37.2128C20.5888 37.4359 20.407 37.5847 20.1674 37.6591C19.9277 37.7335 19.6963 37.7045 19.4731 37.5723C19.2417 37.4401 19.0971 37.2541 19.0393 37.0145C18.9897 36.7748 19.0269 36.5475 19.1508 36.3326L20.7252 33.6054C20.8657 33.3657 21.0517 33.2087 21.2831 33.1343C21.5145 33.0682 21.7459 33.1012 21.9773 33.2335C22.2087 33.3657 22.3492 33.5517 22.3988 33.7913C22.4566 34.0393 22.4236 34.2748 22.2996 34.4979L20.7128 37.2128Z\" fill=\"#9ABAF2\"/> <path d=\"M33.0847 23.7996L31.3988 22.1136C31.1508 21.874 31.0227 21.5764 31.0145 21.2211C31.0145 20.8574 31.1384 20.5558 31.3864 20.3161C31.6343 20.0682 31.9359 19.9442 32.2913 19.9442C32.655 19.9442 32.9566 20.0682 33.1963 20.3161L34.8822 22.0021C35.1219 22.25 35.2459 22.5517 35.2541 22.907C35.2624 23.2624 35.1426 23.564 34.8946 23.812C34.6467 24.0517 34.345 24.1715 33.9897 24.1715C33.6343 24.1715 33.3326 24.0475 33.0847 23.7996Z\" fill=\"#F3B53A\"/></svg>";
@@ -1040,35 +1150,83 @@
      контейнеры [data-ticket]. Новый рейс — запись в TICKETS, а не копия блока. */
   var PLANE_SVG = '<svg viewBox="0 0 17 15" fill="none"><path d="M16.5088 7.45605C16.5088 7.73926 16.3916 7.99316 16.1572 8.21777C15.9229 8.4375 15.6104 8.61328 15.2197 8.74512C14.8291 8.87207 14.4019 8.93555 13.938 8.93555H10.9863C10.7812 8.93555 10.625 8.95752 10.5176 9.00146C10.415 9.04541 10.3027 9.13574 10.1807 9.27246L5.25879 14.6484C5.09766 14.8242 4.90967 14.9121 4.69482 14.9121H3.84521C3.75244 14.9121 3.68164 14.8755 3.63281 14.8022C3.58887 14.729 3.59131 14.6411 3.64014 14.5386L6.17432 8.93555L2.45361 8.51074L1.12793 10.9424C1.03027 11.1133 0.864258 11.1987 0.629883 11.1987H0.314941C0.222168 11.1987 0.146484 11.1719 0.0878906 11.1182C0.0292969 11.0596 0 10.9839 0 10.8911V4.021C0 3.92334 0.0292969 3.84766 0.0878906 3.79395C0.146484 3.73535 0.222168 3.70605 0.314941 3.70605H0.629883C0.864258 3.70605 1.03027 3.79395 1.12793 3.96973L2.45361 6.40137L6.17432 5.97656L3.64014 0.373535C3.59131 0.270996 3.58887 0.183105 3.63281 0.109863C3.68164 0.0366211 3.75244 0 3.84521 0H4.69482C4.90967 0 5.09766 0.0878906 5.25879 0.263672L10.1807 5.63232C10.3027 5.76904 10.415 5.86182 10.5176 5.91064C10.625 5.95459 10.7812 5.97656 10.9863 5.97656H13.938C14.4019 5.97656 14.8291 6.04248 15.2197 6.17432C15.6104 6.30127 15.9229 6.47705 16.1572 6.70166C16.3916 6.92139 16.5088 7.17285 16.5088 7.45605Z" fill="currentColor"/></svg>';
   var GATE_SVG = '<svg viewBox="0 0 16 16" fill="none"><path fill="#fff" d="M7.63916 15.2783C6.58447 15.2783 5.5957 15.0781 4.67285 14.6777C3.75 14.2822 2.93701 13.7329 2.23389 13.0298C1.53564 12.3315 0.98877 11.5234 0.593262 10.6055C0.197754 9.68262 0 8.69385 0 7.63916C0 6.58447 0.197754 5.5957 0.593262 4.67285C0.98877 3.75 1.53564 2.93945 2.23389 2.24121C2.93701 1.53809 3.75 0.98877 4.67285 0.593262C5.5957 0.197754 6.58447 0 7.63916 0C8.69385 0 9.68262 0.197754 10.6055 0.593262C11.5283 0.98877 12.3389 1.53809 13.0371 2.24121C13.7354 2.93945 14.2822 3.75 14.6777 4.67285C15.0781 5.5957 15.2783 6.58447 15.2783 7.63916C15.2783 8.69385 15.0781 9.68262 14.6777 10.6055C14.2822 11.5234 13.7354 12.3315 13.0371 13.0298C12.3389 13.7329 11.5283 14.2822 10.6055 14.6777C9.68262 15.0781 8.69385 15.2783 7.63916 15.2783ZM11.4697 7.63184C11.4697 7.5293 11.4502 7.4292 11.4111 7.33154C11.3721 7.23389 11.3037 7.13379 11.2061 7.03125L8.81836 4.55566C8.75 4.4873 8.67676 4.43604 8.59863 4.40186C8.52539 4.36279 8.4375 4.34326 8.33496 4.34326C8.14453 4.34326 7.98828 4.41162 7.86621 4.54834C7.74414 4.68018 7.68311 4.83887 7.68311 5.02441C7.68311 5.22461 7.75635 5.39307 7.90283 5.52979L8.97217 6.5332L9.48486 6.92139L8.37158 6.85547H4.50439C4.29932 6.85547 4.12109 6.93115 3.96973 7.08252C3.82324 7.23389 3.75 7.41699 3.75 7.63184C3.75 7.84668 3.82324 8.02979 3.96973 8.18115C4.12109 8.33252 4.29932 8.4082 4.50439 8.4082H8.37158L9.49219 8.34229L8.97217 8.73047L7.90283 9.73389C7.75635 9.87061 7.68311 10.0415 7.68311 10.2466C7.68311 10.4272 7.74414 10.5859 7.86621 10.7227C7.98828 10.8545 8.14453 10.9204 8.33496 10.9204C8.4375 10.9204 8.52539 10.9033 8.59863 10.8691C8.67676 10.8301 8.75 10.7764 8.81836 10.708L11.2061 8.23242C11.3037 8.12988 11.3721 8.02979 11.4111 7.93213C11.4502 7.83447 11.4697 7.73438 11.4697 7.63184Z"/></svg>';
+  var COPY_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5.6" y="5.6" width="8.6" height="8.6" rx="2"/><path d="M11 4.1V3.8a2 2 0 0 0-2-2H3.8a2 2 0 0 0-2 2V9a2 2 0 0 0 2 2h.3"/></svg>';
+  var OK_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6 6.2 11.8 13 4.8"/></svg>';
+  var STOP_SVG = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 6.3h9.6l-2.3-2.3M15.4 11.7H5.8l2.3 2.3"/></svg>';
+  var BAG_SVG = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="5.4" width="12.8" height="10.2" rx="2.4"/><path d="M6.6 5.4V3.6a1.4 1.4 0 0 1 1.4-1.4h2a1.4 1.4 0 0 1 1.4 1.4v1.8M6.9 9.2v3M11.1 9.2v3"/></svg>';
+  /* Общее у билета: pnr — код брони, pax — сколько летит, bag — норма провоза.
+     legs — сегменты маршрута: один у прямого рейса, два и больше у рейса
+     с пересадкой. stop на сегменте значит, что после него ждём стыковку.
+     У каждого сегмента свои номер рейса, регистрация, терминал и гейт —
+     на пересадке они меняются, поэтому это не общие поля билета. */
   var TICKETS = {
-    dep: { reg: "17:30", no: "S7-5014", gate: "26", terminal: "D", desk: "8-9 стойки",
-           from: { time: "18:10", city: "Екатеринбург", iata: "SVX" },
-           to:   { time: "20:10", city: "Москва", iata: "VKO" } },
-    ret: { reg: "20:55", no: "S7-5015", gate: "14", terminal: "B", desk: "12-14 стойки",
-           from: { time: "21:40", city: "Москва", iata: "VKO" },
-           to:   { time: "02:20", city: "Екатеринбург", iata: "SVX" } }
+    dep: { pnr: "RDL68X", pax: "2 гостя", bag: "Ручная 1×10 кг · Багаж 1×23 кг",
+           legs: [
+             { reg: "05:40", no: "S7-5014", gate: "26", terminal: "D", desk: "8-9 стойки",
+               dur: "1 ч 45 мин",
+               from: { time: "06:20", city: "Екатеринбург", iata: "SVX", date: "14 авг" },
+               to:   { time: "08:05", city: "Новосибирск", iata: "OVB", date: "14 авг" },
+               stop: { city: "Новосибирске", wait: "1 ч 25 мин" } },
+             { reg: "09:00", no: "S7-2118", gate: "12", terminal: "A", desk: "4-5 стойки",
+               dur: "1 ч 10 мин",
+               from: { time: "09:30", city: "Новосибирск", iata: "OVB", date: "14 авг" },
+               to:   { time: "10:40", city: "Горно-Алтайск", iata: "RGK", date: "14 авг" } }
+           ] },
+    ret: { pnr: "RDL68X", pax: "2 гостя", bag: "Ручная 1×10 кг · Багаж 1×23 кг",
+           legs: [
+             { reg: "20:55", no: "S7-5015", gate: "14", terminal: "B", desk: "12-14 стойки",
+               dur: "2 ч 40 мин",
+               from: { time: "21:40", city: "Горно-Алтайск", iata: "RGK", date: "17 авг" },
+               to:   { time: "02:20", city: "Екатеринбург", iata: "SVX", date: "18 авг" } }
+           ] }
   };
+  /* один сегмент: шильдик регистрации и номер рейса, маршрут, терминал/гейт.
+     Если у сегмента есть stop — снизу дописывается строка ожидания стыковки */
+  function leg(l){
+    return '<div class="tkt-top">' +
+             '<span class="tkt-badge">Регистрация до ' + l.reg + "</span>" +
+             '<span class="tkt-no">' + l.no + "</span></div>" +
+           '<div class="tkt-route">' + side(l.from) +
+             '<div class="tkt-mid"><span class="tkt-dur">' + l.dur + "</span>" +
+               '<i class="tkt-dots"></i>' +
+               '<span class="tkt-plane">' + PLANE_SVG + "</span></div>" +
+             side(l.to, true) +
+           "</div>" +
+           '<div class="tkt-foot"><div><u>Терминал</u><b>' + l.terminal + "</b></div>" +
+             "<div><u>Регистрация</u><b>" + l.desk + "</b></div>" +
+             '<span class="tkt-gate">' + GATE_SVG + l.gate + "</span></div>" +
+           (l.stop
+             ? '<div class="tkt-stop">' + STOP_SVG +
+                 "<span>Пересадка в " + l.stop.city + " · " + l.stop.wait + "</span></div>"
+             : "");
+  }
   function side(p, right){
     return '<div class="tkt-side' + (right ? " right" : "") + '">' +
              '<div class="tkt-time">' + p.time + "</div>" +
              '<div class="tkt-city">' + p.city + "</div>" +
              '<div class="tkt-iata">' + p.iata + "</div>" +
+             '<div class="tkt-date">' + p.date + "</div>" +
            "</div>";
   }
   [].forEach.call(document.querySelectorAll("[data-ticket]"), function(el){
     var t = TICKETS[el.dataset.ticket];
     if (!t) return;
     el.innerHTML =
-      '<div class="tkt-top"><span class="tkt-badge">Регистрация до ' + t.reg + "</span>" +
-        '<span class="tkt-no">' + t.no + "</span></div>" +
-      '<div class="tkt-route">' + side(t.from) +
-        '<div class="tkt-mid"><i class="tkt-dots"></i>' +
-          '<span class="tkt-plane">' + PLANE_SVG + "</span></div>" +
-        side(t.to, true) +
-      "</div>" +
-      '<div class="tkt-foot"><div><u>Терминал</u><b>' + t.terminal + "</b></div>" +
-        "<div><u>Регистрация</u><b>" + t.desk + "</b></div>" +
-        '<span class="tkt-gate">' + GATE_SVG + t.gate + "</span></div>";
+      '<div class="tkt-pnr"><u>Бронь</u><b data-pnr>' + t.pnr + "</b>" +
+        '<button class="tkt-copy" data-copy aria-label="Скопировать код брони">' + COPY_SVG + "</button>" +
+        '<span class="tkt-pax">' + t.pax + "</span></div>" +
+      t.legs.map(leg).join("") +
+      '<div class="tkt-bag">' + BAG_SVG + "<span>" + t.bag + "</span></div>";
+    /* копирование кода брони: на две секунды галочка вместо иконки —
+       подтверждение без всплывашек, как у чипа брони у события */
+    var copyBtn = el.querySelector("[data-copy]");
+    if (copyBtn) copyBtn.onclick = function(){
+      var code = el.querySelector("[data-pnr]").textContent;
+      if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function(){});
+      copyBtn.innerHTML = OK_SVG;
+      copyBtn.classList.add("done");
+      setTimeout(function(){ copyBtn.innerHTML = COPY_SVG; copyBtn.classList.remove("done"); }, 2000);
+    };
   });
 
   /* ---- tab bars ---- */
@@ -1299,28 +1457,48 @@
       if (reduce || !pl.animate) return;
       var w = pl.parentNode.offsetWidth;
       if (!w) return;                       /* панель скрыта — взлетим при показе */
+      var art = pl.firstElementChild;       /* сам svg внутри слота */
+      if (!art) return;
       /* путь почти во всю дорожку: отступ 2 от края блока, плюс половина
-         самолёта 8.5 — до времени и городов рядом остаётся зазор.
-         Раньше отступ был 12 и ход выходил заметно короче */
+         самолёта 8.5 — до времени и городов рядом остаётся зазор */
       var PAD = 2;
       var from = -w / 2 + PAD, to = w / 2 - PAD;
-      /* пружину здесь не берём: её длинный хвост и давал ощущение, что самолёт
-         повис. Плавный glide на smoothstep — тот же изинг, что в остальном
-         моушене, только растянутый на 1.7 с */
-      var DUR = 1700, n = 48;
-      pl.getAnimations().forEach(function(a){ a.cancel(); });
-      var keys = [];
-      for (var i = 0; i < n; i++){
-        var t = i / (n - 1);
-        var x = from + (to - from) * smoothstep(t);
-        /* кренится на взлёте, растворяется на последней трети и исчезает
-           раньше, чем ход заканчивается */
-        var tilt = -7 * Math.max(0, 1 - t * 2.4);
-        var o = Math.min(1, t * 7) * Math.min(1, (1 - t) / .3);
-        keys.push({ transform: "translateX(calc(-50% + " + x.toFixed(1) + "px)) rotate(" + tilt.toFixed(2) + "deg)",
-                    opacity: o, offset: t });
-      }
-      pl.animate(keys, { duration: DUR, fill: "forwards", easing: "linear" });
+      /* полёт 1.7 c, потом передышка 2.6 c; f — доля полёта в цикле */
+      var DUR = 1700, REST = 2600, total = DUR + REST, f = DUR / total;
+      /* Кадры больше не считаем вручную. Раньше здесь было 102 сэмпла,
+         склеенных линейными отрезками — из-за этого движение и дёргалось:
+         на каждой границе кадра менялась скорость. Теперь ключевых точек
+         минимум, а интерполирует их браузер на композиторе — непрерывно.
+         Ход, масштаб и прозрачность живут своими кривыми, поэтому они
+         разнесены по двум элементам: слот везёт, svg внутри дышит. */
+      var GLIDE = "cubic-bezier(.37,0,.63,1)";   /* мягкий in-out, ровная середина */
+      var SOFT  = "cubic-bezier(.4,0,.6,1)";
+      function stop(el){ el.getAnimations().forEach(function(a){ a.cancel(); }); }
+      stop(pl); stop(art);
+
+      /* ход слева направо, потом стоит невидимым до конца цикла */
+      pl.animate([
+        { transform: "translateX(calc(-50% + " + from.toFixed(1) + "px))", easing: GLIDE, offset: 0 },
+        { transform: "translateX(calc(-50% + " + to.toFixed(1) + "px))", offset: f },
+        { transform: "translateX(calc(-50% + " + to.toFixed(1) + "px))", offset: 1 }
+      ], { duration: total, iterations: Infinity, easing: "linear" });
+
+      /* высота: набор до 45% пути и посадка. Крена нет, только масштаб */
+      art.animate([
+        { transform: "scale(1)",    easing: GLIDE, offset: 0 },
+        { transform: "scale(1.22)", easing: GLIDE, offset: f * .45 },
+        { transform: "scale(.86)",  offset: f },
+        { transform: "scale(.86)",  offset: 1 }
+      ], { duration: total, iterations: Infinity, easing: "linear" });
+
+      /* появление за первую пятую пути, долгое растворение к концу */
+      art.animate([
+        { opacity: 0, easing: SOFT, offset: 0 },
+        { opacity: 1, easing: SOFT, offset: f * .2 },
+        { opacity: 1, easing: SOFT, offset: f * .5 },
+        { opacity: 0, offset: f * .96 },
+        { opacity: 0, offset: 1 }
+      ], { duration: total, iterations: Infinity, easing: "linear" });
     });
   }
 
@@ -1426,6 +1604,22 @@
     pills(chips, push);
     document.body.classList.add("sheet-open");
   }
+  /* тот же чат, что открывает свайп («Обсудить»/«Перенести»): реплика агента
+     слева, подсказки-пилюли, полноэкранная шторка — а не узкий композер
+     только с полем ввода. Ответ (пилюля или свой текст) сразу закрывает
+     чат и уходит в думает()/think() самой карточки, а не в общий FAQ-чат */
+  var askAnswer = null;
+  function openNudgeAsk(message, onAnswer){
+    mode = "ask";
+    askAnswer = onAnswer;
+    msgsBox.innerHTML = "";
+    chatIn.value = "";
+    chatIn.placeholder = "Ответьте или выберите вариант";
+    syncSend();
+    bubble("bub-agent", message);
+    pills(["Да", "Нет"], function(t){ closeSheet(); onAnswer(t); });
+    document.body.classList.add("sheet-open");
+  }
   /* набор без списка сообщений: поднимаем только поле и клавиатуру,
      а экран за ними гасим теми же классами, что при лонг-тапе */
   var composeSubmit = null, composeKeep = null;
@@ -1485,6 +1679,12 @@
       var cb = composeSubmit;
       closeCompose();
       if (cb && t.trim()) cb(t.trim());
+      return;
+    }
+    if (mode === "ask"){
+      var ask = askAnswer;
+      closeSheet();
+      if (ask && t.trim()) ask(t.trim());
       return;
     }
     push(t);
@@ -1574,23 +1774,11 @@
       face.style.height = faceH ? faceH + "px" : "";
       setTimeout(function(){ if (!deck.classList.contains("open")) face.style.height = ""; }, 460);
     }
-    /* после раскрытия подтягиваем страницу вниз: показываем открытые карточки
-       и попутно растягиваем закат, он привязан к прогрессу прокрутки */
-    function scrollAfterOpen(){
-      var sc = document.getElementById("scroller");
-      if (!sc) return;
-      var grow = rest.scrollHeight - (faceH || 0);
-      if (grow < 40) return;
-      var to = Math.min(sc.scrollTop + grow, sc.scrollHeight - sc.clientHeight);
-      if (sc.scrollTo) sc.scrollTo({ top: to, behavior: "smooth" });
-      else sc.scrollTop = to;
-    }
+    /* раскрытие теперь чисто визуальное: карточки выпадают на месте,
+       страница сама больше никуда не едет */
     deck.addEventListener("click", function(e){
       if (e.target.closest("[data-hide]")){ close(); return; }
-      if (!deck.classList.contains("open")){
-        open();
-        setTimeout(scrollAfterOpen, 300);
-      }
+      if (!deck.classList.contains("open")) open();
     });
   });
 
@@ -1703,15 +1891,12 @@
   (function(){
     var frame = document.getElementById("frame");
     if (!frame) return;
-    var OPEN = 206, LOCK = 8;
-    /* в покое группа должна уйти за правый край рамки: от её левого края (183)
-       до 393 ровно 210, плюс 4 запаса. Отставание меньше 4% — действия читаются
-       приклеенными к карточке и уходят точно так же, как появились */
-    var PARA = (OPEN + 8) / OPEN;
+    var LOCK = 8;
     var SLOW = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var ICO = {
       talk: '<svg viewBox="4 4 24 24" fill="none"><path d="M16.4902 24.5723C14.3353 24.5723 12.4017 24.1816 10.6895 23.4004C10.1882 23.765 9.60872 24.0514 8.95117 24.2598C8.29362 24.4681 7.62956 24.5723 6.95898 24.5723C6.74414 24.5723 6.57812 24.5267 6.46094 24.4355C6.34375 24.3444 6.28516 24.2305 6.28516 24.0938C6.29167 23.9635 6.36979 23.8333 6.51953 23.7031C6.8125 23.4297 7.02409 23.1562 7.1543 22.8828C7.28451 22.6029 7.34961 22.2741 7.34961 21.8965C7.34961 21.5449 7.27799 21.2129 7.13477 20.9004C6.99154 20.5814 6.8125 20.2493 6.59766 19.9043C6.38281 19.5592 6.16797 19.1719 5.95312 18.7422C5.73828 18.306 5.55924 17.7982 5.41602 17.2188C5.27279 16.6393 5.20117 15.959 5.20117 15.1777C5.20117 13.8171 5.47786 12.5638 6.03125 11.418C6.59115 10.2721 7.37565 9.2793 8.38477 8.43945C9.40039 7.5931 10.5951 6.9388 11.9688 6.47656C13.349 6.01432 14.8561 5.7832 16.4902 5.7832C18.1243 5.7832 19.6283 6.01432 21.002 6.47656C22.3822 6.9388 23.5801 7.5931 24.5957 8.43945C25.6113 9.2793 26.3958 10.2721 26.9492 11.418C27.5091 12.5638 27.7891 13.8171 27.7891 15.1777C27.7891 16.5384 27.5091 17.7917 26.9492 18.9375C26.3958 20.0833 25.6113 21.0794 24.5957 21.9258C23.5866 22.7656 22.3919 23.4167 21.0117 23.8789C19.638 24.3411 18.1309 24.5723 16.4902 24.5723ZM11.8418 16.6816C12.2454 16.6816 12.5905 16.5384 12.877 16.252C13.1634 15.9655 13.3066 15.6204 13.3066 15.2168C13.3066 14.8132 13.1602 14.4681 12.8672 14.1816C12.5807 13.8952 12.2389 13.752 11.8418 13.752C11.4382 13.752 11.0931 13.8952 10.8066 14.1816C10.5202 14.4681 10.377 14.8132 10.377 15.2168C10.377 15.6204 10.5202 15.9655 10.8066 16.252C11.0931 16.5384 11.4382 16.6816 11.8418 16.6816ZM16.5391 16.6816C16.9492 16.6816 17.2943 16.5384 17.5742 16.252C17.8607 15.9655 18.0039 15.6204 18.0039 15.2168C18.0039 14.8132 17.8607 14.4681 17.5742 14.1816C17.2943 13.8952 16.9492 13.752 16.5391 13.752C16.1354 13.752 15.7904 13.8952 15.5039 14.1816C15.224 14.4681 15.084 14.8132 15.084 15.2168C15.084 15.6204 15.224 15.9655 15.5039 16.252C15.7904 16.5384 16.1354 16.6816 16.5391 16.6816ZM21.2461 16.6816C21.6432 16.6816 21.985 16.5384 22.2715 16.252C22.5645 15.9655 22.7109 15.6204 22.7109 15.2168C22.7109 14.8132 22.5645 14.4681 22.2715 14.1816C21.985 13.8952 21.6432 13.752 21.2461 13.752C20.8424 13.752 20.4974 13.8952 20.2109 14.1816C19.9245 14.4681 19.7812 14.8132 19.7812 15.2168C19.7812 15.6204 19.9245 15.9655 20.2109 16.252C20.4974 16.5384 20.8424 16.6816 21.2461 16.6816Z" fill="#1CA658"/></svg>',
-      move: '<svg viewBox="4 4 24 24" fill="none"><path d="M16.5 25.2949C15.3086 25.2949 14.1921 25.0703 13.1504 24.6211C12.1087 24.1784 11.1908 23.5632 10.3965 22.7754C9.60872 21.9811 8.99023 21.0632 8.54102 20.0215C8.09831 18.9798 7.87695 17.8633 7.87695 16.6719C7.87695 15.4805 8.09831 14.3639 8.54102 13.3223C8.99023 12.2806 9.60872 11.3659 10.3965 10.5781C11.1908 9.78385 12.1087 9.16536 13.1504 8.72266C14.1921 8.27344 15.3086 8.04883 16.5 8.04883C17.0208 8.04883 17.5286 8.0944 18.0234 8.18555C18.5182 8.27669 18.9902 8.4069 19.4395 8.57617C19.5762 8.62826 19.7161 8.70964 19.8594 8.82031C20.0026 8.93099 20.071 9.11003 20.0645 9.35742C20.0645 9.55924 20.0059 9.72526 19.8887 9.85547C19.778 9.97917 19.638 10.0605 19.4688 10.0996C19.2995 10.1322 19.1335 10.1159 18.9707 10.0508C18.5801 9.90755 18.1797 9.80013 17.7695 9.72852C17.3594 9.65039 16.9362 9.61133 16.5 9.61133C15.5299 9.61133 14.6185 9.79362 13.7656 10.1582C12.9128 10.5228 12.1608 11.0306 11.5098 11.6816C10.8652 12.3262 10.3607 13.0749 9.99609 13.9277C9.63151 14.7806 9.44922 15.6921 9.44922 16.6621C9.44922 17.6387 9.63151 18.5534 9.99609 19.4062C10.3607 20.2591 10.8652 21.0078 11.5098 21.6523C12.1608 22.2969 12.9128 22.8014 13.7656 23.166C14.6185 23.5306 15.5299 23.7129 16.5 23.7129C17.4766 23.7129 18.3913 23.5306 19.2441 23.166C20.097 22.8014 20.8457 22.2969 21.4902 21.6523C22.1348 21.0078 22.6393 20.2591 23.0039 19.4062C23.3685 18.5534 23.5508 17.6387 23.5508 16.6621C23.5508 16.4473 23.6289 16.265 23.7852 16.1152C23.9414 15.959 24.127 15.8809 24.3418 15.8809C24.5566 15.8809 24.7389 15.959 24.8887 16.1152C25.0449 16.265 25.123 16.4473 25.123 16.6621C25.123 17.86 24.8984 18.9798 24.4492 20.0215C24.0065 21.0632 23.388 21.9811 22.5938 22.7754C21.806 23.5632 20.8913 24.1784 19.8496 24.6211C18.8079 25.0703 17.6914 25.2949 16.5 25.2949ZM19.1465 9.2207L15.5918 5.68555C15.5137 5.60742 15.4583 5.51953 15.4258 5.42188C15.3932 5.32422 15.377 5.22331 15.377 5.11914C15.377 4.89779 15.4486 4.70898 15.5918 4.55273C15.7415 4.39648 15.9238 4.31836 16.1387 4.31836C16.36 4.31836 16.5521 4.39974 16.7148 4.5625L20.7285 8.64453C20.8978 8.80729 20.9824 9.0026 20.9824 9.23047C20.9824 9.34115 20.9629 9.44531 20.9238 9.54297C20.8848 9.64062 20.8197 9.73177 20.7285 9.81641L16.7051 13.8594C16.5488 14.0091 16.36 14.084 16.1387 14.084C15.9238 14.084 15.7415 14.0091 15.5918 13.8594C15.4486 13.7096 15.377 13.5208 15.377 13.293C15.377 13.1953 15.3932 13.0977 15.4258 13C15.4583 12.9023 15.5169 12.8177 15.6016 12.7461L19.1465 9.2207Z" fill="#1CA658"/></svg>'
+      move: '<svg viewBox="4 4 24 24" fill="none"><path d="M16.5 25.2949C15.3086 25.2949 14.1921 25.0703 13.1504 24.6211C12.1087 24.1784 11.1908 23.5632 10.3965 22.7754C9.60872 21.9811 8.99023 21.0632 8.54102 20.0215C8.09831 18.9798 7.87695 17.8633 7.87695 16.6719C7.87695 15.4805 8.09831 14.3639 8.54102 13.3223C8.99023 12.2806 9.60872 11.3659 10.3965 10.5781C11.1908 9.78385 12.1087 9.16536 13.1504 8.72266C14.1921 8.27344 15.3086 8.04883 16.5 8.04883C17.0208 8.04883 17.5286 8.0944 18.0234 8.18555C18.5182 8.27669 18.9902 8.4069 19.4395 8.57617C19.5762 8.62826 19.7161 8.70964 19.8594 8.82031C20.0026 8.93099 20.071 9.11003 20.0645 9.35742C20.0645 9.55924 20.0059 9.72526 19.8887 9.85547C19.778 9.97917 19.638 10.0605 19.4688 10.0996C19.2995 10.1322 19.1335 10.1159 18.9707 10.0508C18.5801 9.90755 18.1797 9.80013 17.7695 9.72852C17.3594 9.65039 16.9362 9.61133 16.5 9.61133C15.5299 9.61133 14.6185 9.79362 13.7656 10.1582C12.9128 10.5228 12.1608 11.0306 11.5098 11.6816C10.8652 12.3262 10.3607 13.0749 9.99609 13.9277C9.63151 14.7806 9.44922 15.6921 9.44922 16.6621C9.44922 17.6387 9.63151 18.5534 9.99609 19.4062C10.3607 20.2591 10.8652 21.0078 11.5098 21.6523C12.1608 22.2969 12.9128 22.8014 13.7656 23.166C14.6185 23.5306 15.5299 23.7129 16.5 23.7129C17.4766 23.7129 18.3913 23.5306 19.2441 23.166C20.097 22.8014 20.8457 22.2969 21.4902 21.6523C22.1348 21.0078 22.6393 20.2591 23.0039 19.4062C23.3685 18.5534 23.5508 17.6387 23.5508 16.6621C23.5508 16.4473 23.6289 16.265 23.7852 16.1152C23.9414 15.959 24.127 15.8809 24.3418 15.8809C24.5566 15.8809 24.7389 15.959 24.8887 16.1152C25.0449 16.265 25.123 16.4473 25.123 16.6621C25.123 17.86 24.8984 18.9798 24.4492 20.0215C24.0065 21.0632 23.388 21.9811 22.5938 22.7754C21.806 23.5632 20.8913 24.1784 19.8496 24.6211C18.8079 25.0703 17.6914 25.2949 16.5 25.2949ZM19.1465 9.2207L15.5918 5.68555C15.5137 5.60742 15.4583 5.51953 15.4258 5.42188C15.3932 5.32422 15.377 5.22331 15.377 5.11914C15.377 4.89779 15.4486 4.70898 15.5918 4.55273C15.7415 4.39648 15.9238 4.31836 16.1387 4.31836C16.36 4.31836 16.5521 4.39974 16.7148 4.5625L20.7285 8.64453C20.8978 8.80729 20.9824 9.0026 20.9824 9.23047C20.9824 9.34115 20.9629 9.44531 20.9238 9.54297C20.8848 9.64062 20.8197 9.73177 20.7285 9.81641L16.7051 13.8594C16.5488 14.0091 16.36 14.084 16.1387 14.084C15.9238 14.084 15.7415 14.0091 15.5918 13.8594C15.4486 13.7096 15.377 13.5208 15.377 13.293C15.377 13.1953 15.3932 13.0977 15.4258 13C15.4583 12.9023 15.5169 12.8177 15.6016 12.7461L19.1465 9.2207Z" fill="#1CA658"/></svg>',
+      book: '<svg viewBox="0 0 24 24" fill="none"><path d="M5.16382 19.709C4.26945 19.709 3.59725 19.4868 3.14722 19.0425C2.70288 18.6038 2.48071 17.943 2.48071 17.0601V6.62671C2.48071 5.74373 2.70288 5.08293 3.14722 4.64429C3.59725 4.19995 4.26945 3.97778 5.16382 3.97778H16.8362C17.7306 3.97778 18.3999 4.19995 18.8442 4.64429C19.2886 5.08293 19.5107 5.74373 19.5107 6.62671V11.5059C19.4025 11.4888 19.2914 11.4774 19.1775 11.4717C19.0636 11.466 18.9496 11.4631 18.8357 11.4631C18.7218 11.4631 18.6078 11.4688 18.4939 11.4802C18.38 11.4859 18.2603 11.4945 18.135 11.5059V9.0791C18.135 8.68604 18.0325 8.38981 17.8274 8.19043C17.6223 7.98535 17.3289 7.88281 16.9473 7.88281H5.03564C4.65967 7.88281 4.36914 7.98535 4.16406 8.19043C3.95898 8.38981 3.85645 8.68604 3.85645 9.0791V17.137C3.85645 17.53 3.95898 17.8263 4.16406 18.0256C4.36914 18.2307 4.65967 18.3333 5.03564 18.3333H13.5037C13.5606 18.5782 13.6347 18.8146 13.7258 19.0425C13.8227 19.276 13.9338 19.4982 14.0591 19.709H5.16382ZM9.3252 10.9504C9.17708 10.9504 9.0717 10.9248 9.00903 10.8735C8.95207 10.8166 8.92358 10.714 8.92358 10.5659V10.0618C8.92358 9.91366 8.95207 9.81112 9.00903 9.75415C9.0717 9.69718 9.17708 9.6687 9.3252 9.6687H9.82935C9.97746 9.6687 10.08 9.69718 10.137 9.75415C10.1996 9.81112 10.231 9.91366 10.231 10.0618V10.5659C10.231 10.714 10.1996 10.8166 10.137 10.8735C10.08 10.9248 9.97746 10.9504 9.82935 10.9504H9.3252ZM12.1707 10.9504C12.0168 10.9504 11.9115 10.9248 11.8545 10.8735C11.7975 10.8166 11.769 10.714 11.769 10.5659V10.0618C11.769 9.91366 11.7975 9.81112 11.8545 9.75415C11.9115 9.69718 12.0168 9.6687 12.1707 9.6687H12.6663C12.8201 9.6687 12.9255 9.69718 12.9824 9.75415C13.0394 9.81112 13.0679 9.91366 13.0679 10.0618V10.5659C13.0679 10.714 13.0394 10.8166 12.9824 10.8735C12.9255 10.9248 12.8201 10.9504 12.6663 10.9504H12.1707ZM15.0076 10.9504C14.8538 10.9504 14.7484 10.9248 14.6914 10.8735C14.6344 10.8166 14.606 10.714 14.606 10.5659V10.0618C14.606 9.91366 14.6344 9.81112 14.6914 9.75415C14.7484 9.69718 14.8538 9.6687 15.0076 9.6687H15.5117C15.6598 9.6687 15.7624 9.69718 15.8193 9.75415C15.8763 9.81112 15.9048 9.91366 15.9048 10.0618V10.5659C15.9048 10.714 15.8763 10.8166 15.8193 10.8735C15.7624 10.9248 15.6598 10.9504 15.5117 10.9504H15.0076ZM6.48828 13.7446C6.33447 13.7446 6.22909 13.719 6.17212 13.6677C6.11515 13.6108 6.08667 13.5082 6.08667 13.3601V12.856C6.08667 12.7078 6.11515 12.6082 6.17212 12.5569C6.22909 12.4999 6.33447 12.4714 6.48828 12.4714H6.99243C7.14054 12.4714 7.24308 12.4999 7.30005 12.5569C7.35701 12.6082 7.3855 12.7078 7.3855 12.856V13.3601C7.3855 13.5082 7.35701 13.6108 7.30005 13.6677C7.24308 13.719 7.14054 13.7446 6.99243 13.7446H6.48828ZM9.3252 13.7446C9.17708 13.7446 9.0717 13.719 9.00903 13.6677C8.95207 13.6108 8.92358 13.5082 8.92358 13.3601V12.856C8.92358 12.7078 8.95207 12.6082 9.00903 12.5569C9.0717 12.4999 9.17708 12.4714 9.3252 12.4714H9.82935C9.97746 12.4714 10.08 12.4999 10.137 12.5569C10.1996 12.6082 10.231 12.7078 10.231 12.856V13.3601C10.231 13.5082 10.1996 13.6108 10.137 13.6677C10.08 13.719 9.97746 13.7446 9.82935 13.7446H9.3252ZM12.1707 13.7446C12.0168 13.7446 11.9115 13.719 11.8545 13.6677C11.7975 13.6108 11.769 13.5082 11.769 13.3601V12.856C11.769 12.7078 11.7975 12.6082 11.8545 12.5569C11.9115 12.4999 12.0168 12.4714 12.1707 12.4714H12.6663C12.8201 12.4714 12.9255 12.4999 12.9824 12.5569C13.0394 12.6082 13.0679 12.7078 13.0679 12.856V13.3601C13.0679 13.5082 13.0394 13.6108 12.9824 13.6677C12.9255 13.719 12.8201 13.7446 12.6663 13.7446H12.1707ZM6.48828 16.5474C6.33447 16.5474 6.22909 16.5189 6.17212 16.4619C6.11515 16.4049 6.08667 16.3024 6.08667 16.1543V15.6501C6.08667 15.502 6.11515 15.4023 6.17212 15.3511C6.22909 15.2941 6.33447 15.2656 6.48828 15.2656H6.99243C7.14054 15.2656 7.24308 15.2941 7.30005 15.3511C7.35701 15.4023 7.3855 15.502 7.3855 15.6501V16.1543C7.3855 16.3024 7.35701 16.4049 7.30005 16.4619C7.24308 16.5189 7.14054 16.5474 6.99243 16.5474H6.48828ZM9.3252 16.5474C9.17708 16.5474 9.0717 16.5189 9.00903 16.4619C8.95207 16.4049 8.92358 16.3024 8.92358 16.1543V15.6501C8.92358 15.502 8.95207 15.4023 9.00903 15.3511C9.0717 15.2941 9.17708 15.2656 9.3252 15.2656H9.82935C9.97746 15.2656 10.08 15.2941 10.137 15.3511C10.1996 15.4023 10.231 15.502 10.231 15.6501V16.1543C10.231 16.3024 10.1996 16.4049 10.137 16.4619C10.08 16.5189 9.97746 16.5474 9.82935 16.5474H9.3252ZM12.1707 16.5474C12.0168 16.5474 11.9115 16.5189 11.8545 16.4619C11.7975 16.4049 11.769 16.3024 11.769 16.1543V15.6501C11.769 15.502 11.7975 15.4023 11.8545 15.3511C11.9115 15.2941 12.0168 15.2656 12.1707 15.2656H12.6663C12.8201 15.2656 12.9255 15.2941 12.9824 15.3511C13.0394 15.4023 13.0679 15.502 13.0679 15.6501V16.1543C13.0679 16.3024 13.0394 16.4049 12.9824 16.4619C12.9255 16.5189 12.8201 16.5474 12.6663 16.5474H12.1707ZM18.8357 21.3154C18.2432 21.3154 17.685 21.2015 17.1609 20.9736C16.6368 20.7515 16.1754 20.441 15.7766 20.0422C15.3778 19.6435 15.0645 19.182 14.8367 18.658C14.6088 18.1339 14.4949 17.5728 14.4949 16.9746C14.4949 16.3765 14.6088 15.8182 14.8367 15.2998C15.0645 14.7757 15.3778 14.3143 15.7766 13.9155C16.1754 13.5111 16.6368 13.1978 17.1609 12.9756C17.685 12.7477 18.2432 12.6338 18.8357 12.6338C19.4338 12.6338 19.995 12.7477 20.519 12.9756C21.0431 13.1978 21.5046 13.5082 21.9033 13.907C22.3021 14.3057 22.6125 14.7672 22.8347 15.2913C23.0626 15.8153 23.1765 16.3765 23.1765 16.9746C23.1765 17.5671 23.0626 18.1253 22.8347 18.6494C22.6069 19.1735 22.2907 19.6349 21.8862 20.0337C21.4875 20.4325 21.026 20.7458 20.502 20.9736C19.9779 21.2015 19.4224 21.3154 18.8357 21.3154ZM18.323 19.3159C18.5224 19.3159 18.6705 19.2476 18.7673 19.1108L21.2539 15.6672C21.2938 15.6103 21.3223 15.5533 21.3394 15.4963C21.3621 15.4394 21.3735 15.3881 21.3735 15.3425C21.3735 15.1887 21.3194 15.0634 21.2112 14.9666C21.1029 14.864 20.9776 14.8127 20.8352 14.8127C20.6472 14.8127 20.4963 14.8925 20.3823 15.052L18.2974 17.9402L17.2463 16.8037C17.2008 16.7524 17.1438 16.7097 17.0754 16.6755C17.0071 16.6414 16.9273 16.6243 16.8362 16.6243C16.6881 16.6243 16.5627 16.6755 16.4602 16.7781C16.3577 16.8806 16.3064 17.0088 16.3064 17.1626C16.3064 17.2196 16.3178 17.2851 16.3406 17.3591C16.3634 17.4275 16.3975 17.4902 16.4431 17.5471L17.8958 19.1279C17.947 19.1906 18.0125 19.2362 18.0923 19.2646C18.172 19.2988 18.2489 19.3159 18.323 19.3159Z" fill="#1CA658"/></svg>'
     };
     var opened = null, g = null;
     /* пилюля с иконкой и подпись под ней */
@@ -1719,6 +1904,9 @@
       return '<button class="sw-act" data-act="' + key + '" aria-label="' + cap + '">' +
              '<span>' + ICO[key] + '</span><i class="sw-cap">' + cap + '</i></button>';
     }
+    /* ход считаем по числу пилюль: у карточек с бронью (data-book) их три,
+       у остальных две. Отступ в покое тот же принцип — плюс 4% на всю ширину */
+    function openFor(n){ return n * 81 + (n - 1) * 16; }
 
     function cardOf(node){
       var ev = node && node.closest ? node.closest(".pane .ev") : null;
@@ -1733,15 +1921,21 @@
       body.className = "sw-body";
       while (ev.firstChild) body.appendChild(ev.firstChild);
       ev.appendChild(body);
+      var hasBook = ev.hasAttribute("data-book");
       var acts = document.createElement("div");
       acts.className = "sw-acts";
       acts.innerHTML =
         act("talk", "\u041e\u0431\u0441\u0443\u0434\u0438\u0442\u044c") +
-        act("move", "\u041f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438");
+        act("move", "\u041f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438") +
+        (hasBook ? act("book", "\u0411\u0440\u043e\u043d\u044c") : "");
       ev.appendChild(acts);
-      var st = ev.__sw = { ev: ev, body: body, acts: acts, x: 0, raf: 0 };
+      var n = hasBook ? 3 : 2;
+      var open = openFor(n);
+      var st = ev.__sw = { ev: ev, body: body, acts: acts, x: 0, raf: 0,
+                            open: open, para: (open + 8) / open };
       acts.querySelector('[data-act="talk"]').onclick = function(e){ e.stopPropagation(); talk(st); };
       acts.querySelector('[data-act="move"]').onclick = function(e){ e.stopPropagation(); move(st); };
+      if (hasBook) acts.querySelector('[data-act="book"]').onclick = function(e){ e.stopPropagation(); book(st); };
       place(st);
       paint(st, 0);
       return st;
@@ -1775,15 +1969,15 @@
     function paint(st, x){
       st.x = x;
       st.body.style.transform = "translate3d(" + (-x) + "px,0,0)";
-      st.acts.style.transform = "translate3d(" + ((OPEN - x) * PARA) + "px,0,0)";
-      reveal(st, x / OPEN);
+      st.acts.style.transform = "translate3d(" + ((st.open - x) * st.para) + "px,0,0)";
+      reveal(st, x / st.open);
     }
     /* резинка за пределами хода: чем дальше тянут, тем меньше отдача */
-    function rub(d){ return (1 - 1 / (d * .55 / OPEN + 1)) * OPEN; }
-    function band(x){
-      if (x < 0) return -rub(-x);
-      if (x <= OPEN) return x;
-      return OPEN + rub(x - OPEN);
+    function rub(d, open){ return (1 - 1 / (d * .55 / open + 1)) * open; }
+    function band(st, x){
+      if (x < 0) return -rub(-x, st.open);
+      if (x <= st.open) return x;
+      return st.open + rub(x - st.open, st.open);
     }
     function cancel(st){ if (st.raf){ cancelAnimationFrame(st.raf); st.raf = 0; } }
     function anim(st, to, v0){
@@ -1802,7 +1996,7 @@
     }
     function open(st, v){
       if (opened && opened !== st) close(opened);
-      opened = st; st.ev.classList.add("sw-on"); anim(st, OPEN, v);
+      opened = st; st.ev.classList.add("sw-on"); anim(st, st.open, v);
     }
     function close(st, v){
       if (!st) return;
@@ -1834,6 +2028,19 @@
       openAskSheet("\u041d\u0430 \u043a\u0430\u043a\u043e\u0435 \u0432\u0440\u0435\u043c\u044f \u043f\u0435\u0440\u0435\u043d\u0435\u0441\u0442\u0438 " + q(t) + "?", PLAN_TIME);
       lift(st.ev);
     }
+    /* бронь: под картинкой она больше не висит постоянно, а раскрывается
+       по этой кнопке — тот же initBooking() ниже ведёт весь цикл дальше */
+    function book(st){
+      close(st);
+      var row = st.ev.querySelector("[data-bookrow]");
+      if (!row) return;
+      row.hidden = false;
+      row.classList.remove("fade");
+      var ask = row.querySelector("[data-bookask]"), state = row.querySelector("[data-bookstate]");
+      if (ask) ask.hidden = false;
+      if (state) state.hidden = true;
+      lift(st.ev);
+    }
 
     frame.addEventListener("pointerdown", function(e){
       if (e.pointerType === "mouse" && e.button !== 0) return;
@@ -1860,7 +2067,7 @@
       }
       var dt = e.timeStamp - g.lt;
       if (dt > 0){ g.v = (e.clientX - g.lx) / dt; g.lx = e.clientX; g.lt = e.timeStamp; }
-      paint(g.st, band(g.base - dx));
+      paint(g.st, band(g.st, g.base - dx));
     }, { passive: true });
     function release(){
       if (!g) return;
@@ -1868,7 +2075,7 @@
       g = null;
       if (!lock){ if (st.x > 1) close(st); return; }
       /* бросок решает направление, спокойное отпускание — половина хода */
-      var toOpen = v < -.45 ? true : v > .45 ? false : st.x > OPEN * .5;
+      var toOpen = v < -.45 ? true : v > .45 ? false : st.x > st.open * .5;
       if (toOpen) open(st, v); else close(st, v);
     }
     ["pointerup", "pointercancel", "pointerleave"].forEach(function(n){
@@ -2000,10 +2207,14 @@
     return el.animate(kf, { duration: fr.length / 60 * 1000, fill: "forwards", easing: "linear" }).finished;
   }
   [].forEach.call(document.querySelectorAll("[data-nudge]"), function(n){
-    var bub = n.querySelector("[data-nudgebtn]");
+    /* bub — внешний контейнер с классами состояний; текст и крестик — свои
+       кнопки внутри него, каждая со своим кликом */
+    var bub = n.querySelector(".abub");
+    var msgBtn = n.querySelector("[data-nudgebtn]");
+    var xBtn = n.querySelector("[data-nudgex]");
     var tx = n.querySelector("[data-nudgetx]");
     var sp = n.querySelector(".sp");
-    var HOLD = 3600, busy = false, added = false;
+    var busy = false, added = false;
     /* тексты и поведение задаются атрибутами: у каждого места свой сценарий,
        конная прогулка остаётся сценарием по умолчанию */
     var DONE = n.getAttribute("data-done") || "Записал конную прогулку на 17:00, добавил в план";
@@ -2113,7 +2324,7 @@
           var reply = agentReply(answer);
           setState("st-msg");
           say(reply);
-          fold = setTimeout(hide, HOLD + reply.length * 18);
+          /* больше не сворачивается сама — висит, пока не закроют крестиком */
           return;
         }
         if (stage === 0){ stage = 1; followUp(); }
@@ -2138,7 +2349,7 @@
       say(DONE);
       added = true;
       if (makeEvent) addEvent();
-      fold = setTimeout(vanish, HOLD + DONE.length * 18);
+      /* итог остаётся на экране: разговор закрывает гость, крестиком */
     }
     function vanish(){
       dismissed = true;
@@ -2163,7 +2374,8 @@
         (proto ? proto.querySelector("[data-bookrow]").outerHTML : "");
       var row = ev.querySelector("[data-bookrow]");
       if (row){
-        row.hidden = false;
+        /* как у остальных: бронь не висит под фото, а раскрывается по свайпу */
+        row.hidden = true;
         row.classList.remove("fade");
         row.querySelector("[data-bookask]").hidden = false;
         row.querySelector("[data-bookstate]").hidden = true;
@@ -2195,31 +2407,38 @@
       clearTimeout(fold);
       setState("st-msg");
       fitRadius();
-      fold = setTimeout(hide, HOLD);
+      /* висит на экране, пока не открыли чат или не закрыли крестиком */
     };
-    n.__dismiss = function(){ dismissed = true; clearTimeout(fold); n.hidden = true; };
+    /* крестик закрывает с тем же мягким выдохом, что и итог раньше уходил сам:
+       vanish() гасит карточку и только потом прячет весь блок */
+    n.__dismiss = function(){ clearTimeout(fold); vanish(); };
     nudgeFolders.push(function(){
       clearTimeout(fold);
       if (bub.classList.contains("st-msg")) hide();
     });
-    bub.onclick = function(){
+    /* тап по тексту открывает чат — крестик рядом просто скрывает сообщение,
+       не открывая его */
+    msgBtn.onclick = function(){
       if (busy) return;
       clearTimeout(fold);
-      setState("st-wait", "float");
-      /* подтягиваем экран только если сообщение вне удобной зоны:
-         выше края или под композером/клавиатурой */
+      /* состояние карточки не трогаем здесь: пока открыт чат, её и не видно
+         под шторкой, а если закрыть чат не ответив — карточка просто
+         останется как была, а не зависнет в «ждёт» навсегда */
+      /* тот же чат, что и у свайпа: реплика агента повторяет вопрос карточки,
+         ответ уходит в think() и думает уже сама карточка на странице */
+      openNudgeAsk(tx.textContent, function(answer){ think(answer); });
+      /* та же подтяжка страницы, что у свайпа: после чата карточка сама
+         оказывается наверху экрана */
       var sc = document.getElementById("scroller");
-      var fr = document.getElementById("frame").getBoundingClientRect();
-      var br = bub.getBoundingClientRect();
-      var vis = sc.clientHeight || fr.height;
-      var off = br.top - fr.top;
-      if (off < 100 || (br.bottom - fr.top) > vis - 320){
-        var target = Math.max(0, sc.scrollTop + off - 180);
-        if (sc.scrollTo) sc.scrollTo({ top: target, behavior: "smooth" });
-        else sc.scrollTop = target;
+      if (sc){
+        setTimeout(function(){
+          var top = sc.scrollTop + n.getBoundingClientRect().top - sc.getBoundingClientRect().top - 8;
+          if (sc.scrollTo) sc.scrollTo({ top: top, behavior: "smooth" });
+          else sc.scrollTop = top;
+        }, 90);
       }
-      openCompose("Ответьте агенту", n, function(answer){ think(answer); }, n.__dismiss);
     };
+    xBtn.onclick = function(e){ e.stopPropagation(); n.__dismiss(); };
     setState("st-msg");
   });
 
