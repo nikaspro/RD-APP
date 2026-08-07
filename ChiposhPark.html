@@ -14,6 +14,13 @@
     --hair:#CCCCCC;
     --ph:#CCCCCC;
     --lime:#EFFF5D;
+  /* успех: галочка копирования, «Зарегистрирован», пилюли свайпа */
+  --ok:#1CA658;
+  --ok-bg:#D9FFD9;
+  /* акцент бегущего блеска по тексту («проверяю наличие», «оформляю талоны») */
+  --shine:#34DDC6;
+  /* спокойная подложка: пересадка в билете и всё, что читается как пауза */
+  --surface:rgba(6,7,8,.03);
     --ease:cubic-bezier(.6,0,.4,1);
     /* --- типографика: 8 ролей на весь продукт ---
        display 38 / title-xl 34 / title-l 28 / title-m 20 — заголовки, --fh
@@ -179,83 +186,124 @@
   .room .navs{margin-top:4px}
   .room .nav{height:42px}
   .navs{margin-top:8px}
-  /* --- авиабилет: замеры из Frame.svg, чип 167×24 r12, дорожка из 9 точек
-     шагом 15 от x146.5, гейт-пилюля 53×26 r13 --- */
-  /* воздух до соседних блоков */
-  .tkt{padding-top:40px;padding-bottom:40px}
-  .tkt-top{display:flex;align-items:center;gap:15px}
-  /* шильдик регистрации: замеры из Frame.svg — бокс 24 при радиусе 12,
-     поля по 10, текст 13.5 регуляром — как у остальных чипов */
+  /* --- авиабилет ---
+     Компактная раскладка: служебное собрано в строку меты, код аэропорта живёт
+     вместе с датой, время в пути стоит на дорожке. Сегмент 150px вместо 306.
+
+     Цвет текста — три ступени, все на токенах. Раньше здесь было семь оттенков
+     серого литералами (#A7A7A7, #7D7D7D, #BCBCBC, #595959 …), они почти не
+     отличались друг от друга и билет рябил:
+       --ink    — значения: время, код брони, итог регистрации
+       --ink40  — подписи: город, «Бронь», мета, время в пути
+       --ink30  — служебное: код аэропорта с датой, +1, иконка, точки дорожки */
+  .tkt{padding:40px 0}
+  /* шапка: один шильдик состояния на всю поездку */
+  .tkt-head{display:flex}
+  /* Кода брони в билете нет: регистрация проходит здесь же, агентом, и гостю
+     негде его вводить. Билет начинается сразу с рейса */
+  /* значение справа от подписи ряда: у пассажиров это иконки людей */
+  .tkt .nav span{display:flex;align-items:center;gap:3px;margin-left:auto;
+                 color:var(--ink30)}
+  .tkt .nav span svg{display:block;width:17px;height:17px}
+  .tkt-leg{margin-top:22px}
+  .tkt-leg:first-child{margin-top:0}
   .tkt-badge{flex:0 0 auto;height:24px;display:flex;align-items:center;padding:0 10px;
              border-radius:12px;background:var(--lime);color:var(--ink);
              font:var(--t-caption);white-space:nowrap}
-  .tkt-no{font:400 16px/1 var(--ft);color:#7D7D7D}
-  /* строка брони: код рейса нужен на стойке и в поддержке, поэтому он крупный
-     и с копированием — тап по коду кладёт его в буфер */
-  .tkt-pnr{display:flex;align-items:center;gap:8px;margin-top:14px}
-  .tkt-pnr u{text-decoration:none;font:400 16px/1 var(--ft);color:#A7A7A7}
-  .tkt-pnr b{font:var(--t-body-strong);color:var(--ink);letter-spacing:.4px}
-  .tkt-copy{width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;
-            display:grid;place-items:center;color:#BCBCBC}
-  .tkt-copy svg{display:block;width:16px;height:16px}
-  .tkt-copy.done{color:#1CA658}
-  .tkt-pax{margin-left:auto;font:400 16px/1 var(--ft);color:#7D7D7D}
-  .tkt-route{display:flex;align-items:flex-start;justify-content:space-between;margin-top:19px}
+  /* после регистрации шильдик меняет смысл: срок больше не нужен, нужен факт */
+  .tkt-badge.done{background:var(--ok-bg);color:var(--ok)}
+  /* пока регистрация не открыта или уже закрыта — шильдик нейтральный:
+     это справка, а не действие, и лаймом её подсвечивать незачем */
+  .tkt-badge.soon{background:var(--ink10);color:var(--ink40)}
+  /* Шапка сегмента как строка онлайн-табло: слева номер рейса, справа статус
+     теми же словами, что на сайте аэропорта. Терминал с гейтом сюда не лезут —
+     они внизу, в ряду аэропорта: нужны в другой момент, уже перед выходом */
+  .tkt-meta{display:flex;align-items:baseline;gap:10px}
+  .tkt-no{font:var(--t-body-strong);color:var(--ink)}
+  .tkt-status{margin-left:auto;font:var(--t-caption);color:var(--ink40);white-space:nowrap}
+  /* идёт прямо сейчас — регистрация, посадка */
+  .tkt-status.live{color:var(--ok)}
+  .tkt-status.warn{color:#E5793B}
+  /* уже позади — вылетел, прибыл */
+  .tkt-status.past{color:var(--ink30)}
+  /* ряд аэропорта: терминал, места после регистрации и гейт. Всё это нужно
+     в один момент — когда гость уже в аэропорту и идёт к выходу */
+  .tkt-foot{display:flex;align-items:center;gap:26px;margin-top:14px}
+  .tkt-foot u{display:block;text-decoration:none;font:var(--t-caption);color:var(--ink30)}
+  .tkt-foot b{display:block;margin-top:5px;font:var(--t-body-strong);color:var(--ink)}
+  /* по вектору внутри пилюли слева 6 до иконки и 9 справа от числа:
+     круглой стрелке нужно меньше воздуха, чем цифрам */
+  .tkt-gate{margin-left:auto;display:flex;align-items:center;gap:5px;height:26px;
+            padding:0 9px 0 6px;border-radius:13px;background:var(--ink);color:#fff;
+            font:var(--t-body-strong)}
+  .tkt-gate svg{display:block;width:16px;height:16px}
+  /* маршрут: время крупным, под ним город, ниже код аэропорта с датой */
+  .tkt-route{display:flex;align-items:flex-start;justify-content:space-between;margin-top:13px}
   .tkt-side{min-width:0}
   .tkt-side.right{text-align:right}
-  .tkt-time{font:var(--t-title-xl);color:var(--ink)}
-  .tkt-city{margin-top:14px;font:400 16px/1 var(--ft);color:#595959}
-  .tkt-iata{margin-top:6px;font:400 16px/1 var(--ft);color:#BCBCBC}
-  /* дата рейса под кодом аэропорта: без неё непонятно, тот же это день или
-     уже следующий — особенно у ночных перелётов */
-  .tkt-date{margin-top:6px;font:var(--t-caption);color:#BCBCBC}
-  /* колонка выросла: сверху время в пути, под ним дорожка с самолётом.
-     Ряд выключен по flex-start, поэтому рост колонки не двигает города */
-  .tkt-mid{position:relative;flex:1;height:52px;margin:0 8px}
-  .tkt-dur{position:absolute;left:0;right:0;top:4px;text-align:center;
-           font:var(--t-caption);color:#7D7D7D;white-space:nowrap}
-  /* линия прочерчивается слева направо, самолёт едет по ней и садится в центре:
-     ни резкого появления, ни вылета за край */
-  /* дорожка выключена по центру: шаг 15 отсчитывается от середины, поэтому
-     у обоих городов остаётся одинаковый обрез, а не целая точка слева и
-     срезанная справа. Серый тот же, что у кодов аэропортов рядом */
-  .tkt-dots{position:absolute;left:0;right:0;top:34px;height:2px;
-            background-image:radial-gradient(circle,#BCBCBC 1px,transparent 1px);
+  .tkt-time{font:var(--t-title-l);color:var(--ink)}
+  /* +1 у времени прилёта: рейс перешёл через полночь */
+  .tkt-time sup{margin-left:1px;font:var(--t-caption);vertical-align:top;color:var(--ink30)}
+  .tkt-city{margin-top:6px;font:var(--t-body);color:var(--ink40)}
+  /* код аэропорта и дата одной строкой: вместе это одна служебная подпись */
+  .tkt-sub{margin-top:5px;font:var(--t-caption);color:var(--ink30);white-space:nowrap}
+  /* колонка ровно в высоту строки времени: сверху время в пути, под ним
+     дорожка с самолётом. Ряд по flex-start, рост колонки не двигает города */
+  .tkt-mid{position:relative;flex:1;height:34px;margin:0 8px}
+  .tkt-dur{position:absolute;left:0;right:0;top:0;text-align:center;
+           font:var(--t-caption);color:var(--ink40);white-space:nowrap}
+  /* дорожка выключена по центру: шаг 15 от середины, поэтому у обоих городов
+     одинаковый обрез. Серый тот же, что у кодов аэропортов */
+  .tkt-dots{position:absolute;left:0;right:0;top:25px;height:2px;
+            background-image:radial-gradient(circle,var(--ink30) 1px,transparent 1px);
             background-size:15px 2px;background-repeat:repeat-x;
             background-position:center}
-  /* самолёт летит слева направо по пунктиру и уходит, потом заново.
-     Подложки нет: он идёт прямо по точкам */
-  /* полёт живёт в скрипте: пружина той же модели, что spring() в motion */
   /* слот везёт самолёт по горизонтали, svg внутри отвечает за масштаб
      и прозрачность — у них разные кривые, поэтому разные элементы */
-  .tkt-plane{position:absolute;top:28px;left:50%;width:17px;height:15px;color:var(--ink);
+  .tkt-plane{position:absolute;top:19px;left:50%;width:17px;height:15px;color:var(--ink);
              transform:translateX(-50%);will-change:transform}
-  @media (prefers-reduced-motion: reduce){
-  }
   .tkt-plane svg{display:block;width:17px;height:15px;will-change:transform,opacity}
-  .tkt-foot{display:flex;align-items:flex-start;gap:26px;margin-top:15px;padding-top:15px;
-            border-top:1px solid var(--ink10)}
-  .tkt-foot u{display:block;text-decoration:none;font:400 16px/1 var(--ft);color:#A7A7A7}
-  .tkt-foot b{display:block;margin-top:7px;font:600 16px/1 var(--ft);color:var(--ink)}
-  /* по вектору внутри пилюли слева 7.5 до иконки и 4.5 между иконкой и числом;
-     круглой стрелке нужно меньше воздуха, чем цифрам, поэтому слева 6, справа 9 */
-  .tkt-gate{margin-left:auto;display:flex;align-items:center;gap:5px;height:26px;
-            padding:0 9px 0 6px;
-            border-radius:13px;background:var(--ink);color:#fff;font:var(--t-body-strong)}
-  .tkt-gate svg{display:block;width:16px;height:16px}
-  /* багаж отдельной строкой: норму провоза ищут перед выездом чаще, чем гейт */
-  .tkt-bag{display:flex;align-items:center;gap:9px;margin-top:15px;padding-top:15px;
-           border-top:1px solid var(--ink10);font:400 16px/1 var(--ft);color:var(--ink)}
-  .tkt-bag svg{flex:0 0 18px;display:block;width:18px;height:18px;color:#A7A7A7}
+  /* Пассажиры и Условия тарифа — точная копия «Удобства в номере»
+     и «Инструкция по заселению»: тот же .nav, та же высота, тот же
+     разделитель между рядами и его отсутствие у последнего */
+  .tkt .navs{margin-top:18px}
+  /* --- регистрация на рейс ---
+     Тот же цикл, что у брони события: предложение с выбором места → бегущие
+     статусы → итог. Отдельной строкой у каждого сегмента: места и гейт на
+     пересадке свои, поэтому и регистрация своя */
+  /* Регистрация одна на всю бронь и одной кнопкой: в жизни регистрируешься
+     на весь маршрут сразу, а места подбирает агент — спрашивать о них
+     нечего. Строка стоит внизу билета, рядом с багажом */
+  /* высота 36 у итога — та же, что у пилюли, чтобы строка не прыгала
+     при подмене кнопки на текст. Своих размеров пилюля не получает:
+     базовый .pill уже 36 с полями 18 */
+  .tkt-ci{display:flex;align-items:center;margin-top:20px}
+  .tkt-ci b{min-width:0;height:36px;display:flex;align-items:center;
+            font:var(--t-body);color:var(--ink);white-space:nowrap}
+  /* тот же бегущий блеск по тексту, что у «проверяю наличие» в брони */
+  .tkt-ci b.is-wait{
+    background:linear-gradient(90deg,var(--ink) 16%,var(--shine) 50%,var(--ink) 84%);
+    background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:shimmer 2.4s linear infinite}
+  @media (prefers-reduced-motion: reduce){
+    .tkt-ci b.is-wait{animation:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
+  }
+
   /* --- маршрут с пересадкой ---
      Сегменты идут друг за другом, между ними строка ожидания. Она приглушена
      и с отбивкой сверху: рейс — это событие, пересадка — пауза между ними */
-  .tkt-stop{display:flex;align-items:center;gap:9px;margin-top:15px;padding-top:15px;
-            border-top:1px solid var(--ink10);font:400 16px/1 var(--ft);color:var(--ink40)}
-  .tkt-stop svg{flex:0 0 18px;display:block;width:18px;height:18px;color:#BCBCBC}
-  /* второй сегмент начинается со своего шильдика регистрации — ему нужен
-     тот же воздух, что между блоками внутри одного рейса */
-  .tkt-stop + .tkt-top{margin-top:19px}
+  /* пересадка: пауза между сегментами. На подложке она читается как отдельный
+     кусок пути, а не как ещё одна подпись к рейсу. Выключка влево, по сетке
+     остального содержимого — по центру она спорила с левыми временами */
+  .tkt-stop{margin-top:16px;padding:11px 14px;border-radius:12px;
+            background:var(--surface);font:var(--t-caption);color:var(--ink40)}
+  /* время ожидания второй строкой: без точки-разделителя строка распадается
+     на «где» и «сколько», и это читается быстрее, чем одна длинная */
+  .tkt-stop b{display:block;margin-top:3px;font-weight:400;color:var(--ink30)}
+  /* после подложки сегменту нужно меньше воздуха: блок сам держит паузу */
+  .tkt-stop + .tkt-leg{margin-top:16px}
   /* one row style for both lists: same height, divider, type and grey */
   .nav{display:flex;align-items:center;justify-content:space-between;width:100%;height:52px;
        padding:0;background:none;border:0;border-bottom:1px solid var(--ink10);
@@ -397,7 +445,7 @@
   .sw-act{flex:0 0 81px;width:81px;padding:0;border:0;background:none;cursor:pointer;
           display:flex;flex-direction:column;align-items:center;gap:6px;
           will-change:opacity,transform}
-  .sw-act span{width:81px;height:49px;border-radius:24.5px;background:#D9FFD9;
+  .sw-act span{width:81px;height:49px;border-radius:24.5px;background:var(--ok-bg);
                display:grid;place-items:center;
                transition:transform .16s cubic-bezier(.2,.7,.3,1)}
   .sw-act:active span{transform:scale(1.06)}
@@ -466,14 +514,14 @@
      linear-gradient(90deg,#14202A 16%,#34DDC6 50%,#14202A 84%), 220% ширины,
      обрезка по тексту и shimmer 2.4s linear infinite */
   .book-state.is-wait span{
-    background:linear-gradient(90deg,#14202A 16%,#34DDC6 50%,#14202A 84%);
+    background:linear-gradient(90deg,var(--ink) 16%,var(--shine) 50%,var(--ink) 84%);
     background-size:220% 100%;
     -webkit-background-clip:text;background-clip:text;
     -webkit-text-fill-color:transparent;color:transparent;
     animation:shimmer 2.4s linear infinite}
   @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
   @media (prefers-reduced-motion: reduce){
-    .book-state.is-wait span{animation:none;-webkit-text-fill-color:#14202A;color:#14202A}
+    .book-state.is-wait span{animation:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
   }
   .deck{position:relative;margin-top:5px;padding-top:24px}
   .deck i{position:absolute;height:40px;border-radius:12px}
@@ -648,10 +696,10 @@
   .player-ctl{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:16px}
   /* при зажатии элемент слегка подрастает — общий отклик на нажатие */
   .player-play,.player-step,.player-x,.pill,.bub-pill,.ask-fab,.nav,.li,
-  .tkt-gate,.terr-more,.chat-send,.chat-close,.tab{
+  .terr-more,.chat-send,.chat-close,.tab{
     transition:transform .16s cubic-bezier(.2,.7,.3,1)}
   .player-play:active,.player-step:active,.player-x:active,.pill:active,
-  .bub-pill:active,.ask-fab:active,.nav:active,.li:active,.tkt-gate:active,
+  .bub-pill:active,.ask-fab:active,.nav:active,.li:active,
   .terr-more:active,.chat-send:active,.chat-close:active,.tab:active{
     transform:scale(1.06)}
   /* у строк списка растяжка по всей ширине выглядит грубо — им хватает малого */
@@ -682,7 +730,7 @@
   .chat-msgs::-webkit-scrollbar{display:none}
   .bub{max-width:90%;padding:12px 16px;font:400 16px/21px var(--ft);border-radius:20px;
        animation:bubIn .34s cubic-bezier(.2,.9,.25,1.02) both}
-  .bub-agent{align-self:flex-start;background:#fff;color:#14202A;
+  .bub-agent{align-self:flex-start;background:#fff;color:var(--ink);
              border-bottom-left-radius:6px;box-shadow:0 6px 22px rgba(20,32,42,.12)}
   /* действия по левому краю вместе с сообщением: полное скругление,
      поля 20 по горизонтали и 10 по вертикали, между кнопками 2px */
@@ -707,10 +755,10 @@
   .chat-bar{display:flex;align-items:center;gap:8px;padding:10px 16px 12px;background:#fff;
             border-radius:28px 28px 0 0;box-shadow:0 -12px 40px rgba(20,32,42,.12)}
   .chat-input{flex:1;min-width:0;border:0;outline:none;background:#F3F3F6;border-radius:14px;
-              padding:13px 16px;font:400 16px/1 var(--ft);color:#14202A}
+              padding:13px 16px;font:400 16px/1 var(--ft);color:var(--ink)}
   .chat-send,.chat-close{flex:0 0 46px;width:46px;height:46px;border:0;border-radius:23px;
                          display:grid;place-items:center;cursor:pointer}
-  .chat-send{background:#14202A}
+  .chat-send{background:var(--ink)}
   .chat-close{background:#F3F3F6}
   /* в режиме набора вместо круглого крестика текстовая «Пропустить» */
   .chat-skip{display:none;flex:0 0 auto;height:46px;padding:0 18px;border:0;border-radius:23px;
@@ -722,7 +770,7 @@
   .kb-row{display:flex}
   .kb-row.mid{padding:0 16px}
   .kb button{flex:1;height:44px;margin:3px;border:0;border-radius:7px;background:#fff;
-             box-shadow:0 1px 0 rgba(0,0,0,.28);font:400 18px/1 var(--ft);color:#14202A;cursor:pointer}
+             box-shadow:0 1px 0 rgba(0,0,0,.28);font:400 18px/1 var(--ft);color:var(--ink);cursor:pointer}
   .kb button.dark{background:#ABB0BA}
   /* режим набора у агента: списка сообщений нет, фон выцветает через затухание
      блоков, а не пеленой, поэтому сам баббл остаётся читаемым на своём месте */
@@ -1147,83 +1195,225 @@
      Один шаблон на все рейсы: разметка живёт здесь, в панелях остаются только
      контейнеры [data-ticket]. Новый рейс — запись в TICKETS, а не копия блока. */
   var PLANE_SVG = '<svg viewBox="0 0 17 15" fill="none"><path d="M16.5088 7.45605C16.5088 7.73926 16.3916 7.99316 16.1572 8.21777C15.9229 8.4375 15.6104 8.61328 15.2197 8.74512C14.8291 8.87207 14.4019 8.93555 13.938 8.93555H10.9863C10.7812 8.93555 10.625 8.95752 10.5176 9.00146C10.415 9.04541 10.3027 9.13574 10.1807 9.27246L5.25879 14.6484C5.09766 14.8242 4.90967 14.9121 4.69482 14.9121H3.84521C3.75244 14.9121 3.68164 14.8755 3.63281 14.8022C3.58887 14.729 3.59131 14.6411 3.64014 14.5386L6.17432 8.93555L2.45361 8.51074L1.12793 10.9424C1.03027 11.1133 0.864258 11.1987 0.629883 11.1987H0.314941C0.222168 11.1987 0.146484 11.1719 0.0878906 11.1182C0.0292969 11.0596 0 10.9839 0 10.8911V4.021C0 3.92334 0.0292969 3.84766 0.0878906 3.79395C0.146484 3.73535 0.222168 3.70605 0.314941 3.70605H0.629883C0.864258 3.70605 1.03027 3.79395 1.12793 3.96973L2.45361 6.40137L6.17432 5.97656L3.64014 0.373535C3.59131 0.270996 3.58887 0.183105 3.63281 0.109863C3.68164 0.0366211 3.75244 0 3.84521 0H4.69482C4.90967 0 5.09766 0.0878906 5.25879 0.263672L10.1807 5.63232C10.3027 5.76904 10.415 5.86182 10.5176 5.91064C10.625 5.95459 10.7812 5.97656 10.9863 5.97656H13.938C14.4019 5.97656 14.8291 6.04248 15.2197 6.17432C15.6104 6.30127 15.9229 6.47705 16.1572 6.70166C16.3916 6.92139 16.5088 7.17285 16.5088 7.45605Z" fill="currentColor"/></svg>';
-  var GATE_SVG = '<svg viewBox="0 0 16 16" fill="none"><path fill="#fff" d="M7.63916 15.2783C6.58447 15.2783 5.5957 15.0781 4.67285 14.6777C3.75 14.2822 2.93701 13.7329 2.23389 13.0298C1.53564 12.3315 0.98877 11.5234 0.593262 10.6055C0.197754 9.68262 0 8.69385 0 7.63916C0 6.58447 0.197754 5.5957 0.593262 4.67285C0.98877 3.75 1.53564 2.93945 2.23389 2.24121C2.93701 1.53809 3.75 0.98877 4.67285 0.593262C5.5957 0.197754 6.58447 0 7.63916 0C8.69385 0 9.68262 0.197754 10.6055 0.593262C11.5283 0.98877 12.3389 1.53809 13.0371 2.24121C13.7354 2.93945 14.2822 3.75 14.6777 4.67285C15.0781 5.5957 15.2783 6.58447 15.2783 7.63916C15.2783 8.69385 15.0781 9.68262 14.6777 10.6055C14.2822 11.5234 13.7354 12.3315 13.0371 13.0298C12.3389 13.7329 11.5283 14.2822 10.6055 14.6777C9.68262 15.0781 8.69385 15.2783 7.63916 15.2783ZM11.4697 7.63184C11.4697 7.5293 11.4502 7.4292 11.4111 7.33154C11.3721 7.23389 11.3037 7.13379 11.2061 7.03125L8.81836 4.55566C8.75 4.4873 8.67676 4.43604 8.59863 4.40186C8.52539 4.36279 8.4375 4.34326 8.33496 4.34326C8.14453 4.34326 7.98828 4.41162 7.86621 4.54834C7.74414 4.68018 7.68311 4.83887 7.68311 5.02441C7.68311 5.22461 7.75635 5.39307 7.90283 5.52979L8.97217 6.5332L9.48486 6.92139L8.37158 6.85547H4.50439C4.29932 6.85547 4.12109 6.93115 3.96973 7.08252C3.82324 7.23389 3.75 7.41699 3.75 7.63184C3.75 7.84668 3.82324 8.02979 3.96973 8.18115C4.12109 8.33252 4.29932 8.4082 4.50439 8.4082H8.37158L9.49219 8.34229L8.97217 8.73047L7.90283 9.73389C7.75635 9.87061 7.68311 10.0415 7.68311 10.2466C7.68311 10.4272 7.74414 10.5859 7.86621 10.7227C7.98828 10.8545 8.14453 10.9204 8.33496 10.9204C8.4375 10.9204 8.52539 10.9033 8.59863 10.8691C8.67676 10.8301 8.75 10.7764 8.81836 10.708L11.2061 8.23242C11.3037 8.12988 11.3721 8.02979 11.4111 7.93213C11.4502 7.83447 11.4697 7.73438 11.4697 7.63184Z"/></svg>';
-  var COPY_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5.6" y="5.6" width="8.6" height="8.6" rx="2"/><path d="M11 4.1V3.8a2 2 0 0 0-2-2H3.8a2 2 0 0 0-2 2V9a2 2 0 0 0 2 2h.3"/></svg>';
-  var OK_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6 6.2 11.8 13 4.8"/></svg>';
-  var STOP_SVG = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.6 6.3h9.6l-2.3-2.3M15.4 11.7H5.8l2.3 2.3"/></svg>';
-  var BAG_SVG = '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="5.4" width="12.8" height="10.2" rx="2.4"/><path d="M6.6 5.4V3.6a1.4 1.4 0 0 1 1.4-1.4h2a1.4 1.4 0 0 1 1.4 1.4v1.8M6.9 9.2v3M11.1 9.2v3"/></svg>';
-  /* Общее у билета: pnr — код брони, pax — сколько летит, bag — норма провоза.
+  /* Общее у билета: pax — сколько летит, bag — норма провоза.
      legs — сегменты маршрута: один у прямого рейса, два и больше у рейса
      с пересадкой. stop на сегменте значит, что после него ждём стыковку.
      У каждого сегмента свои номер рейса, регистрация, терминал и гейт —
      на пересадке они меняются, поэтому это не общие поля билета. */
+  var CI_STATES = ["Открываю регистрацию", "Выбираю места", "Оформляю талоны"];
+  var GATE_SVG = '<svg viewBox="0 0 16 16" fill="none"><path fill="#fff" d="M7.63916 15.2783C6.58447 15.2783 5.5957 15.0781 4.67285 14.6777C3.75 14.2822 2.93701 13.7329 2.23389 13.0298C1.53564 12.3315 0.98877 11.5234 0.593262 10.6055C0.197754 9.68262 0 8.69385 0 7.63916C0 6.58447 0.197754 5.5957 0.593262 4.67285C0.98877 3.75 1.53564 2.93945 2.23389 2.24121C2.93701 1.53809 3.75 0.98877 4.67285 0.593262C5.5957 0.197754 6.58447 0 7.63916 0C8.69385 0 9.68262 0.197754 10.6055 0.593262C11.5283 0.98877 12.3389 1.53809 13.0371 2.24121C13.7354 2.93945 14.2822 3.75 14.6777 4.67285C15.0781 5.5957 15.2783 6.58447 15.2783 7.63916C15.2783 8.69385 15.0781 9.68262 14.6777 10.6055C14.2822 11.5234 13.7354 12.3315 13.0371 13.0298C12.3389 13.7329 11.5283 14.2822 10.6055 14.6777C9.68262 15.0781 8.69385 15.2783 7.63916 15.2783ZM11.4697 7.63184C11.4697 7.5293 11.4502 7.4292 11.4111 7.33154C11.3721 7.23389 11.3037 7.13379 11.2061 7.03125L8.81836 4.55566C8.75 4.4873 8.67676 4.43604 8.59863 4.40186C8.52539 4.36279 8.4375 4.34326 8.33496 4.34326C8.14453 4.34326 7.98828 4.41162 7.86621 4.54834C7.74414 4.68018 7.68311 4.83887 7.68311 5.02441C7.68311 5.22461 7.75635 5.39307 7.90283 5.52979L8.97217 6.5332L9.48486 6.92139L8.37158 6.85547H4.50439C4.29932 6.85547 4.12109 6.93115 3.96973 7.08252C3.82324 7.23389 3.75 7.41699 3.75 7.63184C3.75 7.84668 3.82324 8.02979 3.96973 8.18115C4.12109 8.33252 4.29932 8.4082 4.50439 8.4082H8.37158L9.49219 8.34229L8.97217 8.73047L7.90283 9.73389C7.75635 9.87061 7.68311 10.0415 7.68311 10.2466C7.68311 10.4272 7.74414 10.5859 7.86621 10.7227C7.98828 10.8545 8.14453 10.9204 8.33496 10.9204C8.4375 10.9204 8.52539 10.9033 8.59863 10.8691C8.67676 10.8301 8.75 10.7764 8.81836 10.708L11.2061 8.23242C11.3037 8.12988 11.3721 8.02979 11.4111 7.93213C11.4502 7.83447 11.4697 7.73438 11.4697 7.63184Z"/></svg>';
+  /* Статусы теми же словами, что на онлайн-табло аэропорта. tone задаёт тон:
+     live — происходит сейчас, warn — что-то не так, past — уже позади */
+  var STATUS = {
+    sched:    { t: "\u041f\u043e \u0440\u0430\u0441\u043f\u0438\u0441\u0430\u043d\u0438\u044e" },
+    reg:      { t: "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f", tone: "live" },
+    regEnd:   { t: "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u043e\u043a\u043e\u043d\u0447\u0435\u043d\u0430" },
+    waiting:  { t: "\u041e\u0436\u0438\u0434\u0430\u0435\u0442 \u043f\u043e\u0441\u0430\u0434\u043a\u0438" },
+    boarding: { t: "\u041f\u043e\u0441\u0430\u0434\u043a\u0430", tone: "live" },
+    delay:    { t: "\u0417\u0430\u0434\u0435\u0440\u0436\u0430\u043d", tone: "warn" },
+    gone:     { t: "\u0412\u044b\u043b\u0435\u0442\u0435\u043b", tone: "past" },
+    arrived:  { t: "\u041f\u0440\u0438\u0431\u044b\u043b", tone: "past" }
+  };
+  var PAX_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.4c2.3 0 4.2-1.9 4.2-4.2S14.3 4 12 4 7.8 5.9 7.8 8.2s1.9 4.2 4.2 4.2Zm0 1.7c-3.8 0-6.9 2-6.9 4.5 0 1 .8 1.8 1.8 1.8h10.2c1 0 1.8-.8 1.8-1.8 0-2.5-3.1-4.5-6.9-4.5Z"/></svg>';
+  /* «2 гостя» это про отель; в билете летят пассажиры */
+  function paxWord(n){
+    var t = n % 10, h = n % 100;
+    if (t === 1 && h !== 11) return "пассажир";
+    if (t >= 2 && t <= 4 && (h < 12 || h > 14)) return "пассажира";
+    return "пассажиров";
+  }
+  /* Состояние сегмента, от него зависит, что вообще показывать:
+       soon   — регистрация ещё не открыта. Гейта и терминала не существует:
+                гейт назначают за несколько часов до вылета. Пишем, когда
+                регистрация откроется, и не даём кнопку — нажимать нечего.
+       open   — регистрация открыта. Только тут терминал и гейт есть смысл
+                показывать, и только тут работает онлайн-регистрация.
+       closed — регистрация закрыта. Терминал и гейт больше не нужны:
+                либо гость уже у выхода, либо рейс улетел.
+     Прямой рейс «Перед заездом» открыт, обратный ещё нет — он на три дня
+     позже, так что в прототипе видны оба состояния сразу. */
   var TICKETS = {
-    dep: { pnr: "RDL68X", pax: "2 гостя", bag: "Ручная 1×10 кг · Багаж 1×23 кг",
+    dep: { pax: 2, bag: "Ручная 1×10 кг · Багаж 1×23 кг",
            legs: [
-             { reg: "05:40", no: "S7-5014", gate: "26", terminal: "D", desk: "8-9 стойки",
+             { state: "open", reg: "05:40", no: "S7-5014", status: "reg", gate: "26", terminal: "D",
                dur: "1 ч 45 мин",
-               from: { time: "06:20", city: "Екатеринбург", iata: "SVX", date: "14 авг" },
-               to:   { time: "08:05", city: "Новосибирск", iata: "OVB", date: "14 авг" },
+               seat: "12A и 12B",
+               from: { time: "06:20", city: "Екатеринбург", iata: "SVX", airport: "Кольцово", date: "14 авг" },
+               to:   { time: "08:05", city: "Новосибирск", iata: "OVB", airport: "Толмачёво", date: "14 авг" },
                stop: { city: "Новосибирске", wait: "1 ч 25 мин" } },
-             { reg: "09:00", no: "S7-2118", gate: "12", terminal: "A", desk: "4-5 стойки",
+             { state: "open", reg: "09:00", no: "S7-2118", status: "sched", gate: "12", terminal: "A",
                dur: "1 ч 10 мин",
-               from: { time: "09:30", city: "Новосибирск", iata: "OVB", date: "14 авг" },
+               seat: "7A и 7B",
+               from: { time: "09:30", city: "Новосибирск", iata: "OVB", airport: "Толмачёво", date: "14 авг" },
                to:   { time: "10:40", city: "Горно-Алтайск", iata: "RGK", date: "14 авг" } }
            ] },
-    ret: { pnr: "RDL68X", pax: "2 гостя", bag: "Ручная 1×10 кг · Багаж 1×23 кг",
+    ret: { pax: 2, bag: "Ручная 1×10 кг · Багаж 1×23 кг",
            legs: [
-             { reg: "20:55", no: "S7-5015", gate: "14", terminal: "B", desk: "12-14 стойки",
+             { state: "soon", opens: "16 авг", no: "S7-5015", status: "sched", terminal: "B",
                dur: "2 ч 40 мин",
+               seat: "6A и 6B",
                from: { time: "21:40", city: "Горно-Алтайск", iata: "RGK", date: "17 авг" },
-               to:   { time: "02:20", city: "Екатеринбург", iata: "SVX", date: "18 авг" } }
+               to:   { time: "02:20", city: "Екатеринбург", iata: "SVX", airport: "Кольцово", date: "18 авг" } }
            ] }
   };
   /* один сегмент: шильдик регистрации и номер рейса, маршрут, терминал/гейт.
      Если у сегмента есть stop — снизу дописывается строка ожидания стыковки */
+  /* Служебная строка сегмента. Терминал и гейт пишем только пока регистрация
+     открыта: до открытия гейта ещё не существует, а после регистрации нужны
+     не стойки, а место — оно и встаёт на их место (см. обработчик ниже).
+     Шильдика у сегмента нет: состояние у поездки одно, и живёт он в шапке */
   function leg(l){
-    return '<div class="tkt-top">' +
-             '<span class="tkt-badge">Регистрация до ' + l.reg + "</span>" +
-             '<span class="tkt-no">' + l.no + "</span></div>" +
-           '<div class="tkt-route">' + side(l.from) +
-             '<div class="tkt-mid"><span class="tkt-dur">' + l.dur + "</span>" +
-               '<i class="tkt-dots"></i>' +
-               '<span class="tkt-plane">' + PLANE_SVG + "</span></div>" +
-             side(l.to, true) +
+    var nextDay = l.from.date !== l.to.date;
+    var st = STATUS[l.status] || STATUS.sched;
+    /* гейт назначают за несколько часов: пока его нет, в пилюле прочерк,
+       как на табло и в билетах авиакомпаний */
+    return '<div class="tkt-leg">' +
+             '<div class="tkt-meta"><span class="tkt-no">' + l.no + "</span>" +
+               '<span class="tkt-status' + (st.tone ? " " + st.tone : "") + '">' +
+                 st.t + "</span></div>" +
+             '<div class="tkt-route">' + side(l.from) +
+               '<div class="tkt-mid"><span class="tkt-dur">' + l.dur + "</span>" +
+                 '<i class="tkt-dots"></i>' +
+                 '<span class="tkt-plane">' + PLANE_SVG + "</span></div>" +
+               side(l.to, true, nextDay) +
+             "</div>" +
+             '<div class="tkt-foot">' +
+               "<div><u>\u0422\u0435\u0440\u043c\u0438\u043d\u0430\u043b</u><b>" + l.terminal + "</b></div>" +
+               '<div data-seatslot hidden><u>\u041c\u0435\u0441\u0442\u0430</u><b></b></div>' +
+               '<span class="tkt-gate">' + GATE_SVG + (l.gate || "\u2014") + "</span>" +
+             "</div>" +
            "</div>" +
-           '<div class="tkt-foot"><div><u>Терминал</u><b>' + l.terminal + "</b></div>" +
-             "<div><u>Регистрация</u><b>" + l.desk + "</b></div>" +
-             '<span class="tkt-gate">' + GATE_SVG + l.gate + "</span></div>" +
            (l.stop
-             ? '<div class="tkt-stop">' + STOP_SVG +
-                 "<span>Пересадка в " + l.stop.city + " · " + l.stop.wait + "</span></div>"
+             ? '<div class="tkt-stop">Пересадка в ' + l.stop.city +
+                 "<b>" + l.stop.wait + "</b></div>"
              : "");
   }
-  function side(p, right){
+  function side(p, right, nextDay){
+    /* под городом — аэропорт: в крупных городах их несколько, и знать,
+       Кольцово это или Толмачёво, полезнее, чем видеть код и дату.
+       Там, где имя аэропорта совпадает с городом, остаётся код.
+       Дата не потерялась: если рейс переходит через полночь, у времени
+       прилёта появляется +1 — так это помечают в авиабилетах */
+    var sub = p.airport && p.airport !== p.city ? p.airport : p.iata;
     return '<div class="tkt-side' + (right ? " right" : "") + '">' +
-             '<div class="tkt-time">' + p.time + "</div>" +
+             '<div class="tkt-time">' + p.time +
+               (nextDay ? "<sup>+1</sup>" : "") + "</div>" +
              '<div class="tkt-city">' + p.city + "</div>" +
-             '<div class="tkt-iata">' + p.iata + "</div>" +
-             '<div class="tkt-date">' + p.date + "</div>" +
+             '<div class="tkt-sub">' + sub + "</div>" +
            "</div>";
   }
   [].forEach.call(document.querySelectorAll("[data-ticket]"), function(el){
     var t = TICKETS[el.dataset.ticket];
     if (!t) return;
+    /* Состояние у поездки одно, поэтому шильдик один — в шапке, рядом с бронью.
+       Зарегистрироваться сразу на оба рейса можно (бронь одна), поэтому и срок
+       показываем один: ближайший, по первому рейсу. Два лаймовых тега подряд
+       только рябили и делали вид, будто регистрации две. */
+    var openLeg = null;
+    for (var li = 0; li < t.legs.length; li++)
+      if (t.legs[li].state === "open"){ openLeg = t.legs[li]; break; }
+    var soonLeg = t.legs[0];
+    var badge = openLeg ? "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0434\u043e " + openLeg.reg
+              : soonLeg.state === "soon"
+                ? "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0441 " + soonLeg.opens
+                : "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0437\u0430\u043a\u0440\u044b\u0442\u0430";
     el.innerHTML =
-      '<div class="tkt-pnr"><u>Бронь</u><b data-pnr>' + t.pnr + "</b>" +
-        '<button class="tkt-copy" data-copy aria-label="Скопировать код брони">' + COPY_SVG + "</button>" +
-        '<span class="tkt-pax">' + t.pax + "</span></div>" +
+      '<div class="tkt-head"><span class="tkt-badge' + (openLeg ? "" : " soon") +
+        '" data-badge>' + badge + "</span></div>" +
       t.legs.map(leg).join("") +
-      '<div class="tkt-bag">' + BAG_SVG + "<span>" + t.bag + "</span></div>";
-    /* копирование кода брони: на две секунды галочка вместо иконки —
-       подтверждение без всплывашек, как у чипа брони у события */
-    var copyBtn = el.querySelector("[data-copy]");
-    if (copyBtn) copyBtn.onclick = function(){
-      var code = el.querySelector("[data-pnr]").textContent;
-      if (navigator.clipboard) navigator.clipboard.writeText(code).catch(function(){});
-      copyBtn.innerHTML = OK_SVG;
-      copyBtn.classList.add("done");
-      setTimeout(function(){ copyBtn.innerHTML = COPY_SVG; copyBtn.classList.remove("done"); }, 2000);
+      /* кнопка есть только пока регистрация открыта: до открытия нажимать
+         нечего, после закрытия уже поздно */
+      (t.legs.some(function(l){ return l.state === "open"; })
+        ? '<div class="tkt-ci" data-ci>' +
+            '<button class="pill" data-checkin>' +
+              "\u041e\u043d\u043b\u0430\u0439\u043d-\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f" +
+            "</button><b hidden data-cistate></b></div>"
+        : "") +
+      '<div class="navs">' +
+        '<button class="nav" data-pax>' +
+          "\u041f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u044b" +
+          "<span>" + new Array(t.pax + 1).join(PAX_SVG) +
+          "</span><i>\u203a</i></button>" +
+        '<button class="nav" data-fare>' +
+          "\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0442\u0430\u0440\u0438\u0444\u0430" +
+          "<i>\u203a</i></button>" +
+      "</div>";
+    /* Регистрация одна на всю бронь: нажатие → бегущие статусы → итог.
+       После неё меняется вся картина билета, потому что меняется задача гостя:
+         шильдик  «Регистрация до 05:40» → «Ожидает посадки» — срок отработал;
+         мета     терминал и стойки → место. Стойки после онлайн-регистрации
+                  не нужны совсем, а место нужно на посадке;
+         кнопка   исчезает, вместо неё итог.
+       Место пишем у своего рейса, а не списком в итоге: «места 12A и 12B,
+       7A и 7B» не читается — непонятно, какая пара к какому сегменту. */
+    (function(){
+      var box = el.querySelector("[data-ci]");
+      if (!box) return;
+      var btn = box.querySelector("[data-checkin]");
+      var state = box.querySelector("[data-cistate]");
+      var badge = el.querySelector("[data-badge]");
+      var slots = el.querySelectorAll("[data-seatslot]");
+      var cycle = null, timer = null;
+      if (!btn) return;
+      btn.onclick = function(){
+        /* места подбирает агент: спрашивать о них отдельно нечего,
+           одно нажатие — и он всё оформил */
+        btn.hidden = true;
+        state.hidden = false;
+        state.classList.add("is-wait");
+        var si = 0;
+        state.textContent = CI_STATES[0];
+        clearInterval(cycle);
+        cycle = setInterval(function(){
+          si = Math.min(si + 1, CI_STATES.length - 1);
+          state.textContent = CI_STATES[si];
+        }, 800);
+        clearTimeout(timer);
+        timer = setTimeout(function(){
+          clearInterval(cycle);
+          state.classList.remove("is-wait");
+          if (badge){
+            /* шильдик в шапке — про регистрацию, а не про рейс: статус рейса
+               живёт в своём сегменте, на табло-строке */
+            badge.textContent = t.legs.length > 1
+              ? "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u044b \u043d\u0430 \u043e\u0431\u0430 \u0440\u0435\u0439\u0441\u0430"
+              : "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d\u044b";
+            badge.classList.remove("soon");
+            badge.classList.add("done");
+          }
+          /* места встают в ряд аэропорта, рядом с терминалом и гейтом:
+             всё это нужно в один момент — когда идёшь на посадку */
+          [].forEach.call(slots, function(node, k){
+            var l = t.legs[k];
+            if (!l || !l.seat) return;
+            node.querySelector("b").textContent = l.seat;
+            node.hidden = false;
+          });
+          state.textContent = t.legs.length > 1
+            ? "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043b \u043d\u0430 \u043e\u0431\u0430 \u0440\u0435\u0439\u0441\u0430"
+            : "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043b \u043d\u0430 \u0440\u0435\u0439\u0441";
+        }, 800 * CI_STATES.length);
+      };
+    })();
+    /* пассажиры: состав и документы тоже разговор, а не таблица в билете */
+    var pax = el.querySelector("[data-pax]");
+    if (pax) pax.onclick = function(){
+      openAskSheet("\u041b\u0435\u0442\u044f\u0442 " + t.pax + " " + paxWord(t.pax) +
+        ". \u0427\u0442\u043e \u043d\u0443\u0436\u043d\u043e?",
+        ["\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u0430",
+         "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b",
+         "\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435"]);
+    };
+    /* условия тарифа: подробности не занимают место в билете, а открываются
+       разговором с агентом — там же можно сразу доплатить или уточнить */
+    var fare = el.querySelector("[data-fare]");
+    if (fare) fare.onclick = function(){
+      openAskSheet(t.bag + ". \u041e\u0431\u043c\u0435\u043d \u0438 \u0432\u043e\u0437\u0432\u0440\u0430\u0442 " +
+        "\u0441 \u0443\u0434\u0435\u0440\u0436\u0430\u043d\u0438\u0435\u043c. " +
+        "\u0427\u0442\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c?",
+        ["\u0414\u043e\u043f\u043b\u0430\u0442\u0438\u0442\u044c \u0437\u0430 \u0431\u0430\u0433\u0430\u0436",
+         "\u041c\u043e\u0436\u043d\u043e \u043b\u0438 \u043f\u043e\u043c\u0435\u043d\u044f\u0442\u044c \u0434\u0430\u0442\u0443",
+         "\u0427\u0442\u043e \u043d\u0435\u043b\u044c\u0437\u044f \u0432 \u0440\u0443\u0447\u043d\u0443\u044e \u043a\u043b\u0430\u0434\u044c"]);
     };
   });
 
