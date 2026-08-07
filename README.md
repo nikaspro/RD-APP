@@ -158,7 +158,7 @@ shadcn/ui — это React + Tailwind + Radix, то есть потребует�
 | Чек-лист → `Checkbox` | Растущий градиент заката |
 | Колода → `Collapsible` | Клавиатура ЙЦУКЕН |
 | Карусели → `Carousel` | Карточка авиабилета |
-| Плеер → `Slider` | Лонг-тап с фокусом карточки |
+| Плеер → `Slider` | Свайп по карточке (механика iOS Mail) |
 
 Ветки-копии: `vanilla-no-shadcn` — состояние без библиотеки,
 `archive/chiposh-booking-prototype` — предыдущий прототип на React/Framer Motion.
