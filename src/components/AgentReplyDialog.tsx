@@ -4,12 +4,26 @@ import { Input } from '@/components/ui/input'
 /* Разговор с агентом: затемнение, лист с лентой сообщений, поле ввода и
    экранная клавиатура.
    Ленту, пилюли-подсказки и раскладку ЙЦУКЕН наполняет рантайм — здесь
-   контейнеры и панель ввода в том же виде, что в legacy. */
+   контейнеры и панель ввода в том же виде, что в legacy.
+
+   Dialog из библиотеки сюда не встал, и это не обход, а несовместимость:
+   он рисует содержимое только пока открыт, а лист должен быть в разметке
+   с самого начала — рантайм берёт ссылки на [data-msgs], [data-kb]
+   и [data-chatinput] один раз при запуске, и выезд снизу описан в CSS
+   через body.sheet-open, а не через монтирование.
+   Поэтому роль диалога проставлена вручную: разметка та же, что была,
+   а для скринридера лист теперь читается как модальное окно. Ловушки
+   фокуса нет — её дал бы только компонент. */
 export function AgentReplyDialog() {
   return (
     <>
       <div className="scrim" data-close />
-      <div className="sheet">
+      <div
+        className="sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Разговор с агентом"
+      >
         <div className="chat-msgs" data-msgs />
         <div className="chat-bar">
           <Input className="chat-input" data-chatinput placeholder="Спросите о чём угодно" />
