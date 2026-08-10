@@ -23,6 +23,8 @@ let started = false
 export const chiposh = {
   /** @type {(key: string) => void} */
   show: () => {},
+  /** @type {() => void} */
+  closeSheet: () => {},
 }
 
 export function initChiposh(){
@@ -1833,6 +1835,7 @@ export function initChiposh(){
     });
 
     chiposh.show = show;
+    chiposh.closeSheet = closeSheet;
 
     show("home");
     measureSky();
