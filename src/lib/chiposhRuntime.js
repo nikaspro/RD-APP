@@ -17,6 +17,14 @@ import { STAR_ANIMS } from '../data/starAnims'
 
 let started = false
 
+/* Мостик наружу. Табы теперь рисует React (src/components/TabBar.tsx), и ему
+   нужно уметь сказать рантайму «покажи такую-то панель». Сам show() при этом
+   не тронут — здесь только ссылка на него. */
+export const chiposh = {
+  /** @type {(key: string) => void} */
+  show: () => {},
+}
+
 export function initChiposh(){
   if (started) return
   /* точка с запятой обязательна: следом идёт IIFE в скобках, без неё
@@ -1823,6 +1831,8 @@ export function initChiposh(){
       if (document.hidden && sraf){ cancelAnimationFrame(sraf); sraf = null; }
       else measureSky();
     });
+
+    chiposh.show = show;
 
     show("home");
     measureSky();
