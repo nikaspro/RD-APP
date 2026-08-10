@@ -1,6 +1,8 @@
-/* Утилиты Tailwind доступны новому коду.
-   preflight отключён в tailwind.config.js: базовые стили задаёт
-   src/styles/chiposh.css, перенесённый из legacy/ChiposhPark.html,
-   и сбрасывать их под себя Tailwind не должен. */
-@tailwind components;
-@tailwind utilities;
+/* Tailwind 4. Слои подключены поимённо и БЕЗ preflight: базовые стили задаёт
+   src/styles/chiposh.css, перенесённый из legacy/ChiposhPark.html, и сбрасывать
+   их под себя Tailwind не должен (иначе поедут img, button и h1).
+   В третьей версии за это отвечал corePlugins.preflight = false. */
+@layer theme, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);

@@ -1,70 +1,82 @@
-import * as React from 'react'
-import { Tabs as TabsPrimitive } from '@base-ui/react/tabs'
+"use client"
 
-import { cn } from '@/lib/utils'
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs"
+import { cva, type VariantProps } from "class-variance-authority"
 
-/* Табы дизайн-системы.
- *
- * Примитив взят из Base UI — той же основы, на которой собран shadcn
- * (components.json: base = "base"). CLI сюда не дотянулся: сетевая политика
- * окружения закрывает ui.shadcn.com, поэтому файл написан по контракту
- * примитива вручную. Структура и имена — как у shadcn: Tabs / TabsList /
- * TabsTrigger / TabsContent поверх TabsPrimitive.
- *
- * Скин НЕ дефолтный. rules/chiposh.md прямо запрещает сегментированный
- * контрол shadcn (серая капсула с белой пилюлей). Здесь свой вид:
- * прокручиваемый ряд капсовых подписей с трекингом, подчёркивание активного
- * на 1.5px и волосяная линия под всем рядом. Классы .tabs и .tab оставлены
- * из перенесённого chiposh.css — они и есть источник этого вида.
- *
- * От примитива нам нужно поведение, а не оформление: roving tabindex,
- * стрелки влево-вправо, Home/End, aria-selected и связь с панелями.
- */
+import { cn } from "@/lib/utils"
 
-const Tabs = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Root ref={ref} data-slot="tabs" className={className} {...props} />
-))
-Tabs.displayName = 'Tabs'
+function Tabs({
+  className,
+  orientation = "horizontal",
+  ...props
+}: TabsPrimitive.Root.Props) {
+  return (
+    <TabsPrimitive.Root
+      data-slot="tabs"
+      data-orientation={orientation}
+      className={cn(
+        "cn-tabs group/tabs flex data-horizontal:flex-col",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-const TabsList = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.List
-    ref={ref}
-    data-slot="tabs-list"
-    /* data-rail — перетаскивание ленты мышью, его вешает рантайм виджета */
-    data-rail
-    className={cn('tabs', className)}
-    {...props}
-  />
-))
-TabsList.displayName = 'TabsList'
+const tabsListVariants = cva(
+  "cn-tabs-list group/tabs-list inline-flex w-fit items-center justify-center text-muted-foreground group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col",
+  {
+    variants: {
+      variant: {
+        default: "cn-tabs-list-variant-default bg-muted",
+        line: "cn-tabs-list-variant-line gap-1 bg-transparent",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  }
+)
 
-const TabsTrigger = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Tab>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Tab>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Tab
-    ref={ref}
-    data-slot="tabs-trigger"
-    /* активное состояние примитив помечает data-active; как оно выглядит —
-       описано в src/styles/theme.css рядом с правилом .tab.is-on */
-    className={cn('tab', className)}
-    {...props}
-  />
-))
-TabsTrigger.displayName = 'TabsTrigger'
+function TabsList({
+  className,
+  variant = "default",
+  ...props
+}: TabsPrimitive.List.Props & VariantProps<typeof tabsListVariants>) {
+  return (
+    <TabsPrimitive.List
+      data-slot="tabs-list"
+      data-variant={variant}
+      className={cn(tabsListVariants({ variant }), className)}
+      {...props}
+    />
+  )
+}
 
-const TabsContent = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Panel>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Panel>
->(({ className, ...props }, ref) => (
-  <TabsPrimitive.Panel ref={ref} data-slot="tabs-content" className={className} {...props} />
-))
-TabsContent.displayName = 'TabsContent'
+function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
+  return (
+    <TabsPrimitive.Tab
+      data-slot="tabs-trigger"
+      className={cn(
+        "cn-tabs-trigger relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent",
+        "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
+        "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100",
+        className
+      )}
+      {...props}
+    />
+  )
+}
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
+  return (
+    <TabsPrimitive.Panel
+      data-slot="tabs-content"
+      className={cn("cn-tabs-content flex-1 outline-none", className)}
+      {...props}
+    />
+  )
+}
+
+export { Tabs, TabsList, TabsTrigger, TabsContent, tabsListVariants }
