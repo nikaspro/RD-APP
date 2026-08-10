@@ -1,6 +1,8 @@
 import { HScroll } from './HScroll'
+import { Card, CardTitle, CardDescription } from '@/components/ui/card'
 
-/* Лента блюд под карточкой ресторана. Круглые фото, название и цена. */
+/* Лента блюд под карточкой ресторана. Круглые фото, название и цена.
+   Card из библиотеки; вид даёт .dish из chiposh.css. */
 
 const DISHES = [
   { img: 'assets/img/dish-oysters-yuzu.webp', name: 'Устрицы с юдзу', price: '690 ₽' },
@@ -15,11 +17,11 @@ export function DishRail() {
   return (
     <HScroll className="dishes">
       {DISHES.map((d) => (
-        <div className="dish" key={d.name}>
+        <Card className="dish" key={d.name}>
           <img src={d.img} alt="" />
-          <div className="dish-n">{d.name}</div>
-          <div className="dish-p">{d.price}</div>
-        </div>
+          <CardTitle className="dish-n">{d.name}</CardTitle>
+          <CardDescription className="dish-p">{d.price}</CardDescription>
+        </Card>
       ))}
     </HScroll>
   )

@@ -1,4 +1,6 @@
 import { BookingChip } from './StatusChip'
+import { Card, CardTitle, CardDescription } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Button } from '@/components/ui/button'
 
@@ -22,11 +24,13 @@ type Props = {
 
 export function BookableEvent({ title, desc, image, times = ['12:00', '13:00', 'Другое'] }: Props) {
   return (
-    <div className="ev" data-book>
+    <Card className="ev" data-book>
       <div className="ev-head">
         <div className="ev-head-txt">
-          <h3 className="ev-t">{title}</h3>
-          <p className="ev-d">{desc}</p>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>
+            {title}
+          </CardTitle>
+          <CardDescription className="ev-d">{desc}</CardDescription>
         </div>
         <BookingChip />
       </div>
@@ -35,7 +39,7 @@ export function BookableEvent({ title, desc, image, times = ['12:00', '13:00', '
       </div>
       <div className="book" data-bookrow hidden>
         <div data-bookask>
-          <div className="book-label">Забронировать стол</div>
+          <Label className="book-label">Забронировать стол</Label>
           <ToggleGroup
             className="times"
             /* data-rail — перетаскивание мышью, data-times — по нему рантайм
@@ -62,7 +66,7 @@ export function BookableEvent({ title, desc, image, times = ['12:00', '13:00', '
           </Button>
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
 

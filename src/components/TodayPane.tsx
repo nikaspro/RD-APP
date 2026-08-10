@@ -7,6 +7,7 @@ import { DishRail } from './DishRail'
 import { Nudge } from './Nudge'
 import { PlayPillIcon, PausePillIcon } from './icons'
 import { Button } from '@/components/ui/button'
+import { Card, CardTitle, CardDescription } from '@/components/ui/card'
 
 /* Экран дня: погода, утро / день / вечер с событиями.
    Этот же макет рантайм клонирует под 5.07 и 6.07, подставляя свои
@@ -74,33 +75,33 @@ export function TodayPane() {
 
       <SwipeDeck
         image="assets/img/deck-rolls.webp"
-        face={<h3 className="ev-t">Как насчет роллов вечером?</h3>}
+        face={<CardTitle className="ev-t" role="heading" aria-level={3}>Как насчет роллов вечером?</CardTitle>}
       >
-        <div>
-          <h3 className="ev-t">Subzero</h3>
-          <p className="ev-d">Стильный минималистичный ресторан на улице Рубинштейна</p>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Subzero</CardTitle>
+          <CardDescription className="ev-d">Стильный минималистичный ресторан на улице Рубинштейна</CardDescription>
           <div className="media">
             <img src="assets/img/ev-subzero.webp" alt="" />
             <StatusChip dark>на территории отеля</StatusChip>
           </div>
-        </div>
-        <div>
-          <h3 className="ev-t">Важная Рыба</h3>
-          <p className="ev-d">
+        </Card>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Важная Рыба</CardTitle>
+          <CardDescription className="ev-d">
             Популярная доставка и суши-бары с большим выбором блюд ресторанного уровня
-          </p>
+          </CardDescription>
           <div className="media">
             <img src="assets/img/ev-vazhnaya-ryba.webp" alt="" />
             <StatusChip>доставка</StatusChip>
           </div>
-        </div>
-        <div>
-          <h3 className="ev-t">Gills</h3>
-          <p className="ev-d">Уютное японское кафе на Казанской улице</p>
+        </Card>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Gills</CardTitle>
+          <CardDescription className="ev-d">Уютное японское кафе на Казанской улице</CardDescription>
           <div className="media">
             <img src="assets/img/deck-rolls.webp" alt="" />
           </div>
-        </div>
+        </Card>
       </SwipeDeck>
 
       <EventCard
@@ -114,33 +115,33 @@ export function TodayPane() {
         face={
           <div className="sun-head">
             <div>
-              <h3 className="ev-t" style={{ paddingTop: 0 }}>
+              <CardTitle className="ev-t" style={{ paddingTop: 0 }} role="heading" aria-level={3}>
                 Закат
-              </h3>
-              <p className="ev-d">Собрал идеи, с которых провожать закат в разы приятнее</p>
+              </CardTitle>
+              <CardDescription className="ev-d">Собрал идеи, с которых провожать закат в разы приятнее</CardDescription>
             </div>
             <div className="sun-time">21:31</div>
           </div>
         }
       >
-        <div>
-          <h3 className="ev-t">Крыша на Казанской</h3>
-          <p className="ev-d">Открытый вид на Исаакий, вход по записи</p>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Крыша на Казанской</CardTitle>
+          <CardDescription className="ev-d">Открытый вид на Исаакий, вход по записи</CardDescription>
           <div className="media">
             <img src="assets/img/deck-sunset.webp" alt="" />
             <StatusChip>21:31</StatusChip>
           </div>
-        </div>
-        <div>
-          <h3 className="ev-t">Стрелка Васильевского</h3>
-          <p className="ev-d">Классическая точка на закат, 15 минут пешком</p>
+        </Card>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Стрелка Васильевского</CardTitle>
+          <CardDescription className="ev-d">Классическая точка на закат, 15 минут пешком</CardDescription>
           <div className="media" />
-        </div>
-        <div>
-          <h3 className="ev-t">Мост Ломоносова</h3>
-          <p className="ev-d">Тихая набережная почти без туристов</p>
+        </Card>
+        <Card>
+          <CardTitle className="ev-t" role="heading" aria-level={3}>Мост Ломоносова</CardTitle>
+          <CardDescription className="ev-d">Тихая набережная почти без туристов</CardDescription>
           <div className="media" />
-        </div>
+        </Card>
       </SwipeDeck>
 
       <div className="tail" />
