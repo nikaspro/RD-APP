@@ -6,3 +6,7 @@
 
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
+
+/* Анимации для компонентов библиотеки — тот же пакет, что подключает сам
+   shadcn в четвёртой версии (в третьей это был плагин tailwindcss-animate). */
+@import 'tw-animate-css';
