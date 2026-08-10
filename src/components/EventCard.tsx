@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
+import { Card } from '@/components/ui/card'
 import { StatusChip } from './StatusChip'
 
 /* Карточка события в дне (.ev): заголовок, описание, фото с тегом.
-   Свайп влево по карточке («Обсудить» / «Перенести») навешивает рантайм. */
+   Card из библиотеки; бордер и тень с неё сняты в theme.css — в этом
+   проекте карточки плоские. Свайп влево («Обсудить» / «Перенести»)
+   навешивает рантайм по классу .ev. */
 
 type Props = {
   title: string
@@ -19,7 +22,7 @@ type Props = {
 
 export function EventCard({ title, desc, image, chip, chipDark, emptyMedia, children }: Props) {
   return (
-    <div className="ev">
+    <Card className="ev">
       <h3 className="ev-t">{title}</h3>
       {desc ? <p className="ev-d">{desc}</p> : null}
       {image ? (
@@ -31,7 +34,7 @@ export function EventCard({ title, desc, image, chip, chipDark, emptyMedia, chil
         <div className="media" />
       ) : null}
       {children}
-    </div>
+    </Card>
   )
 }
 

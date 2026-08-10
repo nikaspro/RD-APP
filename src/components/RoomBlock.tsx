@@ -1,24 +1,36 @@
-import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Item, ItemContent, ItemTitle, ItemActions } from '@/components/ui/item'
 
 /* Карточка номера на экране «Перед заездом»: фото, название и ряды-переходы.
-   Ряды — Button из библиотеки в варианте ghost: от него нужны состояния
-   и семантика, а вид даёт класс .nav из chiposh.css. */
+   Card и Item из библиотеки; вид проектный — классы .room и .nav из
+   chiposh.css. Item здесь уместнее кнопки: это строка списка с содержимым
+   слева и шевроном справа, ровно его раскладка. */
 export function RoomBlock() {
   return (
-    <div className="room">
+    <Card className="room">
       <img src="assets/img/room-bungalow.webp" alt="Бунгало с террасой" />
       <div className="pad">
         <div className="big">Бунгало с террасой</div>
       </div>
       <div className="pad navs">
-        <Button variant="ghost" className="nav">
-          Удобства в номере<i>›</i>
-        </Button>
-        <Button variant="ghost" className="nav">
-          Инструкция по заселению<i>›</i>
-        </Button>
+        <Item className="nav" render={<button type="button" />}>
+          <ItemContent>
+            <ItemTitle>Удобства в номере</ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <i>›</i>
+          </ItemActions>
+        </Item>
+        <Item className="nav" render={<button type="button" />}>
+          <ItemContent>
+            <ItemTitle>Инструкция по заселению</ItemTitle>
+          </ItemContent>
+          <ItemActions>
+            <i>›</i>
+          </ItemActions>
+        </Item>
       </div>
-    </div>
+    </Card>
   )
 }
 

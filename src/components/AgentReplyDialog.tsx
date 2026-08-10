@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 /* Разговор с агентом: затемнение, лист с лентой сообщений, поле ввода и
    экранная клавиатура.
@@ -11,7 +12,7 @@ export function AgentReplyDialog() {
       <div className="sheet">
         <div className="chat-msgs" data-msgs />
         <div className="chat-bar">
-          <input className="chat-input" data-chatinput placeholder="Спросите о чём угодно" />
+          <Input className="chat-input" data-chatinput placeholder="Спросите о чём угодно" />
           <Button className="chat-send" data-chatsend hidden aria-label="Отправить">
             <svg
               viewBox="0 0 24 24"

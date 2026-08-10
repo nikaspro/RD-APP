@@ -1,29 +1,41 @@
 import { AmenityIcon } from './AmenityIcon'
-import { Button } from '@/components/ui/button'
+import { Item, ItemGroup, ItemMedia, ItemContent, ItemTitle } from '@/components/ui/item'
 
-/* «Что взять с собой в дорогу». Отметка пункта и добавление нового
-   (через набор текста в листе агента) — на рантайме: [data-add-ask]
-   открывает поле ввода, отмеченному пункту ставится класс .on.
-   Строки — Button из библиотеки; классы .li и .li.add сохранены, по ним
-   рантайм находит пункты и по ним же строки выглядят как в макете. */
+/* «Что взять с собой в дорогу». Строки — Item из библиотеки: иконка слева,
+   подпись справа, это его штатная раскладка. Классы .list, .li и .li.add
+   сохранены — по ним рантайм находит пункты (отметка ставит .on,
+   [data-add-ask] открывает набор текста) и по ним же строки выглядят
+   как в макете. */
 
 const ITEMS = ['Зубная щетка', 'Паспорт', 'Зарядка для телефона']
 
 export function PackList() {
   return (
     <div className="pad">
-      <div className="list">
+      <ItemGroup className="list">
         {ITEMS.map((item) => (
-          <Button variant="ghost" className="li justify-start" key={item}>
-            <AmenityIcon />
-            <b>{item}</b>
-          </Button>
+          <Item className="li" key={item} render={<button type="button" />}>
+            <ItemMedia>
+              <AmenityIcon />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>
+                <b>{item}</b>
+              </ItemTitle>
+            </ItemContent>
+          </Item>
         ))}
-        <Button variant="ghost" className="li add justify-start" data-add-ask>
-          <AmenityIcon variant="add" />
-          <b>Добавить еще</b>
-        </Button>
-      </div>
+        <Item className="li add" data-add-ask render={<button type="button" />}>
+          <ItemMedia>
+            <AmenityIcon variant="add" />
+          </ItemMedia>
+          <ItemContent>
+            <ItemTitle>
+              <b>Добавить еще</b>
+            </ItemTitle>
+          </ItemContent>
+        </Item>
+      </ItemGroup>
     </div>
   )
 }
