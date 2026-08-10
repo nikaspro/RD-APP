@@ -6,6 +6,7 @@ import { SwipeDeck } from './SwipeDeck'
 import { DishRail } from './DishRail'
 import { Nudge } from './Nudge'
 import { PlayPillIcon, PausePillIcon } from './icons'
+import { Button } from '@/components/ui/button'
 
 /* Экран дня: погода, утро / день / вечер с событиями.
    Этот же макет рантайм клонирует под 5.07 и 6.07, подставляя свои
@@ -33,7 +34,8 @@ export function TodayPane() {
         chipDark
       >
         <div className="row">
-          <button
+          <Button
+            variant="outline"
             className="pill"
             data-audio="Новая Голландия, историческая территория"
             data-dur="881"
@@ -41,7 +43,7 @@ export function TodayPane() {
             <PlayPillIcon />
             <PausePillIcon />
             Аудиогид
-          </button>
+          </Button>
         </div>
       </EventCard>
 

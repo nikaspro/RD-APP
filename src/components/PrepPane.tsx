@@ -1,4 +1,5 @@
 import { Ticket } from './Ticket'
+import { Button } from '@/components/ui/button'
 import { Nudge } from './Nudge'
 import { RoomBlock } from './RoomBlock'
 import { PackList } from './PackList'
@@ -22,9 +23,9 @@ export function PrepPane() {
 
       <div className="pad checkin">
         <div className="lbl">Заезд</div>
-        <button className="big" data-checkindate>
+        <Button variant="ghost" className="big" data-checkindate>
           Пятница, 14 августа • с 12:00
-        </button>
+        </Button>
       </div>
 
       <RoomBlock />

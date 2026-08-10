@@ -1,10 +1,15 @@
 import { BookingChip } from './StatusChip'
-import { HScroll } from './HScroll'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 /* Событие, у которого можно забронировать стол (.ev[data-book]).
    Ряд брони скрыт до тех пор, пока свайп по карточке не откроет его;
    выбор времени, «думает», итог с обратным отсчётом и тег брони —
-   всё это рантайм (initBooking) по data-атрибутам ниже. */
+   всё это рантайм (initBooking) по data-атрибутам ниже.
+
+   Времена — ToggleGroup из библиотеки: по правилам проекта набор из 2–7
+   вариантов делается им, а не циклом по кнопкам со своим активным
+   состоянием. Класс .pill сохранён: по нему рантайм находит кнопки
+   ([data-times] .pill) и по нему же они выглядят как пилюли из макета. */
 
 type Props = {
   title: string
@@ -30,13 +35,20 @@ export function BookableEvent({ title, desc, image, times = ['12:00', '13:00', '
       <div className="book" data-bookrow hidden>
         <div data-bookask>
           <div className="book-label">Забронировать стол</div>
-          <HScroll className="times" data-times>
+          <ToggleGroup
+            className="times"
+            /* data-rail — перетаскивание мышью, data-times — по нему рантайм
+               ищет кнопки времени */
+            data-rail
+            data-times
+            aria-label="Время брони"
+          >
             {times.map((t) => (
-              <button className="pill" key={t}>
+              <ToggleGroupItem className="pill" key={t} value={t}>
                 {t}
-              </button>
+              </ToggleGroupItem>
             ))}
-          </HScroll>
+          </ToggleGroup>
         </div>
         <div className="book-state" data-bookstate hidden>
           <span data-bookmsg />

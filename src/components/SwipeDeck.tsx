@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Button } from '@/components/ui/button'
 
 /* Стопка вариантов (.ev[data-deck]): лицевая карточка лежит на двух
    подложках, тап раскрывает остальные варианты пружиной.
@@ -29,9 +30,9 @@ export function SwipeDeck({ face, image, children }: Props) {
       <div className="deck-rest" data-rest>
         {children}
         <div className="deck-hide">
-          <button className="pill" data-hide>
+          <Button variant="outline" className="pill" data-hide>
             Свернуть
-          </button>
+          </Button>
         </div>
       </div>
     </div>
