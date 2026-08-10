@@ -9,6 +9,10 @@
     --ink:#060708;
     --ink40:rgba(6,7,8,.4);
     --ink30:rgba(6,7,8,.3);
+    /* нейтральная подложка тегов: холодный светло-серый. Не ink10 — тот
+       прозрачный и на фото или цветном фоне ведёт себя непредсказуемо,
+       а этот плотный и одинаковый везде. Общий для всех будущих тегов */
+    --tag:#F0F5F7;
     --ink10:rgba(6,7,8,.1);
     --grey:#595959;
     --hair:#CCCCCC;
@@ -194,184 +198,93 @@
   .room .nav{height:42px}
   .navs{margin-top:8px}
   /* --- авиабилет ---
-     Компактная раскладка: служебное собрано в строку меты, код аэропорта живёт
-     вместе с датой, время в пути стоит на дорожке. Сегмент 150px вместо 306.
+     Одна раскладка: сегменты друг за другом, между ними полоса пересадки.
+     Раньше рядом лежали ещё два варианта вёрстки — полный и компактный —
+     скрытые, но со своим CSS: девятнадцать правил обслуживали разметку,
+     которой на экране нет. Их и вырезали.
 
-     Цвет текста — три ступени, все на токенах. Раньше здесь было семь оттенков
-     серого литералами (#A7A7A7, #7D7D7D, #BCBCBC, #595959 …), они почти не
-     отличались друг от друга и билет рябил:
-       --ink    — значения: время, код брони, итог регистрации
-       --ink40  — подписи: город, «Бронь», мета, время в пути
-       --ink30  — служебное: код аэропорта с датой, +1, иконка, точки дорожки */
-  .tkt{padding-top:22px;padding-bottom:40px}
-  /* шапка: состояние регистрации и номер рейса, обе плоским текстом.
-     По базовой линии, а не по центру: у пилюли была своя высота, у текста нет */
-  .tkt-meta{display:flex;align-items:baseline;gap:10px}
-  /* Кода брони в билете нет: регистрация проходит здесь же, агентом, и гостю
-     негде его вводить. Билет начинается сразу с рейса */
-  /* значение справа от подписи ряда: у пассажиров это иконки людей */
-  .tkt .nav span{display:flex;align-items:center;gap:3px;margin-left:auto;
-                 color:var(--ink30)}
-  .tkt .nav span svg{display:block;width:17px;height:17px}
-  .tkt-leg{margin-top:22px}
-  .tkt-leg:first-child{margin-top:0}
-  /* Состояние регистрации без подложки: плоский текст, как весь остальной
-     билет. Три состояния различает цвет, а не фон — подложка была здесь
-     единственной на весь блок и выпадала из плоской вёрстки.
-     open — тёмным: это то, что можно сделать сейчас */
-  .tkt-badge{flex:0 0 auto;font:var(--t-body);color:var(--ink);
-             white-space:nowrap}
-  /* после регистрации смысл меняется: срок больше не нужен, нужен факт */
-  .tkt-badge.done{color:var(--ok)}
-  /* пока не открыта или уже закрыта — справка, а не действие: приглушаем */
-  .tkt-badge.soon{color:var(--ink40)}
-  /* live — срок регистрации, который горит прямо сейчас: жирным и зелёным.
-     Это единственное место в блоке, где текст выделен весом */
-  .tkt-badge.live{font:var(--t-body-strong);color:var(--ok)}
-  /* Шапка сегмента как строка онлайн-табло: слева номер рейса, справа статус
-     теми же словами, что на сайте аэропорта. Терминал с гейтом сюда не лезут —
-     они внизу, в ряду аэропорта: нужны в другой момент, уже перед выходом */
-  .tkt-no, .tkt-dur, .tkt-sub{font:var(--t-body);color:var(--ink40)}
-  .tkt-city{font:var(--t-body);color:var(--ink)}
-  /* ряд аэропорта: терминал, места после регистрации и гейт. Всё это нужно
-     в один момент — когда гость уже в аэропорту и идёт к выходу */
-  .tkt-foot{display:flex;align-items:center;gap:26px;margin-top:14px}
-  .tkt-foot u{display:block;text-decoration:none;font:var(--t-body);color:var(--ink30)}
-  .tkt-foot b{display:block;margin-top:5px;font:var(--t-body-strong);color:var(--ink)}
+     Цвет текста — три ступени, все на токенах:
+       --ink    — значения: время, город, итог регистрации
+       --ink40  — служебное: дата, код аэропорта, борт, время в пути
+       --ink30  — подписи ряда аэропорта и иконки */
+  /* снизу 18, а не 40: следом идёт сообщение агента, и с прежним отступом
+     оно висело далеко от билета — реплика про этот билет, значит стоять
+     должна рядом. У .nudge своей высоты нет, так что зазор задаёт билет */
+  .tkt{padding-top:22px;padding-bottom:18px}
+  .tkt-b{margin-top:26px}
+  .tkt-b:first-child{margin-top:0}
+
+  /* шапка: борт слева, тег регистрации справа */
+  .tkt-j-top{display:flex;align-items:center;gap:10px}
+  /* auto-отступ теперь у борта: он уходит вправо, тег остаётся у левого края */
+  .tkt-j-no{margin-left:auto;font:var(--t-body);color:var(--ink40)}
+  /* Тег: лайм только у открытой регистрации — она действие. Пока не открыта
+     или уже закрыта, подложка нейтральная: это справка «когда откроется»,
+     и лайм обещал бы действие, которого нет */
+  .tkt-badge{flex:0 0 auto;display:flex;align-items:center;height:24px;
+             padding:0 12px;border-radius:12px;white-space:nowrap;
+             background:var(--lime);color:var(--ink);font:var(--t-body)}
+  .tkt-badge.soon{background:var(--tag);color:var(--ink40)}
+  .tkt-badge.done{background:var(--ok-bg);color:var(--ok)}
+
+  /* даты своей строкой над временем: вылет слева, прилёт справа — так виден
+     переход через полночь без надстрочных значков */
+  .tkt-j-dates{margin-top:22px;display:flex;justify-content:space-between;
+               font:var(--t-body);color:var(--ink40)}
+  .tkt-b-times{margin-top:5px;display:flex;align-items:center;
+               justify-content:space-between}
+  /* время: --t-title-l (28). По замерам макета выходило ~32, и стоял
+     --t-title-xl (34), но рядом с городом и датой он давил — 28 держит
+     ту же роль главного значения, не забирая блок целиком */
+  .tkt-time{font:var(--t-title-l);color:var(--ink)}
+  /* город тёмным, код аэропорта служебным серым — одна точка маршрута,
+     читается сверху вниз */
+  .tkt-b-places{margin-top:4px;display:flex;justify-content:space-between;
+                gap:12px;font:var(--t-body);color:var(--ink)}
+  .tkt-b-places span + span{text-align:right}
+  .tkt-b-places u{display:block;text-decoration:none;color:var(--ink40)}
+
+  /* Время в пути стоит НА линии, а не над ней: линия идёт через всю колонку,
+     а подпись разрывает её своим фоном. Читается как одна линия маршрута
+     с отметкой посередине, а не как два элемента.
+     z-index обязателен: .tkt-line позиционирован и идёт в разметке позже */
+  .tkt-mid{position:relative;flex:1;height:34px;margin:0 8px;
+           display:flex;align-items:center;justify-content:center}
+  .tkt-dur{position:absolute;z-index:1;left:50%;transform:translateX(-50%);
+           padding:0 9px;background:#fff;white-space:nowrap;
+           font:var(--t-caption);color:var(--ink40)}
+  .tkt-line{width:100%;height:1px;background:var(--ink10)}
+
+  /* Пересадка — полоса во всю ширину между сегментами: высота 40, фон
+     нейтральный, скругление полное. Рейс — событие, пересадка — пауза,
+     ей нужен свой такт. Кнопка: тап открывает разговор о стыковке */
+  .tkt-stopbar{display:flex;align-items:center;justify-content:center;
+               box-sizing:border-box;width:100%;height:40px;margin:22px 0 28px;
+               padding:0 20px;border:0;border-radius:999px;background:var(--tag);
+               font:var(--t-caption);color:var(--ink);text-align:center;cursor:pointer}
+
+  /* ряд аэропорта: терминал, стойки, места после регистрации и гейт. Всё это
+     нужно в один момент — когда гость уже в аэропорту и идёт к выходу.
+     Отбит линейкой: другой такт, чем выбор рейса */
+  .tkt-c-svc{margin-top:18px;padding-top:18px;border-top:1px solid var(--ink10);
+             display:flex;align-items:center;gap:26px}
+  /* Подписи ряда — 13.5 вместо 16. Ровно 14 в системе нет, ближайшая ступень
+     --t-caption (13.5), и заводить под это девятый токен не стоит.
+     Мельче только подписи, значения остаются 16: так у пары появляется
+     иерархия, а три колонки в 393px перестают тесниться */
+  .tkt-c-svc u{display:block;text-decoration:none;font:var(--t-caption);color:var(--ink30)}
+  .tkt-c-svc b{display:block;font:var(--t-body);color:var(--ink)}
   /* по вектору внутри пилюли слева 6 до иконки и 9 справа от числа:
      круглой стрелке нужно меньше воздуха, чем цифрам */
   .tkt-gate{margin-left:auto;display:flex;align-items:center;gap:5px;height:26px;
             padding:0 9px 0 6px;border-radius:13px;background:var(--ink);color:#fff;
             font:var(--t-body-strong)}
   .tkt-gate svg{display:block;width:16px;height:16px}
-  /* маршрут: время крупным, под ним город, ниже код аэропорта с датой */
-  .tkt-route{display:flex;align-items:flex-start;justify-content:space-between;margin-top:13px}
-  .tkt-side{min-width:0}
-  .tkt-side.right{text-align:right}
-  .tkt-time{font:var(--t-title-l);color:var(--ink)}
-  /* +1 у времени прилёта: рейс перешёл через полночь */
-  .tkt-time sup{margin-left:1px;font:var(--t-caption);vertical-align:top;color:var(--ink30)}
-  .tkt-city{margin-top:6px}
-  /* код аэропорта и дата одной строкой: вместе это одна служебная подпись */
-  .tkt-sub{margin-top:2px;white-space:nowrap}
-  /* колонка центрирована по высоте строки времени: время в пути и дорожка —
-     один блок, самолёт скрыт, направление читается по бегущей подсветке точек */
-  /* Время в пути стоит НА полоске, а не над ней: линия проходит через всю
-     колонку, а подпись разрывает её собственным фоном. Это читается как одна
-     линия маршрута с отметкой посередине, а не как два отдельных элемента */
-  .tkt-mid{position:relative;flex:1;height:34px;margin:0 8px;
-           display:flex;align-items:center;justify-content:center}
-  /* z-index обязателен: .tkt-line тоже позиционирован и идёт в разметке
-     позже, поэтому без него полоска рисуется поверх белой подложки и разрыв
-     не появляется */
-  .tkt-dur{position:absolute;z-index:1;left:50%;transform:translateX(-50%);
-           padding:0 9px;background:#fff;white-space:nowrap;text-align:center}
-  /* дорожка: линия по центру между временами. Это не ряд точек, а одна
-     сплошная линия — рельс маршрута. По нему проходит широкий мягкий луч:
-     свет разгорается и гаснет по пикселям, поэтому считывать нечего, кроме
-     самого движения. Точечная сетка тут была лишней: даже с идеальной маской
-     дискретный шаг всё равно читался как переключение.
-     Рельс спокойный (ink10), полную плотность даёт только луч. Маски больше
-     нет — луч по высоте равен линии, поэтому виден как её светящийся участок.
-     Цикл 4с = проход 2.2с + пауза 1.8с, когда линия спокойна. Это не лоадер */
-  .tkt-line{position:relative;width:100%;height:2px;overflow:hidden;
-            border-radius:1px;background:var(--ink10)}
-  /* луч едет по left в процентах контейнера — так он честно уходит за оба края
-     при любой ширине средней колонки */
-  .tkt-beam{position:absolute;top:0;bottom:0;left:-60%;width:60%;
-            background:linear-gradient(90deg,transparent,var(--ink),transparent);
-            animation:beamRun 4s cubic-bezier(.4,0,.6,1) infinite}
-  /* пауза внутри кейфрейма: луч доезжает к 55% и стоит за краем до конца цикла */
-  @keyframes beamRun{
-    0%{left:-60%} 55%{left:100%} 100%{left:100%}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .tkt-beam{display:none}
-  }
-  /* самолёт скрыт: анимация перелёта рябила рядом со временем в пути.
-     Код и разметку не убираем — просто не показываем */
-  .tkt-plane{display:none;position:absolute;top:19px;left:50%;width:17px;height:15px;color:var(--ink);
-             transform:translateX(-50%);will-change:transform}
-  .tkt-plane svg{display:block;width:17px;height:15px;will-change:transform,opacity}
-  /* --- компактная строка рейса ---
-     Тот же рейс в три строки: мета (борт + дата), маршрут словами, времена
-     с кодами. Нужна там, где билет целиком не влезает или ещё не актуален,
-     а знать «что и когда» уже надо.
-     Своих размеров и цветов не заводит: те же три ступени серого и те же
-     токены, что в полном билете, поэтому рядом читается как один билет,
-     а не как второй компонент */
-  .tkt-compact{margin-top:34px}
-  .tkt-c{margin-top:24px}
-  .tkt-c:first-child{margin-top:0}
-  /* мета: борт слева, дата справа. Размер тот же, что у времён —
-     разделяет их не кегль, а цвет: служебное серое, значения тёмные */
-  .tkt-c-top{display:flex;align-items:center;gap:7px;
-             font:var(--t-body);color:var(--ink40)}
-  /* знак перевозчика: круг 18px, свои цвета не трогаем */
-  .tkt-c-top svg{display:block;width:18px;height:18px;flex:0 0 auto}
-  /* слот состояния — в правый край верхней строки. Цвета берёт у .tkt-badge,
-     того же, что в полном билете: ink когда есть что сделать, ink40 когда нет,
-     зелёный после регистрации */
-  .tkt-c-top .tkt-badge{margin-left:auto}
-  /* Связка между точками маршрута: длинное тире, одно и то же в обоих ряду —
-     и между городами, и между временами. По ширине не тянется: это знак
-     в строке, а не разделитель на всю колонку.
-     Стрелки и иконки убраны: направление задаёт порядок слева направо,
-     рисовать его дважды незачем */
-  .tkt-c-dash{font-style:normal;margin:0 7px;color:var(--ink30)}
-  /* города — тот же размер, что у заголовков вроде «Что взять с собой в дорогу» */
-  .tkt-c-cities{margin-top:9px;font:var(--t-heading);color:var(--ink)}
-  /* времена — размером как названия городов в полном билете (.tkt-city):
-     код подписью, время значением */
-  .tkt-c-times{margin-top:11px;display:flex;align-items:center}
-  .tkt-c-pt{flex:0 0 auto;display:flex;align-items:baseline;gap:7px;
-            white-space:nowrap}
-  .tkt-c-pt u{text-decoration:none;font:var(--t-body);color:var(--ink40)}
-  .tkt-c-pt b{font:var(--t-body);color:var(--ink)}
-  /* +1 читается тем же служебным серым, что и в полном билете */
-  .tkt-c-pt sup{margin-left:1px;font:var(--t-caption);vertical-align:top;
-                color:var(--ink30)}
-  /* служебный ряд live-сегмента: та же колоночная раскладка, что .tkt-foot
-     в полном билете, и та же пилюля гейта в правом крае */
-  .tkt-c-svc{margin-top:14px;display:flex;align-items:center;gap:26px}
-  .tkt-c-svc u{display:block;text-decoration:none;font:var(--t-body);
-               color:var(--ink30)}
-  .tkt-c-svc b{display:block;margin-top:3px;font:var(--t-body);
-               font-weight:400;color:var(--ink)}
-  /* --- вариант с крупным временем ---
-     Время 28px и светящаяся полоска между ними — те же .tkt-time, .tkt-mid,
-     .tkt-line и .tkt-beam, что в полном билете. Под временем одна строка:
-     город и код аэропорта через длинное тире, тем же .tkt-c-dash.
-     Ни одного своего размера и цвета: только раскладка */
-  .tkt-b{margin-top:26px}
-  .tkt-b:first-child{margin-top:0}
-  .tkt-b-times{margin-top:10px;display:flex;align-items:flex-start;
-               justify-content:space-between}
-  /* подписи под временем разведены по краям и прижаты к своей стороне,
-     чтобы читались парами со временем над ними */
-  /* город чёрным, код аэропорта служебным серым: город — то, что читают,
-     код — уточнение при нём */
-  .tkt-b-places{margin-top:8px;display:flex;justify-content:space-between;
-                gap:12px;font:var(--t-body);color:var(--ink)}
-  .tkt-b-places span{min-width:0}
-  .tkt-b-places span + span{text-align:right}
-  /* код аэропорта строкой ниже города: пара «город / код» читается сверху
-     вниз как одна точка маршрута, а не как два слова в строке.
-     Цвет тот же ink30, что у подписей «Терминал» и «Стойки» — это одна
-     ступень служебного текста, разводить её на два оттенка незачем */
-  .tkt-b-places u{display:block;margin-top:2px;text-decoration:none;
-                  color:var(--ink30)}
-  /* Пересадка отбита линейками сверху и снизу: это пауза между сегментами,
-     и рамка держит её как отдельный такт лучше, чем один отступ.
-     Линейка та же, что у рядов .nav — 1px ink10, своей толщины не вводим */
-  .tkt-c-stop{margin-top:18px;padding:14px 0;
-              border-top:1px solid var(--ink10);
-              border-bottom:1px solid var(--ink10);
-              font:var(--t-body);color:var(--ink)}
-  /* после пересадки следующий сегмент не нуждается в своём отступе:
-     паузу уже отбила нижняя линейка */
-  .tkt-c-stop + .tkt-c,
-  .tkt-c-stop + .tkt-b{margin-top:18px}
+
+  /* значение справа от подписи ряда: у пассажиров это иконки людей */
+  .tkt .nav span{display:flex;align-items:center;gap:3px;margin-left:auto;
+                 color:var(--ink30)}
+  .tkt .nav span svg{display:block;width:17px;height:17px}
   /* Пассажиры и Условия тарифа — точная копия «Удобства в номере»
      и «Инструкция по заселению»: тот же .nav, та же высота, тот же
      разделитель между рядами и его отсутствие у последнего */
@@ -383,36 +296,6 @@
   /* Регистрация одна на всю бронь и одной кнопкой: в жизни регистрируешься
      на весь маршрут сразу, а места подбирает агент — спрашивать о них
      нечего. Строка стоит внизу билета, рядом с багажом */
-  /* высота 36 у итога — та же, что у пилюли, чтобы строка не прыгала
-     при подмене кнопки на текст. Своих размеров пилюля не получает:
-     базовый .pill уже 36 с полями 18 */
-  .tkt-ci{display:flex;align-items:center;margin-top:20px}
-  .tkt-ci b{min-width:0;height:36px;display:flex;align-items:center;
-            font:var(--t-body);color:var(--ink);white-space:nowrap}
-  /* тот же бегущий блеск по тексту, что у «проверяю наличие» в брони */
-  .tkt-ci b.is-wait{
-    background:linear-gradient(90deg,var(--ink) 16%,var(--shine) 50%,var(--ink) 84%);
-    background-size:220% 100%;
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-    animation:shimmer 2.4s linear infinite}
-  @media (prefers-reduced-motion: reduce){
-    .tkt-ci b.is-wait{animation:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
-  }
-
-  /* --- маршрут с пересадкой ---
-     Сегменты идут друг за другом, между ними строка ожидания. Она приглушена
-     и с отбивкой сверху: рейс — это событие, пересадка — пауза между ними */
-  /* пересадка: пауза между сегментами. На подложке она читается как отдельный
-     кусок пути, а не как ещё одна подпись к рейсу. Выключка влево, по сетке
-     остального содержимого — по центру она спорила с левыми временами */
-  .tkt-stop{margin-top:16px;padding:11px 14px;border-radius:12px;
-            background:var(--surface);font:var(--t-body);color:var(--ink40)}
-  /* время ожидания второй строкой: без точки-разделителя строка распадается
-     на «где» и «сколько», и это читается быстрее, чем одна длинная */
-  .tkt-stop b{display:block;margin-top:3px;font-weight:400}
-  /* после подложки сегменту нужно меньше воздуха: блок сам держит паузу */
-  .tkt-stop + .tkt-leg{margin-top:16px}
   /* one row style for both lists: same height, divider, type and grey */
   .nav{display:flex;align-items:center;justify-content:space-between;width:100%;height:52px;
        padding:0;background:none;border:0;border-bottom:1px solid var(--ink10);
@@ -530,8 +413,8 @@
     from{opacity:0}
     to{opacity:1}
   }
-  /* font-style:normal обязателен: слова лежат в <i>, а он курсивит по
-     умолчанию — та же оговорка, что у .tkt-c-dash */
+  /* font-style:normal обязателен: слова лежат в <i>, а он курсивит
+     по умолчанию */
   .tx .w{display:inline-block;font-style:normal;opacity:0;filter:blur(6px);
          transform:translateY(6px);
          animation:wordIn .8s cubic-bezier(.16,.7,.22,1) both;
@@ -734,23 +617,33 @@
   @media (prefers-reduced-motion: reduce){
     .book-state.is-wait span{animation:none;-webkit-text-fill-color:var(--ink);color:var(--ink)}
   }
-  .deck{position:relative;margin-top:5px;padding-top:24px}
+  /* Стопка намекает картами СНИЗУ, а не сверху: список и правда лежит под
+     лицевой картой и выезжает оттуда вниз. Пока намёк был сверху, движение
+     спорило с ним — карты уезжали в ту сторону, откуда их вроде бы и не ждали.
+     Края через прозрачный чёрный, а не серые заливки: одинаково работают
+     на белом и на фоне заката. Тот, что уже вложен (21px), лежит дальше всех */
+  .deck{position:relative;margin-top:5px;padding-bottom:24px}
   .deck i{position:absolute;height:40px;border-radius:12px}
-  /* верхушки стопки через прозрачный чёрный, а не серые заливки:
-     они одинаково работают на белом и на фоне заката */
-  .deck i:nth-child(1){left:21px;right:21px;top:0;background:rgba(6,7,8,.06)}
-  .deck i:nth-child(2){left:7.5px;right:7.5px;top:12px;background:rgba(6,7,8,.10)}
-  .deck .media{margin-top:0}
-  /* --- agent stack: closed face / opened list --- */
+  .deck i:nth-child(1){left:21px;right:21px;bottom:0;background:rgba(6,7,8,.06)}
+  .deck i:nth-child(2){left:7.5px;right:7.5px;bottom:12px;background:rgba(6,7,8,.10)}
+  /* Раньше зазор между вопросом и фото давал верхний паддинг стопки (24),
+     и он не читался пустым — в нём лежали края карт. Края ушли вниз, поэтому
+     зазор задаём явно: 12. На 0 фото прилипало к заголовку, на 24 висело
+     в воздухе, потому что заполнять его больше нечем */
+  .deck .media{margin-top:12px}
+  /* --- стопка агента: лицевая карта и выпадающий остаток ---
+     Лицевая карта не складывается и не гаснет: она была первой в списке
+     и первой остаётся. Раскрытие достаёт из-под неё только остальные.
+     Раньше лицевая часть уезжала в ноль, и первая карта списка приходила
+     ей на замену — выглядело как подмена, а не как выпадение стопки */
   [data-deck]{cursor:pointer}
-  /* The face fades out while the first revealed card is already fading in, so the
-     block is never empty. Content used to wait for the height to finish, which
-     left a visible hole for about half a second. */
-  .deck-face{overflow:hidden;
-             transition:height .42s cubic-bezier(.33,0,.15,1),opacity .34s cubic-bezier(.4,0,.2,1)}
-  [data-deck].open .deck-face{opacity:0}
+  /* края уезжают вниз и гаснут: карты вышли из-под них, стопка опустела.
+     Место под края тоже закрывается, иначе между лицевой картой и первой
+     выпавшей остаётся дыра в 24px */
+  .deck{transition:padding-bottom .42s cubic-bezier(.33,0,.15,1)}
+  [data-deck].open .deck{padding-bottom:0}
   .deck i{transition:opacity .26s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.33,0,.15,1)}
-  [data-deck].open .deck i{opacity:0;transform:translateY(6px)}
+  [data-deck].open .deck i{opacity:0;transform:translateY(14px)}
   .deck-rest{height:0;overflow:hidden;transition:height .42s cubic-bezier(.33,0,.15,1)}
   /* верхний отступ первой карточки списка равен обычному ритму блоков,
      иначе после схлопывания лицевой части она прилипает к тому, что выше */
@@ -761,19 +654,27 @@
      ставит им top по смещениям внутри карточки — пилюли уезжали бы мимо.
      touch-action не нужен: pan-y на .ev выше в цепочке уже действует */
   .deck-rest > *{position:relative}
-  /* the cards come out from under the one above and settle downwards,
-     like dealing the stack open; hence a negative start offset */
-  .deck-rest > *{opacity:0;transform:translateY(-20px) scale(.96);transform-origin:50% 0;
+  /* Выпадение. Карты стоят выше своего места и чуть мельче, а .deck-rest
+     режет их по верхнему краю, поэтому они буквально выезжают из-под стопки
+     вниз, а не проявляются на месте.
+     Старт увеличен с 20 до 30: на 20 движение читалось как лёгкий сдвиг,
+     а не как «вышла из-под».
+     Доводчик с мягким перелётом вместо ровного изинга — это тот же спринг,
+     что задан в правилах проекта (stiffness 380, damping 30), выраженный
+     кривой: карта чуть проскакивает место и садится обратно.
+     Шаг между картами 90ms: на 70 они шли почти хором */
+  .deck-rest > *{opacity:0;transform:translateY(-30px) scale(.94);transform-origin:50% 0;
                  transition:opacity .18s cubic-bezier(.4,0,.2,1),transform .18s cubic-bezier(.4,0,.2,1)}
   [data-deck].open .deck-rest > *{opacity:1;transform:none;
-                 transition-duration:.44s;transition-timing-function:cubic-bezier(.33,0,.15,1)}
-  [data-deck].open .deck-rest > *:nth-child(1){transition-delay:0s}
-  [data-deck].open .deck-rest > *:nth-child(2){transition-delay:.07s}
-  [data-deck].open .deck-rest > *:nth-child(3){transition-delay:.14s}
-  [data-deck].open .deck-rest > *:nth-child(4){transition-delay:.21s}
+                 transition-duration:.52s,.62s;
+                 transition-timing-function:cubic-bezier(.4,0,.2,1),cubic-bezier(.22,1.12,.36,1)}
+  [data-deck].open .deck-rest > *:nth-child(1){transition-delay:.04s}
+  [data-deck].open .deck-rest > *:nth-child(2){transition-delay:.13s}
+  [data-deck].open .deck-rest > *:nth-child(3){transition-delay:.22s}
+  [data-deck].open .deck-rest > *:nth-child(4){transition-delay:.31s}
   .deck-hide{margin-top:30px}
   @media (prefers-reduced-motion: reduce){
-    .deck-face,.deck i,.deck-rest,.deck-rest > *{transition:none}
+    .deck,.deck i,.deck-rest,.deck-rest > *{transition:none}
   }
   /* больше воздуха над рядом блюд: раньше он стоял почти впритык к описанию */
   .dishes{margin-top:20px;display:flex;gap:8px;padding:0 32px;overflow-x:auto;overflow-y:hidden;
@@ -1060,6 +961,15 @@
       </div>
       <div class="pane" data-tab="prep">
         <div class="pad tkt" data-ticket="dep"></div>
+        <div class="pad nudge" data-nudge data-noevent data-action="checkin" data-follow="Возьму места рядом у окна — подойдёт?" data-done="Зарегистрировал на оба рейса, места 12A и 12B">
+          <div class="abub st-msg">
+            <div class="nudge-msg" data-nudgebtn role="button" tabindex="0" aria-label="Сообщение агента">
+              <span class="tx" data-nudgetx>Зарегистрировать на рейс?</span>
+              <button class="x" data-nudgex aria-label="Скрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+            </div>
+            <span class="sp"><svg viewBox="0 0 24 24"><path fill="#23D741" d="M12 2.6l1.7 5.3a4 4 0 0 0 2.6 2.6l5.3 1.7-5.3 1.7a4 4 0 0 0-2.6 2.6L12 21.8l-1.7-5.3a4 4 0 0 0-2.6-2.6L2.4 12.2l5.3-1.7a4 4 0 0 0 2.6-2.6L12 2.6z"/></svg></span>
+          </div>
+        </div>
         <div class="pad checkin">
           <div class="lbl">Заезд</div>
           <button class="big" data-checkindate>Пятница, 14 августа • с 12:00</button>
@@ -1212,7 +1122,7 @@
         <div class="sec gap-l">Вечер</div>
 
         <div class="ev" data-deck>
-          <div class="deck-face" data-face>
+          <div class="deck-face">
             <h3 class="ev-t">Как насчет роллов вечером?</h3>
             <div class="deck"><i></i><i></i>
               <div class="media"><img src="assets/img/deck-rolls.webp" alt=""></div>
@@ -1252,7 +1162,7 @@
         </div>
 
         <div class="ev" data-deck>
-          <div class="deck-face" data-face>
+          <div class="deck-face">
             <div class="sun-head">
               <div>
                 <h3 class="ev-t" style="padding-top:0">Закат</h3>
@@ -1338,6 +1248,36 @@
 <script src="assets/lottie_light.min.js"></script>
 <script>var STAR_ANIMS={"pulse":{"v":"5.12.1","fr":60,"ip":0,"op":180,"w":512,"h":512,"nm":"star_pulsating","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Shape Layer 4","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":-70,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":10,"s":[30]},{"t":90,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":-90,"s":[0,0,100]},{"t":90,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":-90,"op":90,"st":-90,"ct":1,"bm":0},{"ddd":0,"ind":2,"ty":4,"nm":"Shape Layer 3","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":110,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":190,"s":[30]},{"t":270,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":90,"s":[0,0,100]},{"t":270,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":90,"op":270,"st":90,"ct":1,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 2","sr":1,"ks":{"o":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":20,"s":[20]},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":100,"s":[30]},{"t":180,"s":[0]}],"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[249.205,-43.795,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,0.833]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0.167]},"t":0,"s":[0,0,100]},{"t":180,"s":[1160.25,1160.25,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"d":1,"ty":"el","s":{"a":0,"k":[46.41,46.41],"ix":2},"p":{"a":0,"k":[0,0],"ix":3},"nm":"Ellipse Path 1","mn":"ADBE Vector Shape - Ellipse","hd":false},{"ty":"gf","o":{"a":0,"k":100,"ix":10},"r":1,"bm":0,"g":{"p":3,"k":{"a":0,"k":[0,0.921568627451,0.98431372549,0.929411764706,0.496,0.921568627451,0.98431372549,0.929411764706,0.993,0.921568627451,0.98431372549,0.929411764706,0,0.2,0.5,0.6,1,1],"ix":9}},"s":{"a":0,"k":[0,0],"ix":5},"e":{"a":0,"k":[23.041,0.196],"ix":6},"t":2,"h":{"a":0,"k":0,"ix":7},"a":{"a":0,"k":0,"ix":8},"nm":"Gradient Fill 1","mn":"ADBE Vector Graphic - G-Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[249.205,-43.795],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Ellipse 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"Shape Layer 1","sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":0,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":22,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":45,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":67,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":90,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":112,"s":[14.608,20.944,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":135,"s":[17.952,13.2,100]},{"i":{"x":[0.4,0.4,0.4],"y":[1,1,1]},"o":{"x":[0.6,0.6,0.6],"y":[0,0,0]},"t":157,"s":[14.608,20.944,100]},{"t":180,"s":[17.952,13.2,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}},"float":{"v":"5.12.1","fr":60,"ip":0,"op":180,"w":512,"h":512,"nm":"star_thinking 2","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[425,425,100],"ix":6,"l":2}},"ao":0,"ip":-90,"op":270,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[8,8,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":180,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 1","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":1,"k":[{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":0,"s":[60,60,0],"to":[0,-145.833,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":28.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":60,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":88.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":120,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"i":{"x":0.4,"y":1},"o":{"x":0.6,"y":0},"t":148.965,"s":[60,-815,0],"to":[0,0,0],"ti":[0,-145.833,0]},{"t":180,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":0,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":13,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":29,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":44,"s":[301.8,221.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":60,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":73,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":89,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":104,"s":[301.8,221.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":120,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":133,"s":[221.8,301.8,100]},{"i":{"x":[0.833,0.833,0.833],"y":[0.833,0.833,1]},"o":{"x":[0.333,0.333,0.333],"y":[0,0,0]},"t":149,"s":[261.8,261.8,100]},{"i":{"x":[0.667,0.667,0.667],"y":[1,1,1]},"o":{"x":[0.167,0.167,0.167],"y":[0.167,0.167,0]},"t":164,"s":[301.8,221.8,100]},{"t":180,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":180,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}},"rotate":{"v":"5.12.1","fr":60,"ip":0,"op":60,"w":512,"h":512,"nm":"star_thinking","ddd":0,"assets":[],"layers":[{"ddd":0,"ind":1,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[425,425,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":2,"ty":3,"nm":"NULL CONTROL","sr":1,"ks":{"o":{"a":0,"k":0,"ix":11},"r":{"a":0,"k":0,"ix":10},"p":{"a":0,"k":[256,256,0],"ix":2,"l":2},"a":{"a":0,"k":[60,60,0],"ix":1,"l":2},"s":{"a":0,"k":[8,8,100],"ix":6,"l":2}},"ao":0,"ip":0,"op":60,"st":0,"bm":0},{"ddd":0,"ind":3,"ty":4,"nm":"Shape Layer 3","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":120,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":159,"s":[-200]},{"t":175,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":120,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":165,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":120,"s":[261.8,261.8,100]},{"t":180,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":120,"op":120.606060606061,"st":120,"ct":1,"bm":0},{"ddd":0,"ind":4,"ty":4,"nm":"Shape Layer 2","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":60,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":99,"s":[-200]},{"t":115,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":60,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":105,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":60,"s":[261.8,261.8,100]},{"t":120,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":60,"op":60.6060606060606,"st":60,"ct":1,"bm":0},{"ddd":0,"ind":5,"ty":4,"nm":"Shape Layer 1","parent":2,"sr":1,"ks":{"o":{"a":0,"k":100,"ix":11},"r":{"a":1,"k":[{"i":{"x":[0.667],"y":[1]},"o":{"x":[0.76],"y":[0]},"t":0,"s":[0]},{"i":{"x":[0.19],"y":[1]},"o":{"x":[0.333],"y":[0]},"t":39,"s":[-200]},{"t":55,"s":[-180]}],"ix":10},"p":{"a":1,"k":[{"i":{"x":0.49,"y":0.49},"o":{"x":0.51,"y":0.51},"t":0,"s":[60,60,0],"to":[0,0,0],"ti":[0,0,0]},{"t":45,"s":[60,60,0]}],"ix":2,"l":2},"a":{"a":0,"k":[-196,-150,0],"ix":1,"l":2},"s":{"a":1,"k":[{"i":{"x":[0.5,0.5,0.5],"y":[1,1,1]},"o":{"x":[0.5,0.5,0.5],"y":[0,0,0]},"t":0,"s":[261.8,261.8,100]},{"t":60,"s":[261.8,261.8,100]}],"ix":6,"l":2}},"ao":0,"shapes":[{"ty":"gr","it":[{"ind":0,"ty":"sh","ix":1,"ks":{"a":0,"k":{"i":[[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95],[0,0],[127.95,127.95],[0,0],[-127.95,127.95]],"o":[[0,0],[127.95,127.95],[0,0],[-127.95,127.95],[0,0],[-127.95,-127.95],[0,0],[127.95,-127.95]],"v":[[0,-392.667],[138.829,-138.829],[392.667,0],[138.829,138.829],[0,392.667],[-138.829,138.829],[-392.667,0],[-138.829,-138.829]],"c":true},"ix":2},"nm":"Path 1","mn":"ADBE Vector Shape - Group","hd":false},{"ty":"st","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":3},"o":{"a":0,"k":100,"ix":4},"w":{"a":0,"k":48,"ix":5},"lc":2,"lj":2,"bm":0,"nm":"Stroke 1","mn":"ADBE Vector Graphic - Stroke","hd":false},{"ty":"fl","c":{"a":0,"k":[0.137254901961,0.843137254902,0.254901960784,1],"ix":4},"o":{"a":0,"k":100,"ix":5},"r":1,"bm":0,"nm":"Fill 1","mn":"ADBE Vector Graphic - Fill","hd":false},{"ty":"tr","p":{"a":0,"k":[-196,-150],"ix":2},"a":{"a":0,"k":[0,0],"ix":1},"s":{"a":0,"k":[100,100],"ix":3},"r":{"a":0,"k":0,"ix":6},"o":{"a":0,"k":100,"ix":7},"sk":{"a":0,"k":0,"ix":4},"sa":{"a":0,"k":0,"ix":5},"nm":"Transform"}],"nm":"Polystar 1","np":3,"cix":2,"bm":0,"ix":1,"mn":"ADBE Vector Group","hd":false}],"ip":0,"op":60,"st":0,"ct":1,"bm":0}],"markers":[],"props":{}}};</script>
 <script>
+/* GSAP 3.15 + SplitText — вшиты, без CDN. Нужны для смены текста
+   в плашке пересадки: буквы влетают по одной, потом split.revert()
+   возвращает обычный текстовый узел. */
+/*!
+ * GSAP 3.15.0
+ * https://gsap.com
+ * 
+ * @license Copyright 2026, GreenSock. All rights reserved.
+ * Subject to the terms at https://gsap.com/standard-license.
+ * @author: Jack Doyle, jack@greensock.com
+ */
+
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t=t||self).window=t.window||{})}(this,function(e){"use strict";function _inheritsLoose(t,e){t.prototype=Object.create(e.prototype),(t.prototype.constructor=t).__proto__=e}function _assertThisInitialized(t){if(void 0===t)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return t}function r(t){return"string"==typeof t}function s(t){return"function"==typeof t}function t(t){return"number"==typeof t}function u(t){return void 0===t}function v(t){return"object"==typeof t}function w(t){return!1!==t}function x(){return"undefined"!=typeof window}function y(t){return s(t)||r(t)}function R(t){return(i=bt(t,ht))&&Fe}function S(t,e){return console.warn("Invalid property",t,"set to",e,"Missing plugin? gsap.registerPlugin()")}function T(t,e){return!e&&console.warn(t)}function U(t,e){return t&&(ht[t]=e)&&i&&(i[t]=e)||ht}function V(){return 0}function ga(t){var e,r,i=t[0];if(v(i)||s(i)||(t=[t]),!(e=(i._gsap||{}).harness)){for(r=yt.length;r--&&!yt[r].targetTest(i););e=yt[r]}for(r=t.length;r--;)t[r]&&(t[r]._gsap||(t[r]._gsap=new Xt(t[r],e)))||t.splice(r,1);return t}function ha(t){return t._gsap||ga(Pt(t))[0]._gsap}function ia(t,e,r){return(r=t[e])&&s(r)?t[e]():u(r)&&t.getAttribute&&t.getAttribute(e)||r}function ja(t,e){return(t=t.split(",")).forEach(e)||t}function ka(t){return Math.round(1e5*t)/1e5||0}function la(t){return Math.round(1e7*t)/1e7||0}function ma(t,e){var r=e.charAt(0),i=parseFloat(e.substr(2));return t=parseFloat(t),"+"===r?t+i:"-"===r?t-i:"*"===r?t*i:t/i}function na(t,e){for(var r=e.length,i=0;t.indexOf(e[i])<0&&++i<r;);return i<r}function oa(){var t,e,r=pt.length,i=pt.slice(0);for(_t={},t=pt.length=0;t<r;t++)(e=i[t])&&e._lazy&&(e.render(e._lazy[0],e._lazy[1],!0)._lazy=0)}function pa(t){return!!(t._initted||t._startAt||t.add)}function qa(t,e,r,i){pt.length&&!I&&oa(),t.render(e,r,i||!!(I&&e<0&&pa(t))),pt.length&&!I&&oa()}function ra(t){var e=parseFloat(t);return(e||0===e)&&(t+"").match(ot).length<2?e:r(t)?t.trim():t}function sa(t){return t}function ta(t,e){for(var r in e)r in t||(t[r]=e[r]);return t}function wa(t,e){for(var r in e)"__proto__"!==r&&"constructor"!==r&&"prototype"!==r&&(t[r]=v(e[r])?wa(t[r]||(t[r]={}),e[r]):e[r]);return t}function xa(t,e){var r,i={};for(r in t)r in e||(i[r]=t[r]);return i}function ya(t){var e=t.parent||L,r=t.keyframes?function _setKeyframeDefaults(i){return function(t,e){for(var r in e)r in t||"duration"===r&&i||"ease"===r||(t[r]=e[r])}}(K(t.keyframes)):ta;if(w(t.inherit))for(;e;)r(t,e.vars.defaults),e=e.parent||e._dp;return t}function Aa(t,e,r,i,n){void 0===r&&(r="_first"),void 0===i&&(i="_last");var a,s=t[i];if(n)for(a=e[n];s&&s[n]>a;)s=s._prev;return s?(e._next=s._next,s._next=e):(e._next=t[r],t[r]=e),e._next?e._next._prev=e:t[i]=e,e._prev=s,e.parent=e._dp=t,e}function Ba(t,e,r,i){void 0===r&&(r="_first"),void 0===i&&(i="_last");var n=e._prev,a=e._next;n?n._next=a:t[r]===e&&(t[r]=a),a?a._prev=n:t[i]===e&&(t[i]=n),e._next=e._prev=e.parent=null}function Ca(t,e){t.parent&&(!e||t.parent.autoRemoveChildren)&&t.parent.remove&&t.parent.remove(t),t._act=0}function Da(t,e){if(t&&(!e||e._end>t._dur||e._start<0))for(var r=t;r;)r._dirty=1,r=r.parent;return t}function Fa(t,e,r,i){return t._startAt&&(I?t._startAt.revert(ft):t.vars.immediateRender&&!t.vars.autoRevert||t._startAt.render(e,!0,i))}function Ha(t){return t._repeat?wt(t._tTime,t=t.duration()+t._rDelay)*t:0}function Ja(t,e){return(t-e._start)*e._ts+(0<=e._ts?0:e._dirty?e.totalDuration():e._tDur)}function Ka(t){return t._end=la(t._start+(t._tDur/Math.abs(t._ts||t._rts||q)||0))}function La(t,e){var r=t._dp;return r&&r.smoothChildTiming&&t._ts&&(t._start=la(r._time-(0<t._ts?e/t._ts:((t._dirty?t.totalDuration():t._tDur)-e)/-t._ts)),Ka(t),r._dirty||Da(r,t)),t}function Ma(t,e){var r;if((e._time||!e._dur&&e._initted||e._start<t._time&&(e._dur||!e.add))&&(r=Ja(t.rawTime(),e),(!e._dur||Mt(0,e.totalDuration(),r)-e._tTime>q)&&e.render(r,!0)),Da(t,e)._dp&&t._initted&&t._time>=t._dur&&t._ts){if(t._dur<t.duration())for(r=t;r._dp;)0<=r.rawTime()&&r.totalTime(r._tTime),r=r._dp;t._zTime=-q}}function Na(e,r,i,n){return r.parent&&Ca(r),r._start=la((t(i)?i:i||e!==L?Ot(e,i,r):e._time)+r._delay),r._end=la(r._start+(r.totalDuration()/Math.abs(r.timeScale())||0)),Aa(e,r,"_first","_last",e._sort?"_start":0),xt(r)||(e._recent=r),n||Ma(e,r),e._ts<0&&La(e,e._tTime),e}function Oa(t,e){return(ht.ScrollTrigger||S("scrollTrigger",e))&&ht.ScrollTrigger.create(e,t)}function Pa(t,e,r,i,n){return Ht(t,e,n),t._initted?!r&&t._pt&&!I&&(t._dur&&!1!==t.vars.lazy||!t._dur&&t.vars.lazy)&&f!==It.frame?(pt.push(t),t._lazy=[n,i],1):void 0:1}function Ua(t,e,r,i){var n=t._repeat,a=la(e)||0,s=t._tTime/t._tDur;return s&&!i&&(t._time*=a/t._dur),t._dur=a,t._tDur=n?n<0?1e10:la(a*(n+1)+t._rDelay*n):a,0<s&&!i&&La(t,t._tTime=t._tDur*s),t.parent&&Ka(t),r||Da(t.parent,t),t}function Va(t){return t instanceof Gt?Da(t):Ua(t,t._dur)}function Ya(e,r,i){var n,a,s=t(r[1]),o=(s?2:1)+(e<2?0:1),u=r[o];if(s&&(u.duration=r[1]),u.parent=i,e){for(n=u,a=i;a&&!("immediateRender"in n);)n=a.vars.defaults||{},a=w(a.vars.inherit)&&a.parent;u.immediateRender=w(n.immediateRender),e<2?u.runBackwards=1:u.startAt=r[o-1]}return new te(r[0],u,r[1+o])}function Za(t,e){return t||0===t?e(t):e}function _a(t,e){return r(t)&&(e=ut.exec(t))?e[1]:""}function cb(t,e){return t&&v(t)&&"length"in t&&(!e&&!t.length||t.length-1 in t&&v(t[0]))&&!t.nodeType&&t!==h}function fb(r){return r=Pt(r)[0]||T("Invalid scope")||{},function(t){var e=r.current||r.nativeElement||r;return Pt(t,e.querySelectorAll?e:e===r?T("Invalid scope")||a.createElement("div"):r)}}function gb(t){return t.sort(function(){return.5-Math.random()})}function hb(t){if(s(t))return t;var p=v(t)?t:{each:t},_=jt(p.ease),m=p.from||0,g=parseFloat(p.base)||0,y={},e=0<m&&m<1,T=isNaN(m)||e,b=p.axis,w=m,x=m;return r(m)?w=x={center:.5,edges:.5,end:1}[m]||0:!e&&T&&(w=m[0],x=m[1]),function(t,e,r){var i,n,a,s,o,u,h,l,f,c=(r||p).length,d=y[c];if(!d){if(!(f="auto"===p.grid?0:(p.grid||[1,X])[1])){for(h=-X;h<(h=r[f++].getBoundingClientRect().left)&&f<c;);f<c&&f--}for(d=y[c]=[],i=T?Math.min(f,c)*w-.5:m%f,n=f===X?0:T?c*x/f-.5:m/f|0,l=X,u=h=0;u<c;u++)a=u%f-i,s=n-(u/f|0),d[u]=o=b?Math.abs("y"===b?s:a):$(a*a+s*s),h<o&&(h=o),o<l&&(l=o);"random"===m&&gb(d),d.max=h-l,d.min=l,d.v=c=(parseFloat(p.amount)||parseFloat(p.each)*(c<f?c-1:b?"y"===b?c/f:f:Math.max(f,c/f))||0)*("edges"===m?-1:1),d.b=c<0?g-c:g,d.u=_a(p.amount||p.each)||0,_=_&&c<0?Yt(_):_}return c=(d[t]-d.min)/d.max||0,la(d.b+(_?_(c):c)*d.v)+d.u}}function ib(i){var n=Math.pow(10,((i+"").split(".")[1]||"").length);return function(e){var r=la(Math.round(parseFloat(e)/i)*i*n);return(r-r%1)/n+(t(e)?0:_a(e))}}function jb(h,e){var l,f,r=K(h);return!r&&v(h)&&(l=r=h.radius||X,h.values?(h=Pt(h.values),(f=!t(h[0]))&&(l*=l)):h=ib(h.increment)),Za(e,r?s(h)?function(t){return f=h(t),Math.abs(f-t)<=l?f:t}:function(e){for(var r,i,n=parseFloat(f?e.x:e),a=parseFloat(f?e.y:0),s=X,o=0,u=h.length;u--;)(r=f?(r=h[u].x-n)*r+(i=h[u].y-a)*i:Math.abs(h[u]-n))<s&&(s=r,o=u);return o=!l||s<=l?h[o]:e,f||o===e||t(e)?o:o+_a(e)}:ib(h))}function kb(t,e,r,i){return Za(K(t)?!e:!0===r?!!(r=0):!i,function(){return K(t)?t[~~(Math.random()*t.length)]:(r=r||1e-5)&&(i=r<1?Math.pow(10,(r+"").length-2):1)&&Math.floor(Math.round((t-r/2+Math.random()*(e-t+.99*r))/r)*r*i)/i})}function ob(e,r,t){return Za(t,function(t){return e[~~r(t)]})}function rb(t){return t.replace(tt,function(t){var e=t.indexOf("[")+1,r=t.substring(e||7,e?t.indexOf("]"):t.length-1).split(et);return kb(e?r:+r[0],e?0:+r[1],+r[2]||1e-5)})}function ub(t,e,r){var i,n,a,s=t.labels,o=X;for(i in s)(n=s[i]-e)<0==!!r&&n&&o>(n=Math.abs(n))&&(a=i,o=n);return a}function wb(t){return Ca(t),t.scrollTrigger&&t.scrollTrigger.kill(!!I),t.progress()<1&&At(t,"onInterrupt"),t}function zb(t){if(t)if(t=!t.name&&t.default||t,x()||t.headless){var e=t.name,r=s(t),i=e&&!r&&t.init?function(){this._props=[]}:t,n={init:V,render:_e,add:$t,kill:Te,modifier:ve,rawVars:0},a={targetTest:0,get:0,getSetter:ue,aliases:{},register:0};if(Lt(),t!==i){if(mt[e])return;ta(i,ta(xa(t,n),a)),bt(i.prototype,bt(n,xa(t,a))),mt[i.prop=e]=i,t.targetTest&&(yt.push(i),dt[e]=1),e=("css"===e?"CSS":e.charAt(0).toUpperCase()+e.substr(1))+"Plugin"}U(e,i),t.register&&t.register(Fe,i,we)}else Dt.push(t)}function Cb(t,e,r){return(6*(t+=t<0?1:1<t?-1:0)<1?e+(r-e)*t*6:t<.5?r:3*t<2?e+(r-e)*(2/3-t)*6:e)*zt+.5|0}function Db(e,r,i){var n,a,s,o,u,h,l,f,c,d,p=e?t(e)?[e>>16,e>>8&zt,e&zt]:0:Rt.black;if(!p){if(","===e.substr(-1)&&(e=e.substr(0,e.length-1)),Rt[e])p=Rt[e];else if("#"===e.charAt(0)){if(e.length<6&&(e="#"+(n=e.charAt(1))+n+(a=e.charAt(2))+a+(s=e.charAt(3))+s+(5===e.length?e.charAt(4)+e.charAt(4):"")),9===e.length)return[(p=parseInt(e.substr(1,6),16))>>16,p>>8&zt,p&zt,parseInt(e.substr(7),16)/255];p=[(e=parseInt(e.substr(1),16))>>16,e>>8&zt,e&zt]}else if("hsl"===e.substr(0,3))if(p=d=e.match(rt),r){if(~e.indexOf("="))return p=e.match(it),i&&p.length<4&&(p[3]=1),p}else o=+p[0]%360/360,u=p[1]/100,n=2*(h=p[2]/100)-(a=h<=.5?h*(u+1):h+u-h*u),3<p.length&&(p[3]*=1),p[0]=Cb(o+1/3,n,a),p[1]=Cb(o,n,a),p[2]=Cb(o-1/3,n,a);else p=e.match(rt)||Rt.transparent;p=p.map(Number)}return r&&!d&&(n=p[0]/zt,a=p[1]/zt,s=p[2]/zt,h=((l=Math.max(n,a,s))+(f=Math.min(n,a,s)))/2,l===f?o=u=0:(c=l-f,u=.5<h?c/(2-l-f):c/(l+f),o=l===n?(a-s)/c+(a<s?6:0):l===a?(s-n)/c+2:(n-a)/c+4,o*=60),p[0]=~~(o+.5),p[1]=~~(100*u+.5),p[2]=~~(100*h+.5)),i&&p.length<4&&(p[3]=1),p}function Eb(t){var r=[],i=[],n=-1;return t.split(Et).forEach(function(t){var e=t.match(nt)||[];r.push.apply(r,e),i.push(n+=e.length+1)}),r.c=i,r}function Fb(t,e,r){var i,n,a,s,o="",u=(t+o).match(Et),h=e?"hsla(":"rgba(",l=0;if(!u)return t;if(u=u.map(function(t){return(t=Db(t,e,1))&&h+(e?t[0]+","+t[1]+"%,"+t[2]+"%,"+t[3]:t.join(","))+")"}),r&&(a=Eb(t),(i=r.c).join(o)!==a.c.join(o)))for(s=(n=t.replace(Et,"1").split(nt)).length-1;l<s;l++)o+=n[l]+(~i.indexOf(l)?u.shift()||h+"0,0,0,0)":(a.length?a:u.length?u:r).shift());if(!n)for(s=(n=t.split(Et)).length-1;l<s;l++)o+=n[l]+u[l];return o+n[s]}function Ib(t){var e,r=t.join(" ");if(Et.lastIndex=0,Et.test(r))return e=Ft.test(r),t[1]=Fb(t[1],e),t[0]=Fb(t[0],e,Eb(t[1])),!0}function Rb(t){var e=(t+"").split("("),r=Bt[e[0]];return r&&1<e.length&&r.config?r.config.apply(null,~t.indexOf("{")?[function _parseObjectInString(t){for(var e,r,i,n={},a=t.substr(1,t.length-3).split(":"),s=a[0],o=1,u=a.length;o<u;o++)r=a[o],e=o!==u-1?r.lastIndexOf(","):r.length,i=r.substr(0,e),n[s]=isNaN(i)?i.replace(Ut,"").trim():+i,s=r.substr(e+1).trim();return n}(e[1])]:function _valueInParentheses(t){var e=t.indexOf("(")+1,r=t.indexOf(")"),i=t.indexOf("(",e);return t.substring(e,~i&&i<r?t.indexOf(")",r+1):r)}(t).split(",").map(ra)):Bt._CE&&Nt.test(t)?Bt._CE("",t):r}function Ub(t,e,r,i){void 0===r&&(r=function easeOut(t){return 1-e(1-t)}),void 0===i&&(i=function easeInOut(t){return t<.5?e(2*t)/2:1-e(2*(1-t))/2});var n,a={easeIn:e,easeOut:r,easeInOut:i};return ja(t,function(t){for(var e in Bt[t]=ht[t]=a,Bt[n=t.toLowerCase()]=r,a)Bt[n+("easeIn"===e?".in":"easeOut"===e?".out":".inOut")]=Bt[t+"."+e]=a[e]}),a}function Vb(e){return function(t){return t<.5?(1-e(1-2*t))/2:.5+e(2*(t-.5))/2}}function Wb(r,t,e){function Gm(t){return 1===t?1:i*Math.pow(2,-10*t)*Q((t-a)*n)+1}var i=1<=t?t:1,n=(e||(r?.3:.45))/(t<1?t:1),a=n/G*(Math.asin(1/i)||0),s="out"===r?Gm:"in"===r?function(t){return 1-Gm(1-t)}:Vb(Gm);return n=G/n,s.config=function(t,e){return Wb(r,t,e)},s}function Xb(e,r){function Om(t){return t?--t*t*((r+1)*t+r)+1:0}void 0===r&&(r=1.70158);var t="out"===e?Om:"in"===e?function(t){return 1-Om(1-t)}:Vb(Om);return t.config=function(t){return Xb(e,t)},t}var F,I,l,L,h,n,a,i,o,f,c,d,p,_,m,g,b,k,O,M,C,P,A,D,z,E,B,N,Y={autoSleep:120,force3D:"auto",nullTargetWarn:1,units:{lineHeight:""}},j={duration:.5,overwrite:!1,delay:0},X=1e8,q=1/X,G=2*Math.PI,Z=G/4,W=0,$=Math.sqrt,H=Math.cos,Q=Math.sin,J="function"==typeof ArrayBuffer&&ArrayBuffer.isView||function(){},K=Array.isArray,tt=/random\([^)]+\)/g,et=/,\s*/g,rt=/(?:-?\.?\d|\.)+/gi,it=/[-+=.]*\d+[.e\-+]*\d*[e\-+]*\d*/g,nt=/[-+=.]*\d+[.e-]*\d*[a-z%]*/g,at=/[-+=.]*\d+\.?\d*(?:e-|e\+)?\d*/gi,st=/[+-]=-?[.\d]+/,ot=/[^,'"\[\]\s]+/gi,ut=/^[+\-=e\s\d]*\d+[.\d]*([a-z]*|%)\s*$/i,ht={},lt={suppressEvents:!0,isStart:!0,kill:!1},ft={suppressEvents:!0,kill:!1},ct={suppressEvents:!0},dt={},pt=[],_t={},mt={},gt={},vt=30,yt=[],Tt="",bt=function _merge(t,e){for(var r in e)t[r]=e[r];return t},wt=function _animationCycle(t,e){var r=Math.floor(t=la(t/e));return t&&r===t?r-1:r},xt=function _isFromOrFromStart(t){var e=t.data;return"isFromStart"===e||"isStart"===e},kt={_start:0,endTime:V,totalDuration:V},Ot=function _parsePosition(t,e,i){var n,a,s,o=t.labels,u=t._recent||kt,h=t.duration()>=X?u.endTime(!1):t._dur;return r(e)&&(isNaN(e)||e in o)?(a=e.charAt(0),s="%"===e.substr(-1),n=e.indexOf("="),"<"===a||">"===a?(0<=n&&(e=e.replace(/=/,"")),("<"===a?u._start:u.endTime(0<=u._repeat))+(parseFloat(e.substr(1))||0)*(s?(n<0?u:i).totalDuration()/100:1)):n<0?(e in o||(o[e]=h),o[e]):(a=parseFloat(e.charAt(n-1)+e.substr(n+1)),s&&i&&(a=a/100*(K(i)?i[0]:i).totalDuration()),1<n?_parsePosition(t,e.substr(0,n-1),i)+a:h+a)):null==e?h:+e},Mt=function _clamp(t,e,r){return r<t?t:e<r?e:r},Ct=[].slice,Pt=function toArray(t,e,i){return l&&!e&&l.selector?l.selector(t):!r(t)||i||!n&&Lt()?K(t)?function _flatten(t,e,i){return void 0===i&&(i=[]),t.forEach(function(t){return r(t)&&!e||cb(t,1)?i.push.apply(i,Pt(t)):i.push(t)})||i}(t,i):cb(t)?Ct.call(t,0):t?[t]:[]:Ct.call((e||a).querySelectorAll(t),0)},St=function mapRange(e,t,r,i,n){var a=t-e,s=i-r;return Za(n,function(t){return r+((t-e)/a*s||0)})},At=function _callback(t,e,r){var i,n,a,s=t.vars,o=s[e],u=l,h=t._ctx;if(o)return i=s[e+"Params"],n=s.callbackScope||t,r&&pt.length&&oa(),h&&(l=h),a=i?o.apply(n,i):o.call(n),l=u,a},Dt=[],zt=255,Rt={aqua:[0,zt,zt],lime:[0,zt,0],silver:[192,192,192],black:[0,0,0],maroon:[128,0,0],teal:[0,128,128],blue:[0,0,zt],navy:[0,0,128],white:[zt,zt,zt],olive:[128,128,0],yellow:[zt,zt,0],orange:[zt,165,0],gray:[128,128,128],purple:[128,0,128],green:[0,128,0],red:[zt,0,0],pink:[zt,192,203],cyan:[0,zt,zt],transparent:[zt,zt,zt,0]},Et=function(){var t,e="(?:\\b(?:(?:rgb|rgba|hsl|hsla)\\(.+?\\))|\\B#(?:[0-9a-f]{3,4}){1,2}\\b";for(t in Rt)e+="|"+t+"\\b";return new RegExp(e+")","gi")}(),Ft=/hsl[a]?\(/,It=(O=Date.now,M=500,C=33,P=O(),A=P,z=D=1e3/240,g={time:0,frame:0,tick:function tick(){zl(!0)},deltaRatio:function deltaRatio(t){return b/(1e3/(t||60))},wake:function wake(){o&&(!n&&x()&&(h=n=window,a=h.document||{},ht.gsap=Fe,(h.gsapVersions||(h.gsapVersions=[])).push(Fe.version),R(i||h.GreenSockGlobals||!h.gsap&&h||{}),Dt.forEach(zb)),m="undefined"!=typeof requestAnimationFrame&&requestAnimationFrame,p&&g.sleep(),_=m||function(t){return setTimeout(t,z-1e3*g.time+1|0)},d=1,zl(2))},sleep:function sleep(){(m?cancelAnimationFrame:clearTimeout)(p),d=0,_=V},lagSmoothing:function lagSmoothing(t,e){M=t||1/0,C=Math.min(e||33,M)},fps:function fps(t){D=1e3/(t||240),z=1e3*g.time+D},add:function add(n,t,e){var a=t?function(t,e,r,i){n(t,e,r,i),g.remove(a)}:n;return g.remove(n),E[e?"unshift":"push"](a),Lt(),a},remove:function remove(t,e){~(e=E.indexOf(t))&&E.splice(e,1)&&e<=k&&k--},_listeners:E=[]}),Lt=function _wake(){return!d&&It.wake()},Bt={},Nt=/^[\d.\-M][\d.\-,\s]/,Ut=/["']/g,Yt=function _invertEase(e){return function(t){return 1-e(1-t)}},jt=function _parseEase(t,e){return t&&(s(t)?t:Bt[t]||Rb(t))||e};function zl(t){var e,r,i,n,a=O()-A,s=!0===t;if((M<a||a<0)&&(P+=a-C),(0<(e=(i=(A+=a)-P)-z)||s)&&(n=++g.frame,b=i-1e3*g.time,g.time=i/=1e3,z+=e+(D<=e?4:D-e),r=1),s||(p=_(zl)),r)for(k=0;k<E.length;k++)E[k](i,b,n,t)}function dn(t){return t<N?B*t*t:t<.7272727272727273?B*Math.pow(t-1.5/2.75,2)+.75:t<.9090909090909092?B*(t-=2.25/2.75)*t+.9375:B*Math.pow(t-2.625/2.75,2)+.984375}ja("Linear,Quad,Cubic,Quart,Quint,Strong",function(t,e){var r=e<5?e+1:e;Ub(t+",Power"+(r-1),e?function(t){return Math.pow(t,r)}:function(t){return t},function(t){return 1-Math.pow(1-t,r)},function(t){return t<.5?Math.pow(2*t,r)/2:1-Math.pow(2*(1-t),r)/2})}),Bt.Linear.easeNone=Bt.none=Bt.Linear.easeIn,Ub("Elastic",Wb("in"),Wb("out"),Wb()),B=7.5625,N=1/2.75,Ub("Bounce",function(t){return 1-dn(1-t)},dn),Ub("Expo",function(t){return Math.pow(2,10*(t-1))*t+t*t*t*t*t*t*(1-t)}),Ub("Circ",function(t){return-($(1-t*t)-1)}),Ub("Sine",function(t){return 1===t?1:1-H(t*Z)}),Ub("Back",Xb("in"),Xb("out"),Xb()),Bt.SteppedEase=Bt.steps=ht.SteppedEase={config:function config(t,e){void 0===t&&(t=1);var r=1/t,i=t+(e?0:1),n=e?1:0;return function(t){return((i*Mt(0,.99999999,t)|0)+n)*r}}},j.ease=Bt["quad.out"],ja("onComplete,onUpdate,onStart,onRepeat,onReverseComplete,onInterrupt",function(t){return Tt+=t+","+t+"Params,"});var Vt,Xt=function GSCache(t,e){this.id=W++,(t._gsap=this).target=t,this.harness=e,this.get=e?e.get:ia,this.set=e?e.getSetter:ue},qt=((Vt=Animation.prototype).delay=function delay(t){return t||0===t?(this.parent&&this.parent.smoothChildTiming&&this.startTime(this._start+t-this._delay),this._delay=t,this):this._delay},Vt.duration=function duration(t){return arguments.length?this.totalDuration(0<this._repeat?t+(t+this._rDelay)*this._repeat:t):this.totalDuration()&&this._dur},Vt.totalDuration=function totalDuration(t){return arguments.length?(this._dirty=0,Ua(this,this._repeat<0?t:(t-this._repeat*this._rDelay)/(this._repeat+1))):this._tDur},Vt.totalTime=function totalTime(t,e){if(Lt(),!arguments.length)return this._tTime;var r=this._dp;if(r&&r.smoothChildTiming&&this._ts){for(La(this,t),!r._dp||r.parent||Ma(r,this);r&&r.parent;)r.parent._time!==r._start+(0<=r._ts?r._tTime/r._ts:(r.totalDuration()-r._tTime)/-r._ts)&&r.totalTime(r._tTime,!0),r=r.parent;!this.parent&&this._dp.autoRemoveChildren&&(0<this._ts&&t<this._tDur||this._ts<0&&0<t||!this._tDur&&!t)&&Na(this._dp,this,this._start-this._delay)}return(this._tTime!==t||!this._dur&&!e||this._initted&&Math.abs(this._zTime)===q||!this._initted&&this._dur&&t||!t&&!this._initted&&(this.add||this._ptLookup))&&(this._ts||(this._pTime=t),qa(this,t,e)),this},Vt.time=function time(t,e){return arguments.length?this.totalTime(Math.min(this.totalDuration(),t+Ha(this))%(this._dur+this._rDelay)||(t?this._dur:0),e):this._time},Vt.totalProgress=function totalProgress(t,e){return arguments.length?this.totalTime(this.totalDuration()*t,e):this.totalDuration()?Math.min(1,this._tTime/this._tDur):0<=this.rawTime()&&this._initted?1:0},Vt.progress=function progress(t,e){return arguments.length?this.totalTime(this.duration()*(!this._yoyo||1&this.iteration()?t:1-t)+Ha(this),e):this.duration()?Math.min(1,this._time/this._dur):0<this.rawTime()?1:0},Vt.iteration=function iteration(t,e){var r=this.duration()+this._rDelay;return arguments.length?this.totalTime(this._time+(t-1)*r,e):this._repeat?wt(this._tTime,r)+1:1},Vt.timeScale=function timeScale(t,e){if(!arguments.length)return this._rts===-q?0:this._rts;if(this._rts===t)return this;var r=this.parent&&this._ts?Ja(this.parent._time,this):this._tTime;return this._rts=+t||0,this._ts=this._ps||t===-q?0:this._rts,this.totalTime(Mt(-Math.abs(this._delay),this.totalDuration(),r),!1!==e),Ka(this),function _recacheAncestors(t){for(var e=t.parent;e&&e.parent;)e._dirty=1,e.totalDuration(),e=e.parent;return t}(this)},Vt.paused=function paused(t){return arguments.length?(this._ps!==t&&((this._ps=t)?(this._pTime=this._tTime||Math.max(-this._delay,this.rawTime()),this._ts=this._act=0):(Lt(),this._ts=this._rts,this.totalTime(this.parent&&!this.parent.smoothChildTiming?this.rawTime():this._tTime||this._pTime,1===this.progress()&&Math.abs(this._zTime)!==q&&(this._tTime-=q)))),this):this._ps},Vt.startTime=function startTime(t){if(arguments.length){this._start=la(t);var e=this.parent||this._dp;return!e||!e._sort&&this.parent||Na(e,this,this._start-this._delay),this}return this._start},Vt.endTime=function endTime(t){return this._start+(w(t)?this.totalDuration():this.duration())/Math.abs(this._ts||1)},Vt.rawTime=function rawTime(t){var e=this.parent||this._dp;return e?t&&(!this._ts||this._repeat&&this._time&&this.totalProgress()<1)?this._tTime%(this._dur+this._rDelay):this._ts?Ja(e.rawTime(t),this):this._tTime:this._tTime},Vt.revert=function revert(t){void 0===t&&(t=ct);var e=I;return I=t,pa(this)&&(this.timeline&&this.timeline.revert(t),this.totalTime(-.01,t.suppressEvents)),"nested"!==this.data&&!1!==t.kill&&this.kill(),I=e,this},Vt.globalTime=function globalTime(t){for(var e=this,r=arguments.length?t:e.rawTime();e;)r=e._start+r/(Math.abs(e._ts)||1),e=e._dp;return!this.parent&&this._sat?this._sat.globalTime(t):r},Vt.repeat=function repeat(t){return arguments.length?(this._repeat=t===1/0?-2:t,Va(this)):-2===this._repeat?1/0:this._repeat},Vt.repeatDelay=function repeatDelay(t){if(arguments.length){var e=this._time;return this._rDelay=t,Va(this),e?this.time(e):this}return this._rDelay},Vt.yoyo=function yoyo(t){return arguments.length?(this._yoyo=t,this):this._yoyo},Vt.seek=function seek(t,e){return this.totalTime(Ot(this,t),w(e))},Vt.restart=function restart(t,e){return this.play().totalTime(t?-this._delay:0,w(e)),this._dur||(this._zTime=-q),this},Vt.play=function play(t,e){return null!=t&&this.seek(t,e),this.reversed(!1).paused(!1)},Vt.reverse=function reverse(t,e){return null!=t&&this.seek(t||this.totalDuration(),e),this.reversed(!0).paused(!1)},Vt.pause=function pause(t,e){return null!=t&&this.seek(t,e),this.paused(!0)},Vt.resume=function resume(){return this.paused(!1)},Vt.reversed=function reversed(t){return arguments.length?(!!t!==this.reversed()&&this.timeScale(-this._rts||(t?-q:0)),this):this._rts<0},Vt.invalidate=function invalidate(){return this._initted=this._act=0,this._zTime=-q,this},Vt.isActive=function isActive(){var t,e=this.parent||this._dp,r=this._start;return!(e&&!(this._ts&&this._initted&&e.isActive()&&(t=e.rawTime(!0))>=r&&t<this.endTime(!0)-q))},Vt.eventCallback=function eventCallback(t,e,r){var i=this.vars;return 1<arguments.length?(e?(i[t]=e,r&&(i[t+"Params"]=r),"onUpdate"===t&&(this._onUpdate=e)):delete i[t],this):i[t]},Vt.then=function then(t){var i=this,n=i._prom;return new Promise(function(e){function Ao(){var t=i.then;i.then=null,n&&n(),s(r)&&(r=r(i))&&(r.then||r===i)&&(i.then=t),e(r),i.then=t}var r=s(t)?t:sa;i._initted&&1===i.totalProgress()&&0<=i._ts||!i._tTime&&i._ts<0?Ao():i._prom=Ao})},Vt.kill=function kill(){wb(this)},Animation);function Animation(t){this.vars=t,this._delay=+t.delay||0,(this._repeat=t.repeat===1/0?-2:t.repeat||0)&&(this._rDelay=t.repeatDelay||0,this._yoyo=!!t.yoyo||!!t.yoyoEase),this._ts=1,Ua(this,+t.duration,1,1),this.data=t.data,l&&(this._ctx=l).data.push(this),d||It.wake()}ta(qt.prototype,{_time:0,_start:0,_end:0,_tTime:0,_tDur:0,_dirty:0,_repeat:0,_yoyo:!1,parent:null,_initted:!1,_rDelay:0,_ts:1,_dp:0,ratio:0,_zTime:-q,_prom:0,_ps:!1,_rts:1});var Gt=function(i){function Timeline(t,e){var r;return void 0===t&&(t={}),(r=i.call(this,t)||this).labels={},r.smoothChildTiming=!!t.smoothChildTiming,r.autoRemoveChildren=!!t.autoRemoveChildren,r._sort=w(t.sortChildren),L&&Na(t.parent||L,_assertThisInitialized(r),e),t.reversed&&r.reverse(),t.paused&&r.paused(!0),t.scrollTrigger&&Oa(_assertThisInitialized(r),t.scrollTrigger),r}_inheritsLoose(Timeline,i);var e=Timeline.prototype;return e.to=function to(t,e,r){return Ya(0,arguments,this),this},e.from=function from(t,e,r){return Ya(1,arguments,this),this},e.fromTo=function fromTo(t,e,r,i){return Ya(2,arguments,this),this},e.set=function set(t,e,r){return e.duration=0,e.parent=this,ya(e).repeatDelay||(e.repeat=0),e.immediateRender=!!e.immediateRender,new te(t,e,Ot(this,r),1),this},e.call=function call(t,e,r){return Na(this,te.delayedCall(0,t,e),r)},e.staggerTo=function staggerTo(t,e,r,i,n,a,s){return r.duration=e,r.stagger=r.stagger||i,r.onComplete=a,r.onCompleteParams=s,r.parent=this,new te(t,r,Ot(this,n)),this},e.staggerFrom=function staggerFrom(t,e,r,i,n,a,s){return r.runBackwards=1,ya(r).immediateRender=w(r.immediateRender),this.staggerTo(t,e,r,i,n,a,s)},e.staggerFromTo=function staggerFromTo(t,e,r,i,n,a,s,o){return i.startAt=r,ya(i).immediateRender=w(i.immediateRender),this.staggerTo(t,e,i,n,a,s,o)},e.render=function render(t,e,r){var i,n,a,s,o,u,h,l,f,c,d,p,_=this._time,m=this._dirty?this.totalDuration():this._tDur,g=this._dur,v=t<=0?0:la(t),y=this._zTime<0!=t<0&&(this._initted||!g);if(this!==L&&m<v&&0<=t&&(v=m),v!==this._tTime||r||y){if(_!==this._time&&g&&(v+=this._time-_,t+=this._time-_),i=v,f=this._start,u=!(l=this._ts),y&&(g||(_=this._zTime),!t&&e||(this._zTime=t)),this._repeat){if(d=this._yoyo,o=g+this._rDelay,this._repeat<-1&&t<0)return this.totalTime(100*o+t,e,r);if(i=la(v%o),v===m?(s=this._repeat,i=g):((s=~~(c=la(v/o)))&&s===c&&(i=g,s--),g<i&&(i=g)),c=wt(this._tTime,o),!_&&this._tTime&&c!==s&&this._tTime-c*o-this._dur<=0&&(c=s),d&&1&s&&(i=g-i,p=1),s!==c&&!this._lock){var T=d&&1&c,b=T===(d&&1&s);if(s<c&&(T=!T),_=T?0:v%g?g:v,this._lock=1,this.render(_||(p?0:la(s*o)),e,!g)._lock=0,this._tTime=v,!e&&this.parent&&At(this,"onRepeat"),this.vars.repeatRefresh&&!p&&(this.invalidate()._lock=1,c=s),_&&_!==this._time||u!=!this._ts||this.vars.onRepeat&&!this.parent&&!this._act)return this;if(g=this._dur,m=this._tDur,b&&(this._lock=2,_=T?g:-1e-4,this.render(_,!0),this.vars.repeatRefresh&&!p&&this.invalidate()),this._lock=0,!this._ts&&!u)return this}}if(this._hasPause&&!this._forcing&&this._lock<2&&(h=function _findNextPauseTween(t,e,r){var i;if(e<r)for(i=t._first;i&&i._start<=r;){if("isPause"===i.data&&i._start>e)return i;i=i._next}else for(i=t._last;i&&i._start>=r;){if("isPause"===i.data&&i._start<e)return i;i=i._prev}}(this,la(_),la(i)))&&(v-=i-(i=h._start)),this._tTime=v,this._time=i,this._act=!!l,this._initted||(this._onUpdate=this.vars.onUpdate,this._initted=1,this._zTime=t,_=0),!_&&v&&g&&!e&&!c&&(At(this,"onStart"),this._tTime!==v))return this;if(_<=i&&0<=t)for(n=this._first;n;){if(a=n._next,(n._act||i>=n._start)&&n._ts&&h!==n){if(n.parent!==this)return this.render(t,e,r);if(n.render(0<n._ts?(i-n._start)*n._ts:(n._dirty?n.totalDuration():n._tDur)+(i-n._start)*n._ts,e,r),i!==this._time||!this._ts&&!u){h=0,a&&(v+=this._zTime=-q);break}}n=a}else{n=this._last;for(var w=t<0?t:i;n;){if(a=n._prev,(n._act||w<=n._end)&&n._ts&&h!==n){if(n.parent!==this)return this.render(t,e,r);if(n.render(0<n._ts?(w-n._start)*n._ts:(n._dirty?n.totalDuration():n._tDur)+(w-n._start)*n._ts,e,r||I&&pa(n)),i!==this._time||!this._ts&&!u){h=0,a&&(v+=this._zTime=w?-q:q);break}}n=a}}if(h&&!e&&(this.pause(),h.render(_<=i?0:-q)._zTime=_<=i?1:-1,this._ts))return this._start=f,Ka(this),this.render(t,e,r);this._onUpdate&&!e&&At(this,"onUpdate",!0),(v===m&&this._tTime>=this.totalDuration()||!v&&_)&&(f!==this._start&&Math.abs(l)===Math.abs(this._ts)||this._lock||(!t&&g||!(v===m&&0<this._ts||!v&&this._ts<0)||Ca(this,1),e||t<0&&!_||!v&&!_&&m||(At(this,v===m&&0<=t?"onComplete":"onReverseComplete",!0),!this._prom||v<m&&0<this.timeScale()||this._prom())))}return this},e.add=function add(e,i){var n=this;if(t(i)||(i=Ot(this,i,e)),!(e instanceof qt)){if(K(e))return e.forEach(function(t){return n.add(t,i)}),this;if(r(e))return this.addLabel(e,i);if(!s(e))return this;e=te.delayedCall(0,e)}return this!==e?Na(this,e,i):this},e.getChildren=function getChildren(t,e,r,i){void 0===t&&(t=!0),void 0===e&&(e=!0),void 0===r&&(r=!0),void 0===i&&(i=-X);for(var n=[],a=this._first;a;)a._start>=i&&(a instanceof te?e&&n.push(a):(r&&n.push(a),t&&n.push.apply(n,a.getChildren(!0,e,r)))),a=a._next;return n},e.getById=function getById(t){for(var e=this.getChildren(1,1,1),r=e.length;r--;)if(e[r].vars.id===t)return e[r]},e.remove=function remove(t){return r(t)?this.removeLabel(t):s(t)?this.killTweensOf(t):(t.parent===this&&Ba(this,t),t===this._recent&&(this._recent=this._last),Da(this))},e.totalTime=function totalTime(t,e){return arguments.length?(this._forcing=1,!this._dp&&this._ts&&(this._start=la(It.time-(0<this._ts?t/this._ts:(this.totalDuration()-t)/-this._ts))),i.prototype.totalTime.call(this,t,e),this._forcing=0,this):this._tTime},e.addLabel=function addLabel(t,e){return this.labels[t]=Ot(this,e),this},e.removeLabel=function removeLabel(t){return delete this.labels[t],this},e.addPause=function addPause(t,e,r){var i=te.delayedCall(0,e||V,r);return i.data="isPause",this._hasPause=1,Na(this,i,Ot(this,t))},e.removePause=function removePause(t){var e=this._first;for(t=Ot(this,t);e;)e._start===t&&"isPause"===e.data&&Ca(e),e=e._next},e.killTweensOf=function killTweensOf(t,e,r){for(var i=this.getTweensOf(t,r),n=i.length;n--;)Zt!==i[n]&&i[n].kill(t,e);return this},e.getTweensOf=function getTweensOf(e,r){for(var i,n=[],a=Pt(e),s=this._first,o=t(r);s;)s instanceof te?na(s._targets,a)&&(o?(!Zt||s._initted&&s._ts)&&s.globalTime(0)<=r&&s.globalTime(s.totalDuration())>r:!r||s.isActive())&&n.push(s):(i=s.getTweensOf(a,r)).length&&n.push.apply(n,i),s=s._next;return n},e.tweenTo=function tweenTo(t,e){e=e||{};var r,i=this,n=Ot(i,t),a=e.startAt,s=e.onStart,o=e.onStartParams,u=e.immediateRender,h=te.to(i,ta({ease:e.ease||"none",lazy:!1,immediateRender:!1,time:n,overwrite:"auto",duration:e.duration||Math.abs((n-(a&&"time"in a?a.time:i._time))/i.timeScale())||q,onStart:function onStart(){if(i.pause(),!r){var t=e.duration||Math.abs((n-(a&&"time"in a?a.time:i._time))/i.timeScale());h._dur!==t&&Ua(h,t,0,1).render(h._time,!0,!0),r=1}s&&s.apply(h,o||[])}},e));return u?h.render(0):h},e.tweenFromTo=function tweenFromTo(t,e,r){return this.tweenTo(e,ta({startAt:{time:Ot(this,t)}},r))},e.recent=function recent(){return this._recent},e.nextLabel=function nextLabel(t){return void 0===t&&(t=this._time),ub(this,Ot(this,t))},e.previousLabel=function previousLabel(t){return void 0===t&&(t=this._time),ub(this,Ot(this,t),1)},e.currentLabel=function currentLabel(t){return arguments.length?this.seek(t,!0):this.previousLabel(this._time+q)},e.shiftChildren=function shiftChildren(t,e,r){void 0===r&&(r=0);var i,n=this._first,a=this.labels;for(t=la(t);n;)n._start>=r&&(n._start+=t,n._end+=t),n=n._next;if(e)for(i in a)a[i]>=r&&(a[i]+=t);return Da(this)},e.invalidate=function invalidate(t){var e=this._first;for(this._lock=0;e;)e.invalidate(t),e=e._next;return i.prototype.invalidate.call(this,t)},e.clear=function clear(t){void 0===t&&(t=!0);for(var e,r=this._first;r;)e=r._next,this.remove(r),r=e;return this._dp&&(this._time=this._tTime=this._pTime=0),t&&(this.labels={}),Da(this)},e.totalDuration=function totalDuration(t){var e,r,i,n=0,a=this,s=a._last,o=X;if(arguments.length)return a.timeScale((a._repeat<0?a.duration():a.totalDuration())/(a.reversed()?-t:t));if(a._dirty){for(i=a.parent;s;)e=s._prev,s._dirty&&s.totalDuration(),o<(r=s._start)&&a._sort&&s._ts&&!a._lock?(a._lock=1,Na(a,s,r-s._delay,1)._lock=0):o=r,r<0&&s._ts&&(n-=r,(!i&&!a._dp||i&&i.smoothChildTiming)&&(a._start+=la(r/a._ts),a._time-=r,a._tTime-=r),a.shiftChildren(-r,!1,-Infinity),o=0),s._end>n&&s._ts&&(n=s._end),s=e;Ua(a,a===L&&a._time>n?a._time:n,1,1),a._dirty=0}return a._tDur},Timeline.updateRoot=function updateRoot(t){if(L._ts&&(qa(L,Ja(t,L)),f=It.frame),It.frame>=vt){vt+=Y.autoSleep||120;var e=L._first;if((!e||!e._ts)&&Y.autoSleep&&It._listeners.length<2){for(;e&&!e._ts;)e=e._next;e||It.sleep()}}},Timeline}(qt);ta(Gt.prototype,{_lock:0,_hasPause:0,_forcing:0});function cc(t,e,i,n,a,o){var u,h,l,f;if(mt[t]&&!1!==(u=new mt[t]).init(a,u.rawVars?e[t]:function _processVars(t,e,i,n,a){if(s(t)&&(t=Qt(t,a,e,i,n)),!v(t)||t.style&&t.nodeType||K(t)||J(t))return r(t)?Qt(t,a,e,i,n):t;var o,u={};for(o in t)u[o]=Qt(t[o],a,e,i,n);return u}(e[t],n,a,o,i),i,n,o)&&(i._pt=h=new we(i._pt,a,t,0,1,u.render,u,0,u.priority),i!==c))for(l=i._ptLookup[i._targets.indexOf(a)],f=u._props.length;f--;)l[u._props[f]]=h;return u}function ic(t,r,e,i){var n,a,s=r.ease||i||"power1.inOut";if(K(r))a=e[t]||(e[t]=[]),r.forEach(function(t,e){return a.push({t:e/(r.length-1)*100,v:t,e:s})});else for(n in r)a=e[n]||(e[n]=[]),"ease"===n||a.push({t:parseFloat(t),v:r[n],e:s})}var Zt,Wt,$t=function _addPropTween(t,e,i,n,a,o,u,h,l,f){s(n)&&(n=n(a||0,t,o));var c,d=t[e],p="get"!==i?i:s(d)?l?t[e.indexOf("set")||!s(t["get"+e.substr(3)])?e:"get"+e.substr(3)](l):t[e]():d,_=s(d)?l?se:ae:ie;if(r(n)&&(~n.indexOf("random(")&&(n=rb(n)),"="===n.charAt(1)&&(!(c=ma(p,n)+(_a(p)||0))&&0!==c||(n=c))),!f||p!==n||Wt)return isNaN(p*n)||""===n?(d||e in t||S(e,n),function _addComplexStringPropTween(t,e,r,i,n,a,s){var o,u,h,l,f,c,d,p,_=new we(this._pt,t,e,0,1,pe,null,n),m=0,g=0;for(_.b=r,_.e=i,r+="",(d=~(i+="").indexOf("random("))&&(i=rb(i)),a&&(a(p=[r,i],t,e),r=p[0],i=p[1]),u=r.match(at)||[];o=at.exec(i);)l=o[0],f=i.substring(m,o.index),h?h=(h+1)%5:"rgba("===f.substr(-5)&&(h=1),l!==u[g++]&&(c=parseFloat(u[g-1])||0,_._pt={_next:_._pt,p:f||1===g?f:",",s:c,c:"="===l.charAt(1)?ma(c,l)-c:parseFloat(l)-c,m:h&&h<4?Math.round:0},m=at.lastIndex);return _.c=m<i.length?i.substring(m,i.length):"",_.fp=s,(st.test(i)||d)&&(_.e=0),this._pt=_}.call(this,t,e,p,n,_,h||Y.stringFilter,l)):(c=new we(this._pt,t,e,+p||0,n-(p||0),"boolean"==typeof d?de:fe,0,_),l&&(c.fp=l),u&&c.modifier(u,this,t),this._pt=c)},Ht=function _initTween(t,e,r){var i,n,a,s,o,u,h,l,f,c,d,p,_,m=t.vars,g=m.ease,v=m.startAt,y=m.immediateRender,T=m.lazy,b=m.onUpdate,x=m.runBackwards,k=m.yoyoEase,O=m.keyframes,M=m.autoRevert,C=t._dur,P=t._startAt,S=t._targets,A=t.parent,D=A&&"nested"===A.data?A.vars.targets:S,z="auto"===t._overwrite&&!F,R=t.timeline,E=m.easeReverse||k;if(!R||O&&g||(g="none"),t._ease=jt(g,j.ease),t._rEase=E&&(jt(E)||t._ease),t._from=!R&&!!m.runBackwards,t._from&&(t.ratio=1),!R||O&&!m.stagger){if(p=(l=S[0]?ha(S[0]).harness:0)&&m[l.prop],i=xa(m,dt),P&&(P._zTime<0&&P.progress(1),e<0&&x&&y&&!M?P.render(-1,!0):P.revert(x&&C?ft:lt),P._lazy=0),v){if(Ca(t._startAt=te.set(S,ta({data:"isStart",overwrite:!1,parent:A,immediateRender:!0,lazy:!P&&w(T),startAt:null,delay:0,onUpdate:b&&function(){return At(t,"onUpdate")},stagger:0},v))),t._startAt._dp=0,t._startAt._sat=t,e<0&&(I||!y&&!M)&&t._startAt.revert(ft),y&&C&&e<=0&&r<=0)return void(e&&(t._zTime=e))}else if(x&&C&&!P)if(e&&(y=!1),a=ta({overwrite:!1,data:"isFromStart",lazy:y&&!P&&w(T),immediateRender:y,stagger:0,parent:A},i),p&&(a[l.prop]=p),Ca(t._startAt=te.set(S,a)),t._startAt._dp=0,t._startAt._sat=t,e<0&&(I?t._startAt.revert(ft):t._startAt.render(-1,!0)),t._zTime=e,y){if(!e)return}else _initTween(t._startAt,q,q);for(t._pt=t._ptCache=0,T=C&&w(T)||T&&!C,n=0;n<S.length;n++){if(h=(o=S[n])._gsap||ga(S)[n]._gsap,t._ptLookup[n]=c={},_t[h.id]&&pt.length&&oa(),d=D===S?n:D.indexOf(o),l&&!1!==(f=new l).init(o,p||i,t,d,D)&&(t._pt=s=new we(t._pt,o,f.name,0,1,f.render,f,0,f.priority),f._props.forEach(function(t){c[t]=s}),f.priority&&(u=1)),!l||p)for(a in i)mt[a]&&(f=cc(a,i,t,d,o,D))?f.priority&&(u=1):c[a]=s=$t.call(t,o,a,"get",i[a],d,D,0,m.stringFilter);t._op&&t._op[n]&&t.kill(o,t._op[n]),z&&t._pt&&(Zt=t,L.killTweensOf(o,c,t.globalTime(e)),_=!t.parent,Zt=0),t._pt&&T&&(_t[h.id]=1)}u&&be(t),t._onInit&&t._onInit(t)}t._onUpdate=b,t._initted=(!t._op||t._pt)&&!_,O&&e<=0&&R.render(X,!0,!0)},Qt=function _parseFuncOrString(t,e,i,n,a){return s(t)?t.call(e,i,n,a):r(t)&&~t.indexOf("random(")?rb(t):t},Jt=Tt+"repeat,repeatDelay,yoyo,repeatRefresh,yoyoEase,easeReverse,autoRevert",Kt={};ja(Jt+",id,stagger,delay,duration,paused,scrollTrigger",function(t){return Kt[t]=1});var te=function(E){function Tween(e,r,i,n){var a;"number"==typeof r&&(i.duration=r,r=i,i=null);var s,o,u,h,l,f,c,d,p=(a=E.call(this,n?r:ya(r))||this).vars,_=p.duration,m=p.delay,g=p.immediateRender,b=p.stagger,x=p.overwrite,k=p.keyframes,O=p.defaults,M=p.scrollTrigger,C=r.parent||L,P=(K(e)||J(e)?t(e[0]):"length"in r)?[e]:Pt(e);if(a._targets=P.length?ga(P):T("GSAP target "+e+" not found. https://gsap.com",!Y.nullTargetWarn)||[],a._ptLookup=[],a._overwrite=x,k||b||y(_)||y(m)){var S=(r=a.vars).easeReverse||r.yoyoEase;if((s=a.timeline=new Gt({data:"nested",defaults:O||{},targets:C&&"nested"===C.data?C.vars.targets:P})).kill(),s.parent=s._dp=_assertThisInitialized(a),s._start=0,b||y(_)||y(m)){if(h=P.length,c=b&&hb(b),v(b))for(l in b)~Jt.indexOf(l)&&((d=d||{})[l]=b[l]);for(o=0;o<h;o++)(u=xa(r,Kt)).stagger=0,S&&(u.easeReverse=S),d&&bt(u,d),f=P[o],u.duration=+Qt(_,_assertThisInitialized(a),o,f,P),u.delay=(+Qt(m,_assertThisInitialized(a),o,f,P)||0)-a._delay,!b&&1===h&&u.delay&&(a._delay=m=u.delay,a._start+=m,u.delay=0),s.to(f,u,c?c(o,f,P):0),s._ease=Bt.none;s.duration()?_=m=0:a.timeline=0}else if(k){ya(ta(s.vars.defaults,{ease:"none"})),s._ease=jt(k.ease||r.ease||"none");var A,D,z,R=0;if(K(k))k.forEach(function(t){return s.to(P,t,">")}),s.duration();else{for(l in u={},k)"ease"===l||"easeEach"===l||ic(l,k[l],u,k.easeEach);for(l in u)for(A=u[l].sort(function(t,e){return t.t-e.t}),o=R=0;o<A.length;o++)(z={ease:(D=A[o]).e,duration:(D.t-(o?A[o-1].t:0))/100*_})[l]=D.v,s.to(P,z,R),R+=z.duration;s.duration()<_&&s.to({},{duration:_-s.duration()})}}_||a.duration(_=s.duration())}else a.timeline=0;return!0!==x||F||(Zt=_assertThisInitialized(a),L.killTweensOf(P),Zt=0),Na(C,_assertThisInitialized(a),i),r.reversed&&a.reverse(),r.paused&&a.paused(!0),(g||!_&&!k&&a._start===la(C._time)&&w(g)&&function _hasNoPausedAncestors(t){return!t||t._ts&&_hasNoPausedAncestors(t.parent)}(_assertThisInitialized(a))&&"nested"!==C.data)&&(a._tTime=-q,a.render(Math.max(0,-m)||0)),M&&Oa(_assertThisInitialized(a),M),a}_inheritsLoose(Tween,E);var e=Tween.prototype;return e.render=function render(t,e,r){var i,n,a,s,o,u,h,l,f=this._time,c=this._tDur,d=this._dur,p=t<0,_=c-q<t&&!p?c:t<q?0:t;if(d){if(_!==this._tTime||!t||r||!this._initted&&this._tTime||this._startAt&&this._zTime<0!=p||this._lazy){if(i=_,l=this.timeline,this._repeat){if(s=d+this._rDelay,this._repeat<-1&&p)return this.totalTime(100*s+t,e,r);if(i=la(_%s),_===c?(a=this._repeat,i=d):(a=~~(o=la(_/s)))&&a===o?(i=d,a--):d<i&&(i=d),(u=this._yoyo&&1&a)&&(i=d-i),o=wt(this._tTime,s),i===f&&!r&&this._initted&&a===o)return this._tTime=_,this;a!==o&&this.vars.repeatRefresh&&!u&&!this._lock&&i!==s&&this._initted&&(this._lock=r=1,this.render(la(s*a),!0).invalidate()._lock=0)}if(!this._initted){if(Pa(this,p?t:i,r,e,_))return this._tTime=0,this;if(!(f===this._time||r&&this.vars.repeatRefresh&&a!==o))return this;if(d!==this._dur)return this.render(t,e,r)}if(this._rEase){var m=i<f;if(m!==this._inv){var g=m?f:d-f;this._inv=m,this._from&&(this.ratio=1-this.ratio),this._invRatio=this.ratio,this._invTime=f,this._invRecip=g?(m?-1:1)/g:0,this._invScale=m?-this.ratio:1-this.ratio,this._invEase=m?this._rEase:this._ease}this.ratio=h=this._invRatio+this._invScale*this._invEase((i-this._invTime)*this._invRecip)}else this.ratio=h=this._ease(i/d);if(this._from&&(this.ratio=h=1-h),this._tTime=_,this._time=i,!this._act&&this._ts&&(this._act=1,this._lazy=0),!f&&_&&!e&&!o&&(At(this,"onStart"),this._tTime!==_))return this;for(n=this._pt;n;)n.r(h,n.d),n=n._next;l&&l.render(t<0?t:l._dur*l._ease(i/this._dur),e,r)||this._startAt&&(this._zTime=t),this._onUpdate&&!e&&(p&&Fa(this,t,0,r),At(this,"onUpdate")),this._repeat&&a!==o&&this.vars.onRepeat&&!e&&this.parent&&At(this,"onRepeat"),_!==this._tDur&&_||this._tTime!==_||(p&&!this._onUpdate&&Fa(this,t,0,!0),!t&&d||!(_===this._tDur&&0<this._ts||!_&&this._ts<0)||Ca(this,1),e||p&&!f||!(_||f||u)||(At(this,_===c?"onComplete":"onReverseComplete",!0),!this._prom||_<c&&0<this.timeScale()||this._prom()))}}else!function _renderZeroDurationTween(t,e,r,i){var n,a,s,o=t.ratio,u=e<0||!e&&(!t._start&&function _parentPlayheadIsBeforeStart(t){var e=t.parent;return e&&e._ts&&e._initted&&!e._lock&&(e.rawTime()<0||_parentPlayheadIsBeforeStart(e))}(t)&&(t._initted||!xt(t))||(t._ts<0||t._dp._ts<0)&&!xt(t))?0:1,h=t._rDelay,l=0;if(h&&t._repeat&&(l=Mt(0,t._tDur,e),a=wt(l,h),t._yoyo&&1&a&&(u=1-u),a!==wt(t._tTime,h)&&(o=1-u,t.vars.repeatRefresh&&t._initted&&t.invalidate())),u!==o||I||i||t._zTime===q||!e&&t._zTime){if(!t._initted&&Pa(t,e,i,r,l))return;for(s=t._zTime,t._zTime=e||(r?q:0),r=r||e&&!s,t.ratio=u,t._from&&(u=1-u),t._time=0,t._tTime=l,n=t._pt;n;)n.r(u,n.d),n=n._next;e<0&&Fa(t,e,0,!0),t._onUpdate&&!r&&At(t,"onUpdate"),l&&t._repeat&&!r&&t.parent&&At(t,"onRepeat"),(e>=t._tDur||e<0)&&t.ratio===u&&(u&&Ca(t,1),r||I||(At(t,u?"onComplete":"onReverseComplete",!0),t._prom&&t._prom()))}else t._zTime||(t._zTime=e)}(this,t,e,r);return this},e.targets=function targets(){return this._targets},e.invalidate=function invalidate(t){return t&&this.vars.runBackwards||(this._startAt=0),this._pt=this._op=this._onUpdate=this._lazy=this.ratio=0,this._ptLookup=[],this.timeline&&this.timeline.invalidate(t),E.prototype.invalidate.call(this,t)},e.resetTo=function resetTo(t,e,r,i,n){d||It.wake(),this._ts||this.play();var a,s=Math.min(this._dur,(this._dp._time-this._start)*this._ts);return this._initted||Ht(this,s),a=this._ease(s/this._dur),function _updatePropTweens(t,e,r,i,n,a,s,o){var u,h,l,f,c=(t._pt&&t._ptCache||(t._ptCache={}))[e];if(!c)for(c=t._ptCache[e]=[],l=t._ptLookup,f=t._targets.length;f--;){if((u=l[f][e])&&u.d&&u.d._pt)for(u=u.d._pt;u&&u.p!==e&&u.fp!==e;)u=u._next;if(!u)return Wt=1,t.vars[e]="+=0",Ht(t,s),Wt=0,o?T(e+" not eligible for reset. Try splitting into individual properties"):1;c.push(u)}for(f=c.length;f--;)(u=(h=c[f])._pt||h).s=!i&&0!==i||n?u.s+(i||0)+a*u.c:i,u.c=r-u.s,h.e&&(h.e=ka(r)+_a(h.e)),h.b&&(h.b=u.s+_a(h.b))}(this,t,e,r,i,a,s,n)?this.resetTo(t,e,r,i,1):(La(this,0),this.parent||Aa(this._dp,this,"_first","_last",this._dp._sort?"_start":0),this.render(0))},e.kill=function kill(t,e){if(void 0===e&&(e="all"),!(t||e&&"all"!==e))return this._lazy=this._pt=0,this.parent?wb(this):this.scrollTrigger&&this.scrollTrigger.kill(!!I),this;if(this.timeline){var i=this.timeline.totalDuration();return this.timeline.killTweensOf(t,e,Zt&&!0!==Zt.vars.overwrite)._first||wb(this),this.parent&&i!==this.timeline.totalDuration()&&Ua(this,this._dur*this.timeline._tDur/i,0,1),this}var n,a,s,o,u,h,l,f=this._targets,c=t?Pt(t):f,d=this._ptLookup,p=this._pt;if((!e||"all"===e)&&function _arraysMatch(t,e){for(var r=t.length,i=r===e.length;i&&r--&&t[r]===e[r];);return r<0}(f,c))return"all"===e&&(this._pt=0),wb(this);for(n=this._op=this._op||[],"all"!==e&&(r(e)&&(u={},ja(e,function(t){return u[t]=1}),e=u),e=function _addAliasesToVars(t,e){var r,i,n,a,s=t[0]?ha(t[0]).harness:0,o=s&&s.aliases;if(!o)return e;for(i in r=bt({},e),o)if(i in r)for(n=(a=o[i].split(",")).length;n--;)r[a[n]]=r[i];return r}(f,e)),l=f.length;l--;)if(~c.indexOf(f[l]))for(u in a=d[l],"all"===e?(n[l]=e,o=a,s={}):(s=n[l]=n[l]||{},o=e),o)(h=a&&a[u])&&("kill"in h.d&&!0!==h.d.kill(u)||Ba(this,h,"_pt"),delete a[u]),"all"!==s&&(s[u]=1);return this._initted&&!this._pt&&p&&wb(this),this},Tween.to=function to(t,e,r){return new Tween(t,e,r)},Tween.from=function from(t,e){return Ya(1,arguments)},Tween.delayedCall=function delayedCall(t,e,r,i){return new Tween(e,0,{immediateRender:!1,lazy:!1,overwrite:!1,delay:t,onComplete:e,onReverseComplete:e,onCompleteParams:r,onReverseCompleteParams:r,callbackScope:i})},Tween.fromTo=function fromTo(t,e,r){return Ya(2,arguments)},Tween.set=function set(t,e){return e.duration=0,e.repeatDelay||(e.repeat=0),new Tween(t,e)},Tween.killTweensOf=function killTweensOf(t,e,r){return L.killTweensOf(t,e,r)},Tween}(qt);ta(te.prototype,{_targets:[],_lazy:0,_startAt:0,_op:0,_onInit:0}),ja("staggerTo,staggerFrom,staggerFromTo",function(r){te[r]=function(){var t=new Gt,e=Ct.call(arguments,0);return e.splice("staggerFromTo"===r?5:4,0,0),t[r].apply(t,e)}});function qc(t,e,r){return t.setAttribute(e,r)}function yc(t,e,r,i){i.mSet(t,e,i.m.call(i.tween,r,i.mt),i)}var ie=function _setterPlain(t,e,r){return t[e]=r},ae=function _setterFunc(t,e,r){return t[e](r)},se=function _setterFuncWithParam(t,e,r,i){return t[e](i.fp,r)},ue=function _getSetter(t,e){return s(t[e])?ae:u(t[e])&&t.setAttribute?qc:ie},fe=function _renderPlain(t,e){return e.set(e.t,e.p,Math.round(1e6*(e.s+e.c*t))/1e6,e)},de=function _renderBoolean(t,e){return e.set(e.t,e.p,!!(e.s+e.c*t),e)},pe=function _renderComplexString(t,e){var r=e._pt,i="";if(!t&&e.b)i=e.b;else if(1===t&&e.e)i=e.e;else{for(;r;)i=r.p+(r.m?r.m(r.s+r.c*t):Math.round(1e4*(r.s+r.c*t))/1e4)+i,r=r._next;i+=e.c}e.set(e.t,e.p,i,e)},_e=function _renderPropTweens(t,e){for(var r=e._pt;r;)r.r(t,r.d),r=r._next},ve=function _addPluginModifier(t,e,r,i){for(var n,a=this._pt;a;)n=a._next,a.p===i&&a.modifier(t,e,r),a=n},Te=function _killPropTweensOf(t){for(var e,r,i=this._pt;i;)r=i._next,i.p===t&&!i.op||i.op===t?Ba(this,i,"_pt"):i.dep||(e=1),i=r;return!e},be=function _sortPropTweensByPriority(t){for(var e,r,i,n,a=t._pt;a;){for(e=a._next,r=i;r&&r.pr>a.pr;)r=r._next;(a._prev=r?r._prev:n)?a._prev._next=a:i=a,(a._next=r)?r._prev=a:n=a,a=e}t._pt=i},we=(PropTween.prototype.modifier=function modifier(t,e,r){this.mSet=this.mSet||this.set,this.set=yc,this.m=t,this.mt=r,this.tween=e},PropTween);function PropTween(t,e,r,i,n,a,s,o,u){this.t=e,this.s=i,this.c=n,this.p=r,this.r=a||fe,this.d=s||this,this.set=o||ie,this.pr=u||0,(this._next=t)&&(t._prev=this)}ja(Tt+"parent,duration,ease,delay,overwrite,runBackwards,startAt,yoyo,immediateRender,repeat,repeatDelay,data,paused,reversed,lazy,callbackScope,stringFilter,id,yoyoEase,stagger,inherit,repeatRefresh,keyframes,autoRevert,scrollTrigger,easeReverse",function(t){return dt[t]=1}),ht.TweenMax=ht.TweenLite=te,ht.TimelineLite=ht.TimelineMax=Gt,L=new Gt({sortChildren:!1,defaults:j,autoRemoveChildren:!0,id:"root",smoothChildTiming:!0}),Y.stringFilter=Ib;function Gc(t){return(Oe[t]||Me).map(function(t){return t()})}function Hc(){var t=Date.now(),o=[];2<t-Ce&&(Gc("matchMediaInit"),ke.forEach(function(t){var e,r,i,n,a=t.queries,s=t.conditions;for(r in a)(e=h.matchMedia(a[r]).matches)&&(i=1),e!==s[r]&&(s[r]=e,n=1);n&&(t.revert(),i&&o.push(t))}),Gc("matchMediaRevert"),o.forEach(function(e){return e.onMatch(e,function(t){return e.add(null,t)})}),Ce=t,Gc("matchMedia"))}var xe,ke=[],Oe={},Me=[],Ce=0,Pe=0,Se=((xe=Context.prototype).add=function add(t,i,n){function Gw(){var t,e=l,r=a.selector;return e&&e!==a&&e.data.push(a),n&&(a.selector=fb(n)),l=a,t=i.apply(a,arguments),s(t)&&a._r.push(t),l=e,a.selector=r,a.isReverted=!1,t}s(t)&&(n=i,i=t,t=s);var a=this;return a.last=Gw,t===s?Gw(a,function(t){return a.add(null,t)}):t?a[t]=Gw:Gw},xe.ignore=function ignore(t){var e=l;l=null,t(this),l=e},xe.getTweens=function getTweens(){var e=[];return this.data.forEach(function(t){return t instanceof Context?e.push.apply(e,t.getTweens()):t instanceof te&&!(t.parent&&"nested"===t.parent.data)&&e.push(t)}),e},xe.clear=function clear(){this._r.length=this.data.length=0},xe.kill=function kill(i,t){var n=this;if(i?function(){for(var t,e=n.getTweens(),r=n.data.length;r--;)"isFlip"===(t=n.data[r]).data&&(t.revert(),t.getChildren(!0,!0,!1).forEach(function(t){return e.splice(e.indexOf(t),1)}));for(e.map(function(t){return{g:t._dur||t._delay||t._sat&&!t._sat.vars.immediateRender?t.globalTime(0):-1/0,t:t}}).sort(function(t,e){return e.g-t.g||-1/0}).forEach(function(t){return t.t.revert(i)}),r=n.data.length;r--;)(t=n.data[r])instanceof Gt?"nested"!==t.data&&(t.scrollTrigger&&t.scrollTrigger.revert(),t.kill()):t instanceof te||!t.revert||t.revert(i);n._r.forEach(function(t){return t(i,n)}),n.isReverted=!0}():this.data.forEach(function(t){return t.kill&&t.kill()}),this.clear(),t)for(var e=ke.length;e--;)ke[e].id===this.id&&ke.splice(e,1)},xe.revert=function revert(t){this.kill(t||{})},Context);function Context(t,e){this.selector=e&&fb(e),this.data=[],this._r=[],this.isReverted=!1,this.id=Pe++,t&&this.add(t)}var De,Re=((De=MatchMedia.prototype).add=function add(t,e,r){v(t)||(t={matches:t});var i,n,a,s=new Se(0,r||this.scope),o=s.conditions={};for(n in l&&!s.selector&&(s.selector=l.selector),this.contexts.push(s),e=s.add("onMatch",e),s.queries=t)"all"===n?a=1:(i=h.matchMedia(t[n]))&&(ke.indexOf(s)<0&&ke.push(s),(o[n]=i.matches)&&(a=1),i.addListener?i.addListener(Hc):i.addEventListener("change",Hc));return a&&e(s,function(t){return s.add(null,t)}),this},De.revert=function revert(t){this.kill(t||{})},De.kill=function kill(e){this.contexts.forEach(function(t){return t.kill(e,!0)})},MatchMedia);function MatchMedia(t){this.contexts=[],this.scope=t,l&&l.data.push(this)}var Ee={registerPlugin:function registerPlugin(){for(var t=arguments.length,e=new Array(t),r=0;r<t;r++)e[r]=arguments[r];e.forEach(function(t){return zb(t)})},timeline:function timeline(t){return new Gt(t)},getTweensOf:function getTweensOf(t,e){return L.getTweensOf(t,e)},getProperty:function getProperty(i,t,e,n){r(i)&&(i=Pt(i)[0]);var a=ha(i||{}).get,s=e?sa:ra;return"native"===e&&(e=""),i?t?s((mt[t]&&mt[t].get||a)(i,t,e,n)):function(t,e,r){return s((mt[t]&&mt[t].get||a)(i,t,e,r))}:i},quickSetter:function quickSetter(r,e,i){if(1<(r=Pt(r)).length){var n=r.map(function(t){return Fe.quickSetter(t,e,i)}),a=n.length;return function(t){for(var e=a;e--;)n[e](t)}}r=r[0]||{};var s=mt[e],o=ha(r),u=o.harness&&(o.harness.aliases||{})[e]||e,h=s?function(t){var e=new s;c._pt=0,e.init(r,i?t+i:t,c,0,[r]),e.render(1,e),c._pt&&_e(1,c)}:o.set(r,u);return s?h:function(t){return h(r,u,i?t+i:t,o,1)}},quickTo:function quickTo(t,i,e){function $x(t,e,r){return n.resetTo(i,t,e,r)}var r,n=Fe.to(t,ta(((r={})[i]="+=0.1",r.paused=!0,r.stagger=0,r),e||{}));return $x.tween=n,$x},isTweening:function isTweening(t){return 0<L.getTweensOf(t,!0).length},defaults:function defaults(t){return t&&t.ease&&(t.ease=jt(t.ease,j.ease)),wa(j,t||{})},config:function config(t){return wa(Y,t||{})},registerEffect:function registerEffect(t){var i=t.name,n=t.effect,e=t.plugins,a=t.defaults,r=t.extendTimeline;(e||"").split(",").forEach(function(t){return t&&!mt[t]&&!ht[t]&&T(i+" effect requires "+t+" plugin.")}),gt[i]=function(t,e,r){return n(Pt(t),ta(e||{},a),r)},r&&(Gt.prototype[i]=function(t,e,r){return this.add(gt[i](t,v(e)?e:(r=e)&&{},this),r)})},registerEase:function registerEase(t,e){Bt[t]=jt(e)},parseEase:function parseEase(t,e){return arguments.length?jt(t,e):Bt},getById:function getById(t){return L.getById(t)},exportRoot:function exportRoot(t,e){void 0===t&&(t={});var r,i,n=new Gt(t);for(n.smoothChildTiming=w(t.smoothChildTiming),L.remove(n),n._dp=0,n._time=n._tTime=L._time,r=L._first;r;)i=r._next,!e&&!r._dur&&r instanceof te&&r.vars.onComplete===r._targets[0]||Na(n,r,r._start-r._delay),r=i;return Na(L,n,0),n},context:function context(t,e){return t?new Se(t,e):l},matchMedia:function matchMedia(t){return new Re(t)},matchMediaRefresh:function matchMediaRefresh(){return ke.forEach(function(t){var e,r,i=t.conditions;for(r in i)i[r]&&(i[r]=!1,e=1);e&&t.revert()})||Hc()},addEventListener:function addEventListener(t,e){var r=Oe[t]||(Oe[t]=[]);~r.indexOf(e)||r.push(e)},removeEventListener:function removeEventListener(t,e){var r=Oe[t],i=r&&r.indexOf(e);0<=i&&r.splice(i,1)},utils:{wrap:function wrap(e,t,r){var i=t-e;return K(e)?ob(e,wrap(0,e.length),t):Za(r,function(t){return(i+(t-e)%i)%i+e})},wrapYoyo:function wrapYoyo(e,t,r){var i=t-e,n=2*i;return K(e)?ob(e,wrapYoyo(0,e.length-1),t):Za(r,function(t){return e+(i<(t=(n+(t-e)%n)%n||0)?n-t:t)})},distribute:hb,random:kb,snap:jb,normalize:function normalize(t,e,r){return St(t,e,0,1,r)},getUnit:_a,clamp:function clamp(e,r,t){return Za(t,function(t){return Mt(e,r,t)})},splitColor:Db,toArray:Pt,selector:fb,mapRange:St,pipe:function pipe(){for(var t=arguments.length,e=new Array(t),r=0;r<t;r++)e[r]=arguments[r];return function(t){return e.reduce(function(t,e){return e(t)},t)}},unitize:function unitize(e,r){return function(t){return e(parseFloat(t))+(r||_a(t))}},interpolate:function interpolate(e,i,t,n){var a=isNaN(e+i)?0:function(t){return(1-t)*e+t*i};if(!a){var s,o,u,h,l,f=r(e),c={};if(!0===t&&(n=1)&&(t=null),f)e={p:e},i={p:i};else if(K(e)&&!K(i)){for(u=[],h=e.length,l=h-2,o=1;o<h;o++)u.push(interpolate(e[o-1],e[o]));h--,a=function func(t){t*=h;var e=Math.min(l,~~t);return u[e](t-e)},t=i}else n||(e=bt(K(e)?[]:{},e));if(!u){for(s in i)$t.call(c,e,s,"get",i[s]);a=function func(t){return _e(t,c)||(f?e.p:e)}}}return Za(t,a)},shuffle:gb},install:R,effects:gt,ticker:It,updateRoot:Gt.updateRoot,plugins:mt,globalTimeline:L,core:{PropTween:we,globals:U,Tween:te,Timeline:Gt,Animation:qt,getCache:ha,_removeLinkedListItem:Ba,reverting:function reverting(){return I},context:function context(t){return t&&l&&(l.data.push(t),t._ctx=l),l},suppressOverwrites:function suppressOverwrites(t){return F=t}}};ja("to,from,fromTo,delayedCall,set,killTweensOf",function(t){return Ee[t]=te[t]}),It.add(Gt.updateRoot),c=Ee.to({},{duration:0});function Lc(t,e){for(var r=t._pt;r&&r.p!==e&&r.op!==e&&r.fp!==e;)r=r._next;return r}function Nc(t,a){return{name:t,headless:1,rawVars:1,init:function init(t,n,e){e._onInit=function(t){var e,i;if(r(n)&&(e={},ja(n,function(t){return e[t]=1}),n=e),a){for(i in e={},n)e[i]=a(n[i]);n=e}!function _addModifiers(t,e){var r,i,n,a=t._targets;for(r in e)for(i=a.length;i--;)(n=(n=t._ptLookup[i][r])&&n.d)&&(n._pt&&(n=Lc(n,r)),n&&n.modifier&&n.modifier(e[r],t,a[i],r))}(t,n)}}}}var Fe=Ee.registerPlugin({name:"attr",init:function init(t,e,r,i,n){var a,s,o;for(a in this.tween=r,e)o=t.getAttribute(a)||"",(s=this.add(t,"setAttribute",(o||0)+"",e[a],i,n,0,0,a)).op=a,s.b=o,this._props.push(a)},render:function render(t,e){for(var r=e._pt;r;)I?r.set(r.t,r.p,r.b,r):r.r(t,r.d),r=r._next}},{name:"endArray",headless:1,init:function init(t,e){for(var r=e.length;r--;)this.add(t,r,t[r]||0,e[r],0,0,0,0,0,1)}},Nc("roundProps",ib),Nc("modifiers"),Nc("snap",jb))||Ee;te.version=Gt.version=Fe.version="3.15.0",o=1,x()&&Lt();function xd(t,e){return e.set(e.t,e.p,Math.round(1e4*(e.s+e.c*t))/1e4+e.u,e)}function yd(t,e){return e.set(e.t,e.p,1===t?e.e:Math.round(1e4*(e.s+e.c*t))/1e4+e.u,e)}function zd(t,e){return e.set(e.t,e.p,t?Math.round(1e4*(e.s+e.c*t))/1e4+e.u:e.b,e)}function Ad(t,e){return e.set(e.t,e.p,1===t?e.e:t?Math.round(1e4*(e.s+e.c*t))/1e4+e.u:e.b,e)}function Bd(t,e){var r=e.s+e.c*t;e.set(e.t,e.p,~~(r+(r<0?-.5:.5))+e.u,e)}function Cd(t,e){return e.set(e.t,e.p,t?e.e:e.b,e)}function Dd(t,e){return e.set(e.t,e.p,1!==t?e.b:e.e,e)}function Ed(t,e,r){return t.style[e]=r}function Fd(t,e,r){return t.style.setProperty(e,r)}function Gd(t,e,r){return t._gsap[e]=r}function Hd(t,e,r){return t._gsap.scaleX=t._gsap.scaleY=r}function Id(t,e,r,i,n){var a=t._gsap;a.scaleX=a.scaleY=r,a.renderTransform(n,a)}function Jd(t,e,r,i,n){var a=t._gsap;a[e]=r,a.renderTransform(n,a)}function Md(t,e){var r=this,i=this.target,n=i.style,a=i._gsap;if(t in ur&&n){if(this.tfm=this.tfm||{},"transform"===t)return _r.transform.split(",").forEach(function(t){return Md.call(r,t,e)});if(~(t=_r[t]||t).indexOf(",")?t.split(",").forEach(function(t){return r.tfm[t]=wr(i,t)}):this.tfm[t]=a.x?a[t]:wr(i,t),t===gr&&(this.tfm.zOrigin=a.zOrigin),0<=this.props.indexOf(mr))return;a.svg&&(this.svgo=i.getAttribute("data-svg-origin"),this.props.push(gr,e,"")),t=mr}(n||e)&&this.props.push(t,e,n[t])}function Nd(t){t.translate&&(t.removeProperty("translate"),t.removeProperty("scale"),t.removeProperty("rotate"))}function Od(){var t,e,r=this.props,i=this.target,n=i.style,a=i._gsap;for(t=0;t<r.length;t+=3)r[t+1]?2===r[t+1]?i[r[t]](r[t+2]):i[r[t]]=r[t+2]:r[t+2]?n[r[t]]=r[t+2]:n.removeProperty("--"===r[t].substr(0,2)?r[t]:r[t].replace(cr,"-$1").toLowerCase());if(this.tfm){for(e in this.tfm)a[e]=this.tfm[e];a.svg&&(a.renderTransform(),i.setAttribute("data-svg-origin",this.svgo||"")),(t=je())&&t.isStart||n[mr]||(Nd(n),a.zOrigin&&n[gr]&&(n[gr]+=" "+a.zOrigin+"px",a.zOrigin=0,a.renderTransform()),a.uncache=1)}}function Pd(t,e){var r={target:t,props:[],revert:Od,save:Md};return t._gsap||Fe.core.getCache(t),e&&t.style&&t.nodeType&&e.split(",").forEach(function(t){return r.save(t)}),r}function Rd(t,e){var r=Le.createElementNS?Le.createElementNS((e||"http://www.w3.org/1999/xhtml").replace(/^https/,"http"),t):Le.createElement(t);return r&&r.style?r:Le.createElement(t)}function Sd(t,e,r){var i=getComputedStyle(t);return i[e]||i.getPropertyValue(e.replace(cr,"-$1").toLowerCase())||i.getPropertyValue(e)||!r&&Sd(t,yr(e)||e,1)||""}function Vd(){(function _windowExists(){return"undefined"!=typeof window})()&&window.document&&(Ie=window,Le=Ie.document,Be=Le.documentElement,Ue=Rd("div")||{style:{}},Rd("div"),mr=yr(mr),gr=mr+"Origin",Ue.style.cssText="border-width:0;line-height:0;position:absolute;padding:0",Ve=!!yr("perspective"),je=Fe.core.reverting,Ne=1)}function Wd(t){var e,r=t.ownerSVGElement,i=Rd("svg",r&&r.getAttribute("xmlns")||"http://www.w3.org/2000/svg"),n=t.cloneNode(!0);n.style.display="block",i.appendChild(n),Be.appendChild(i);try{e=n.getBBox()}catch(t){}return i.removeChild(n),Be.removeChild(i),e}function Xd(t,e){for(var r=e.length;r--;)if(t.hasAttribute(e[r]))return t.getAttribute(e[r])}function Yd(e){var r,i;try{r=e.getBBox()}catch(t){r=Wd(e),i=1}return r&&(r.width||r.height)||i||(r=Wd(e)),!r||r.width||r.x||r.y?r:{x:+Xd(e,["x","cx","x1"])||0,y:+Xd(e,["y","cy","y1"])||0,width:0,height:0}}function Zd(t){return!(!t.getCTM||t.parentNode&&!t.ownerSVGElement||!Yd(t))}function $d(t,e){if(e){var r,i=t.style;e in ur&&e!==gr&&(e=mr),i.removeProperty?("ms"!==(r=e.substr(0,2))&&"webkit"!==e.substr(0,6)||(e="-"+e),i.removeProperty("--"===r?e:e.replace(cr,"-$1").toLowerCase())):i.removeAttribute(e)}}function _d(t,e,r,i,n,a){var s=new we(t._pt,e,r,0,1,a?Dd:Cd);return(t._pt=s).b=i,s.e=n,t._props.push(r),s}function ce(t,e,r,i){var n,a,s,o,u=parseFloat(r)||0,h=(r+"").trim().substr((u+"").length)||"px",l=Ue.style,f=dr.test(e),c="svg"===t.tagName.toLowerCase(),d=(c?"client":"offset")+(f?"Width":"Height"),p="px"===i,_="%"===i;if(i===h||!u||Tr[i]||Tr[h])return u;if("px"===h||p||(u=ce(t,e,r,"px")),o=t.getCTM&&Zd(t),(_||"%"===h)&&(ur[e]||~e.indexOf("adius")))return n=o?t.getBBox()[f?"width":"height"]:t[d],ka(_?u/n*100:u/100*n);if(l[f?"width":"height"]=100+(p?h:i),a="rem"!==i&&~e.indexOf("adius")||"em"===i&&t.appendChild&&!c?t:t.parentNode,o&&(a=(t.ownerSVGElement||{}).parentNode),a&&a!==Le&&a.appendChild||(a=Le.body),(s=a._gsap)&&_&&s.width&&f&&s.time===It.time&&!s.uncache)return ka(u/s.width*100);if(!_||"height"!==e&&"width"!==e)!_&&"%"!==h||br[Sd(a,"display")]||(l.position=Sd(t,"position")),a===t&&(l.position="static"),a.appendChild(Ue),n=Ue[d],a.removeChild(Ue),l.position="absolute";else{var m=t.style[e];t.style[e]=100+i,n=t[d],m?t.style[e]=m:$d(t,e)}return f&&_&&((s=ha(a)).time=It.time,s.width=a[d]),ka(p?n*u/100:n&&u?100/n*u:0)}function ee(t,e,r,i){if(!r||"none"===r){var n=yr(e,t,1),a=n&&Sd(t,n,1);a&&a!==r?(e=n,r=a):"borderColor"===e&&(r=Sd(t,"borderTopColor"))}var s,o,u,h,l,f,c,d,p,_,m,g=new we(this._pt,t.style,e,0,1,pe),v=0,y=0;if(g.b=r,g.e=i,r+="","var(--"===(i+="").substring(0,6)&&(i=Sd(t,i.substring(4,i.indexOf(")")))),"auto"===i&&(f=t.style[e],t.style[e]=i,i=Sd(t,e)||i,f?t.style[e]=f:$d(t,e)),Ib(s=[r,i]),i=s[1],u=(r=s[0]).match(nt)||[],(i.match(nt)||[]).length){for(;o=nt.exec(i);)c=o[0],p=i.substring(v,o.index),l?l=(l+1)%5:"rgba("!==p.substr(-5)&&"hsla("!==p.substr(-5)||(l=1),c!==(f=u[y++]||"")&&(h=parseFloat(f)||0,m=f.substr((h+"").length),"="===c.charAt(1)&&(c=ma(h,c)+m),d=parseFloat(c),_=c.substr((d+"").length),v=nt.lastIndex-_.length,_||(_=_||Y.units[e]||m,v===i.length&&(i+=_,g.e+=_)),m!==_&&(h=ce(t,e,f,_)||0),g._pt={_next:g._pt,p:p||1===y?p:",",s:h,c:d-h,m:l&&l<4||"zIndex"===e?Math.round:0});g.c=v<i.length?i.substring(v,i.length):""}else g.r="display"===e&&"none"===i?Dd:Cd;return st.test(i)&&(g.e=0),this._pt=g}function ge(t){var e=t.split(" "),r=e[0],i=e[1]||"50%";return"top"!==r&&"bottom"!==r&&"left"!==i&&"right"!==i||(t=r,r=i,i=t),e[0]=xr[r]||r,e[1]=xr[i]||i,e.join(" ")}function he(t,e){if(e.tween&&e.tween._time===e.tween._dur){var r,i,n,a=e.t,s=a.style,o=e.u,u=a._gsap;if("all"===o||!0===o)s.cssText="",i=1;else for(n=(o=o.split(",")).length;-1<--n;)r=o[n],ur[r]&&(i=1,r="transformOrigin"===r?gr:mr),$d(a,r);i&&($d(a,mr),u&&(u.svg&&a.removeAttribute("transform"),s.scale=s.rotate=s.translate="none",Cr(a,1),u.uncache=1,Nd(s)))}}function le(t){return"matrix(1, 0, 0, 1, 0, 0)"===t||"none"===t||!t}function me(t){var e=Sd(t,mr);return le(e)?Or:e.substr(7).match(it).map(ka)}function ne(t,e){var r,i,n,a,s=t._gsap||ha(t),o=t.style,u=me(t);return s.svg&&t.getAttribute("transform")?"1,0,0,1,0,0"===(u=[(n=t.transform.baseVal.consolidate().matrix).a,n.b,n.c,n.d,n.e,n.f]).join(",")?Or:u:(u!==Or||t.offsetParent||t===Be||s.svg||(n=o.display,o.display="block",(r=t.parentNode)&&(t.offsetParent||t.getBoundingClientRect().width)||(a=1,i=t.nextElementSibling,Be.appendChild(t)),u=me(t),n?o.display=n:$d(t,"display"),a&&(i?r.insertBefore(t,i):r?r.appendChild(t):Be.removeChild(t))),e&&6<u.length?[u[0],u[1],u[4],u[5],u[12],u[13]]:u)}function oe(t,e,r,i,n,a){var s,o,u,h=t._gsap,l=n||ne(t,!0),f=h.xOrigin||0,c=h.yOrigin||0,d=h.xOffset||0,p=h.yOffset||0,_=l[0],m=l[1],g=l[2],v=l[3],y=l[4],T=l[5],b=e.split(" "),w=parseFloat(b[0])||0,x=parseFloat(b[1])||0;r?l!==Or&&(o=_*v-m*g)&&(u=w*(-m/o)+x*(_/o)-(_*T-m*y)/o,w=w*(v/o)+x*(-g/o)+(g*T-v*y)/o,x=u):(w=(s=Yd(t)).x+(~b[0].indexOf("%")?w/100*s.width:w),x=s.y+(~(b[1]||b[0]).indexOf("%")?x/100*s.height:x)),i||!1!==i&&h.smooth?(y=w-f,T=x-c,h.xOffset=d+(y*_+T*g)-y,h.yOffset=p+(y*m+T*v)-T):h.xOffset=h.yOffset=0,h.xOrigin=w,h.yOrigin=x,h.smooth=!!i,h.origin=e,h.originIsAbsolute=!!r,t.style[gr]="0px 0px",a&&(_d(a,h,"xOrigin",f,w),_d(a,h,"yOrigin",c,x),_d(a,h,"xOffset",d,h.xOffset),_d(a,h,"yOffset",p,h.yOffset)),t.setAttribute("data-svg-origin",w+" "+x)}function re(t,e,r){var i=_a(e);return ka(parseFloat(e)+parseFloat(ce(t,"x",r+"px",i)))+i}function ye(t,e,i,n,a){var s,o,u=360,h=r(a),l=parseFloat(a)*(h&&~a.indexOf("rad")?hr:1)-n,f=n+l+"deg";return h&&("short"===(s=a.split("_")[1])&&(l%=u)!==l%180&&(l+=l<0?u:-u),"cw"===s&&l<0?l=(l+36e9)%u-~~(l/u)*u:"ccw"===s&&0<l&&(l=(l-36e9)%u-~~(l/u)*u)),t._pt=o=new we(t._pt,e,i,n,l,yd),o.e=f,o.u="deg",t._props.push(i),o}function ze(t,e){for(var r in e)t[r]=e[r];return t}function Ae(t,e,r){var i,n,a,s,o,u,h,l=ze({},r._gsap),f=r.style;for(n in l.svg?(a=r.getAttribute("transform"),r.setAttribute("transform",""),f[mr]=e,i=Cr(r,1),$d(r,mr),r.setAttribute("transform",a)):(a=getComputedStyle(r)[mr],f[mr]=e,i=Cr(r,1),f[mr]=a),ur)(a=l[n])!==(s=i[n])&&"perspective,force3D,transformOrigin,svgOrigin".indexOf(n)<0&&(o=_a(a)!==(h=_a(s))?ce(r,n,a,h):parseFloat(a),u=parseFloat(s),t._pt=new we(t._pt,i,n,o,u-o,xd),t._pt.u=h||0,t._props.push(n));ze(i,l)}var Ie,Le,Be,Ne,Ue,Ye,je,Ve,Xe=Bt.Power0,qe=Bt.Power1,Ge=Bt.Power2,Ze=Bt.Power3,We=Bt.Power4,$e=Bt.Linear,He=Bt.Quad,Qe=Bt.Cubic,Je=Bt.Quart,Ke=Bt.Quint,tr=Bt.Strong,er=Bt.Elastic,rr=Bt.Back,ir=Bt.SteppedEase,nr=Bt.Bounce,ar=Bt.Sine,sr=Bt.Expo,or=Bt.Circ,ur={},hr=180/Math.PI,lr=Math.PI/180,fr=Math.atan2,cr=/([A-Z])/g,dr=/(left|right|width|margin|padding|x)/i,pr=/[\s,\(]\S/,_r={autoAlpha:"opacity,visibility",scale:"scaleX,scaleY",alpha:"opacity"},mr="transform",gr=mr+"Origin",vr="O,Moz,ms,Ms,Webkit".split(","),yr=function _checkPropPrefix(t,e,r){var i=(e||Ue).style,n=5;if(t in i&&!r)return t;for(t=t.charAt(0).toUpperCase()+t.substr(1);n--&&!(vr[n]+t in i););return n<0?null:(3===n?"ms":0<=n?vr[n]:"")+t},Tr={deg:1,rad:1,turn:1},br={grid:1,flex:1},wr=function _get(t,e,r,i){var n;return Ne||Vd(),e in _r&&"transform"!==e&&~(e=_r[e]).indexOf(",")&&(e=e.split(",")[0]),ur[e]&&"transform"!==e?(n=Cr(t,i),n="transformOrigin"!==e?n[e]:n.svg?n.origin:Pr(Sd(t,gr))+" "+n.zOrigin+"px"):(n=t.style[e])&&"auto"!==n&&!i&&!~(n+"").indexOf("calc(")||(n=kr[e]&&kr[e](t,e,r)||Sd(t,e)||ia(t,e)||("opacity"===e?1:0)),r&&!~(n+"").trim().indexOf(" ")?ce(t,e,n,r)+r:n},xr={top:"0%",bottom:"100%",left:"0%",right:"100%",center:"50%"},kr={clearProps:function clearProps(t,e,r,i,n){if("isFromStart"!==n.data){var a=t._pt=new we(t._pt,e,r,0,0,he);return a.u=i,a.pr=-10,a.tween=n,t._props.push(r),1}}},Or=[1,0,0,1,0,0],Mr={},Cr=function _parseTransform(t,e){var r=t._gsap||new Xt(t);if("x"in r&&!e&&!r.uncache)return r;var i,n,a,s,o,u,h,l,f,c,d,p,_,m,g,v,y,T,b,w,x,k,O,M,C,P,S,A,D,z,R,E,F=t.style,I=r.scaleX<0,L="deg",B=getComputedStyle(t),N=Sd(t,gr)||"0";return i=n=a=u=h=l=f=c=d=0,s=o=1,r.svg=!(!t.getCTM||!Zd(t)),B.translate&&("none"===B.translate&&"none"===B.scale&&"none"===B.rotate||(F[mr]=("none"!==B.translate?"translate3d("+(B.translate+" 0 0").split(" ").slice(0,3).join(", ")+") ":"")+("none"!==B.rotate?"rotate("+B.rotate+") ":"")+("none"!==B.scale?"scale("+B.scale.split(" ").join(",")+") ":"")+("none"!==B[mr]?B[mr]:"")),F.scale=F.rotate=F.translate="none"),m=ne(t,r.svg),r.svg&&(M=r.uncache?(C=t.getBBox(),N=r.xOrigin-C.x+"px "+(r.yOrigin-C.y)+"px",""):!e&&t.getAttribute("data-svg-origin"),oe(t,M||N,!!M||r.originIsAbsolute,!1!==r.smooth,m)),p=r.xOrigin||0,_=r.yOrigin||0,m!==Or&&(T=m[0],b=m[1],w=m[2],x=m[3],i=k=m[4],n=O=m[5],6===m.length?(s=Math.sqrt(T*T+b*b),o=Math.sqrt(x*x+w*w),u=T||b?fr(b,T)*hr:0,(f=w||x?fr(w,x)*hr+u:0)&&(o*=Math.abs(Math.cos(f*lr))),r.svg&&(i-=p-(p*T+_*w),n-=_-(p*b+_*x))):(E=m[6],z=m[7],S=m[8],A=m[9],D=m[10],R=m[11],i=m[12],n=m[13],a=m[14],h=(g=fr(E,D))*hr,g&&(M=k*(v=Math.cos(-g))+S*(y=Math.sin(-g)),C=O*v+A*y,P=E*v+D*y,S=k*-y+S*v,A=O*-y+A*v,D=E*-y+D*v,R=z*-y+R*v,k=M,O=C,E=P),l=(g=fr(-w,D))*hr,g&&(v=Math.cos(-g),R=x*(y=Math.sin(-g))+R*v,T=M=T*v-S*y,b=C=b*v-A*y,w=P=w*v-D*y),u=(g=fr(b,T))*hr,g&&(M=T*(v=Math.cos(g))+b*(y=Math.sin(g)),C=k*v+O*y,b=b*v-T*y,O=O*v-k*y,T=M,k=C),h&&359.9<Math.abs(h)+Math.abs(u)&&(h=u=0,l=180-l),s=ka(Math.sqrt(T*T+b*b+w*w)),o=ka(Math.sqrt(O*O+E*E)),g=fr(k,O),f=2e-4<Math.abs(g)?g*hr:0,d=R?1/(R<0?-R:R):0),r.svg&&(M=t.getAttribute("transform"),r.forceCSS=t.setAttribute("transform","")||!le(Sd(t,mr)),M&&t.setAttribute("transform",M))),90<Math.abs(f)&&Math.abs(f)<270&&(I?(s*=-1,f+=u<=0?180:-180,u+=u<=0?180:-180):(o*=-1,f+=f<=0?180:-180)),e=e||r.uncache,r.x=i-((r.xPercent=i&&(!e&&r.xPercent||(Math.round(t.offsetWidth/2)===Math.round(-i)?-50:0)))?t.offsetWidth*r.xPercent/100:0)+"px",r.y=n-((r.yPercent=n&&(!e&&r.yPercent||(Math.round(t.offsetHeight/2)===Math.round(-n)?-50:0)))?t.offsetHeight*r.yPercent/100:0)+"px",r.z=a+"px",r.scaleX=ka(s),r.scaleY=ka(o),r.rotation=ka(u)+L,r.rotationX=ka(h)+L,r.rotationY=ka(l)+L,r.skewX=f+L,r.skewY=c+L,r.transformPerspective=d+"px",(r.zOrigin=parseFloat(N.split(" ")[2])||!e&&r.zOrigin||0)&&(F[gr]=Pr(N)),r.xOffset=r.yOffset=0,r.force3D=Y.force3D,r.renderTransform=r.svg?Er:Ve?Rr:Sr,r.uncache=0,r},Pr=function _firstTwoOnly(t){return(t=t.split(" "))[0]+" "+t[1]},Sr=function _renderNon3DTransforms(t,e){e.z="0px",e.rotationY=e.rotationX="0deg",e.force3D=0,Rr(t,e)},Ar="0deg",Dr="0px",zr=") ",Rr=function _renderCSSTransforms(t,e){var r=e||this,i=r.xPercent,n=r.yPercent,a=r.x,s=r.y,o=r.z,u=r.rotation,h=r.rotationY,l=r.rotationX,f=r.skewX,c=r.skewY,d=r.scaleX,p=r.scaleY,_=r.transformPerspective,m=r.force3D,g=r.target,v=r.zOrigin,y="",T="auto"===m&&t&&1!==t||!0===m;if(v&&(l!==Ar||h!==Ar)){var b,w=parseFloat(h)*lr,x=Math.sin(w),k=Math.cos(w);w=parseFloat(l)*lr,b=Math.cos(w),a=re(g,a,x*b*-v),s=re(g,s,-Math.sin(w)*-v),o=re(g,o,k*b*-v+v)}_!==Dr&&(y+="perspective("+_+zr),(i||n)&&(y+="translate("+i+"%, "+n+"%) "),!T&&a===Dr&&s===Dr&&o===Dr||(y+=o!==Dr||T?"translate3d("+a+", "+s+", "+o+") ":"translate("+a+", "+s+zr),u!==Ar&&(y+="rotate("+u+zr),h!==Ar&&(y+="rotateY("+h+zr),l!==Ar&&(y+="rotateX("+l+zr),f===Ar&&c===Ar||(y+="skew("+f+", "+c+zr),1===d&&1===p||(y+="scale("+d+", "+p+zr),g.style[mr]=y||"translate(0, 0)"},Er=function _renderSVGTransforms(t,e){var r,i,n,a,s,o=e||this,u=o.xPercent,h=o.yPercent,l=o.x,f=o.y,c=o.rotation,d=o.skewX,p=o.skewY,_=o.scaleX,m=o.scaleY,g=o.target,v=o.xOrigin,y=o.yOrigin,T=o.xOffset,b=o.yOffset,w=o.forceCSS,x=parseFloat(l),k=parseFloat(f);c=parseFloat(c),d=parseFloat(d),(p=parseFloat(p))&&(d+=p=parseFloat(p),c+=p),c||d?(c*=lr,d*=lr,r=Math.cos(c)*_,i=Math.sin(c)*_,n=Math.sin(c-d)*-m,a=Math.cos(c-d)*m,d&&(p*=lr,s=Math.tan(d-p),n*=s=Math.sqrt(1+s*s),a*=s,p&&(s=Math.tan(p),r*=s=Math.sqrt(1+s*s),i*=s)),r=ka(r),i=ka(i),n=ka(n),a=ka(a)):(r=_,a=m,i=n=0),(x&&!~(l+"").indexOf("px")||k&&!~(f+"").indexOf("px"))&&(x=ce(g,"x",l,"px"),k=ce(g,"y",f,"px")),(v||y||T||b)&&(x=ka(x+v-(v*r+y*n)+T),k=ka(k+y-(v*i+y*a)+b)),(u||h)&&(s=g.getBBox(),x=ka(x+u/100*s.width),k=ka(k+h/100*s.height)),s="matrix("+r+","+i+","+n+","+a+","+x+","+k+")",g.setAttribute("transform",s),w&&(g.style[mr]=s)};ja("padding,margin,Width,Radius",function(e,r){var t="Right",i="Bottom",n="Left",o=(r<3?["Top",t,i,n]:["Top"+n,"Top"+t,i+t,i+n]).map(function(t){return r<2?e+t:"border"+t+e});kr[1<r?"border"+e:e]=function(e,t,r,i,n){var a,s;if(arguments.length<4)return a=o.map(function(t){return wr(e,t,r)}),5===(s=a.join(" ")).split(a[0]).length?a[0]:s;a=(i+"").split(" "),s={},o.forEach(function(t,e){return s[t]=a[e]=a[e]||a[(e-1)/2|0]}),e.init(t,s,n)}});var Fr,Ir,Lr,Br={name:"css",register:Vd,targetTest:function targetTest(t){return t.style&&t.nodeType},init:function init(t,e,i,n,a){var s,o,u,h,l,f,c,d,p,_,m,g,v,y,T,b,w,x=this._props,k=t.style,O=i.vars.startAt;for(c in Ne||Vd(),this.styles=this.styles||Pd(t),b=this.styles.props,this.tween=i,e)if("autoRound"!==c&&(o=e[c],!mt[c]||!cc(c,e,i,n,t,a)))if(l=typeof o,f=kr[c],"function"===l&&(l=typeof(o=o.call(i,n,t,a))),"string"===l&&~o.indexOf("random(")&&(o=rb(o)),f)f(this,t,c,o,i)&&(T=1);else if("--"===c.substr(0,2))s=(getComputedStyle(t).getPropertyValue(c)+"").trim(),o+="",Et.lastIndex=0,Et.test(s)||(d=_a(s),(p=_a(o))?d!==p&&(s=ce(t,c,s,p)+p):d&&(o+=d)),this.add(k,"setProperty",s,o,n,a,0,0,c),x.push(c),b.push(c,0,k[c]);else if("undefined"!==l){if(O&&c in O?(s="function"==typeof O[c]?O[c].call(i,n,t,a):O[c],r(s)&&~s.indexOf("random(")&&(s=rb(s)),_a(s+"")||"auto"===s||(s+=Y.units[c]||_a(wr(t,c))||""),"="===(s+"").charAt(1)&&(s=wr(t,c))):s=wr(t,c),h=parseFloat(s),(_="string"===l&&"="===o.charAt(1)&&o.substr(0,2))&&(o=o.substr(2)),u=parseFloat(o),c in _r&&("autoAlpha"===c&&(1===h&&"hidden"===wr(t,"visibility")&&u&&(h=0),b.push("visibility",0,k.visibility),_d(this,k,"visibility",h?"inherit":"hidden",u?"inherit":"hidden",!u)),"scale"!==c&&"transform"!==c&&~(c=_r[c]).indexOf(",")&&(c=c.split(",")[0])),m=c in ur){if(this.styles.save(c),w=o,"string"===l&&"var(--"===o.substring(0,6)){if("calc("===(o=Sd(t,o.substring(4,o.indexOf(")")))).substring(0,5)){var M=t.style.perspective;t.style.perspective=o,o=Sd(t,"perspective"),M?t.style.perspective=M:$d(t,"perspective")}u=parseFloat(o)}if(g||((v=t._gsap).renderTransform&&!e.parseTransform||Cr(t,e.parseTransform),y=!1!==e.smoothOrigin&&v.smooth,(g=this._pt=new we(this._pt,k,mr,0,1,v.renderTransform,v,0,-1)).dep=1),"scale"===c)this._pt=new we(this._pt,v,"scaleY",v.scaleY,(_?ma(v.scaleY,_+u):u)-v.scaleY||0,xd),this._pt.u=0,x.push("scaleY",c),c+="X";else{if("transformOrigin"===c){b.push(gr,0,k[gr]),o=ge(o),v.svg?oe(t,o,0,y,0,this):((p=parseFloat(o.split(" ")[2])||0)!==v.zOrigin&&_d(this,v,"zOrigin",v.zOrigin,p),_d(this,k,c,Pr(s),Pr(o)));continue}if("svgOrigin"===c){oe(t,o,1,y,0,this);continue}if(c in Mr){ye(this,v,c,h,_?ma(h,_+o):o);continue}if("smoothOrigin"===c){_d(this,v,"smooth",v.smooth,o);continue}if("force3D"===c){v[c]=o;continue}if("transform"===c){Ae(this,o,t);continue}}}else c in k||(c=yr(c)||c);if(m||(u||0===u)&&(h||0===h)&&!pr.test(o)&&c in k)u=u||0,(d=(s+"").substr((h+"").length))!==(p=_a(o)||(c in Y.units?Y.units[c]:d))&&(h=ce(t,c,s,p)),this._pt=new we(this._pt,m?v:k,c,h,(_?ma(h,_+u):u)-h,m||"px"!==p&&"zIndex"!==c||!1===e.autoRound?xd:Bd),this._pt.u=p||0,m&&w!==o?(this._pt.b=s,this._pt.e=w,this._pt.r=Ad):d!==p&&"%"!==p&&(this._pt.b=s,this._pt.r=zd);else if(c in k)ee.call(this,t,c,s,_?_+o:o);else if(c in t)this.add(t,c,s||t[c],_?_+o:o,n,a);else if("parseTransform"!==c){S(c,o);continue}m||(c in k?b.push(c,0,k[c]):"function"==typeof t[c]?b.push(c,2,t[c]()):b.push(c,1,s||t[c])),x.push(c)}T&&be(this)},render:function render(t,e){if(e.tween._time||!je())for(var r=e._pt;r;)r.r(t,r.d),r=r._next;else e.styles.revert()},get:wr,aliases:_r,getSetter:function getSetter(t,e,r){var i=_r[e];return i&&i.indexOf(",")<0&&(e=i),e in ur&&e!==gr&&(t._gsap.x||wr(t,"x"))?r&&Ye===r?"scale"===e?Hd:Gd:(Ye=r||{})&&("scale"===e?Id:Jd):t.style&&!u(t.style[e])?Ed:~e.indexOf("-")?Fd:ue(t,e)},core:{_removeProperty:$d,_getMatrix:ne}};Fe.utils.checkPrefix=yr,Fe.core.getStyleSaver=Pd,Lr=ja((Fr="x,y,z,scale,scaleX,scaleY,xPercent,yPercent")+","+(Ir="rotation,rotationX,rotationY,skewX,skewY")+",transform,transformOrigin,svgOrigin,force3D,smoothOrigin,transformPerspective",function(t){ur[t]=1}),ja(Ir,function(t){Y.units[t]="deg",Mr[t]=1}),_r[Lr[13]]=Fr+","+Ir,ja("0:translateX,1:translateY,2:translateZ,8:rotate,8:rotationZ,8:rotateZ,9:rotateX,10:rotateY",function(t){var e=t.split(":");_r[e[1]]=Lr[e[0]]}),ja("x,y,z,top,right,bottom,left,width,height,fontSize,padding,margin,perspective",function(t){Y.units[t]="px"}),Fe.registerPlugin(Br);var Nr=Fe.registerPlugin(Br)||Fe,Ur=Nr.core.Tween;e.Back=rr,e.Bounce=nr,e.CSSPlugin=Br,e.Circ=or,e.Cubic=Qe,e.Elastic=er,e.Expo=sr,e.Linear=$e,e.Power0=Xe,e.Power1=qe,e.Power2=Ge,e.Power3=Ze,e.Power4=We,e.Quad=He,e.Quart=Je,e.Quint=Ke,e.Sine=ar,e.SteppedEase=ir,e.Strong=tr,e.TimelineLite=Gt,e.TimelineMax=Gt,e.TweenLite=te,e.TweenMax=Ur,e.default=Nr,e.gsap=Nr;if (typeof(window)==="undefined"||window!==e){Object.defineProperty(e,"__esModule",{value:!0})} else {delete e.default}});
+
+
+/*!
+ * SplitText 3.15.0
+ * https://gsap.com
+ *
+ * @license Copyright 2026, GreenSock. All rights reserved. Subject to the terms at https://gsap.com/standard-license.
+ * @author: Jack Doyle
+ */
+
+(function(k,A){typeof exports=="object"&&typeof module!="undefined"?A(exports):typeof define=="function"&&define.amd?define(["exports"],A):(k=typeof globalThis!="undefined"?globalThis:k||self,A(k.window=k.window||{}))})(this,function(k){"use strict";let A,D,Z=typeof Symbol=="function"?Symbol():"_split",K,he=()=>K||Y.register(window.gsap),$=typeof Intl!="undefined"&&"Segmenter"in Intl?new Intl.Segmenter:0,I=e=>e?typeof e=="string"?I(document.querySelectorAll(e)):"length"in e?Array.from(e).reduce((t,i)=>(typeof i=="string"?t.push(...I(i)):t.push(i),t),[]):[e]:[],ee=e=>I(e).filter(t=>t&&t.nodeType===1),Q=[],U=function(){},de={add:e=>e()},pe=/\s+/g,te=new RegExp("\\p{RI}\\p{RI}|\\p{Emoji}(\\p{EMod}|\\u{FE0F}\\u{20E3}?|[\\u{E0020}-\\u{E007E}]+\\u{E007F})?(\\u{200D}\\p{Emoji}(\\p{EMod}|\\u{FE0F}\\u{20E3}?|[\\u{E0020}-\\u{E007E}]+\\u{E007F})?)*|.","gu"),J={left:0,top:0,width:0,height:0},ue=(e,t)=>{for(;++t<e.length&&e[t]===J;);return e[t]||J},ie=({element:e,html:t,ariaL:i,ariaH:n})=>{e.innerHTML=t,i?e.setAttribute("aria-label",i):e.removeAttribute("aria-label"),n?e.setAttribute("aria-hidden",n):e.removeAttribute("aria-hidden")},ne=(e,t)=>{if(t){let i=new Set(e.join("").match(t)||Q),n=e.length,a,c,l,o;if(i.size)for(;--n>-1;){c=e[n];for(l of i)if(l.startsWith(c)&&l.length>c.length){for(a=0,o=c;l.startsWith(o+=e[n+ ++a])&&o.length<l.length;);if(a&&o.length===l.length){e[n]=l,e.splice(n+1,a);break}}}}return e},le=e=>window.getComputedStyle(e).display==="inline"&&(e.style.display="inline-block"),M=(e,t,i)=>t.insertBefore(typeof e=="string"?document.createTextNode(e):e,i),X=(e,t,i)=>{let n=t[e+"sClass"]||"",{tag:a="div",aria:c="auto",propIndex:l=!1}=t,o=e==="line"?"block":"inline-block",d=n.indexOf("++")>-1,_=y=>{let m=document.createElement(a),E=i.length+1;return n&&(m.className=n+(d?" "+n+E:"")),l&&m.style.setProperty("--"+e,E+""),c!=="none"&&m.setAttribute("aria-hidden","true"),a!=="span"&&(m.style.position="relative",m.style.display=o),m.textContent=y,i.push(m),m};return d&&(n=n.replace("++","")),_.collection=i,_},fe=(e,t,i,n)=>{let a=X("line",i,n),c=window.getComputedStyle(e).textAlign||"left";return(l,o)=>{let d=a("");for(d.style.textAlign=c,e.insertBefore(d,t[l]);l<o;l++)d.appendChild(t[l]);d.normalize()}},se=(e,t,i,n,a,c,l,o,d,_)=>{var y;let m=Array.from(e.childNodes),E=0,{wordDelimiter:R,reduceWhiteSpace:B=!0,prepareText:V}=t,G=e.getBoundingClientRect(),j=G,q=!B&&window.getComputedStyle(e).whiteSpace.substring(0,3)==="pre",C=0,b=i.collection,r,f,O,s,g,x,z,h,p,W,S,T,N,F,w,u,L,v;for(typeof R=="object"?(O=R.delimiter||R,f=R.replaceWith||""):f=R===""?"":R||" ",r=f!==" ";E<m.length;E++)if(s=m[E],s.nodeType===3){for(w=s.textContent||"",B?w=w.replace(pe," "):q&&(w=w.replace(/\n/g,f+`
+`)),V&&(w=V(w,e)),s.textContent=w,g=f||O?w.split(O||f):w.match(o)||Q,L=g[g.length-1],h=r?L.slice(-1)===" ":!L,L||g.pop(),j=G,z=r?g[0].charAt(0)===" ":!g[0],z&&M(" ",e,s),g[0]||g.shift(),ne(g,d),c&&_||(s.textContent=""),p=1;p<=g.length;p++)if(u=g[p-1],!B&&q&&u.charAt(0)===`
+`&&((y=s.previousSibling)==null||y.remove(),M(document.createElement("br"),e,s),u=u.slice(1)),!B&&u==="")M(f,e,s);else if(u===" ")e.insertBefore(document.createTextNode(" "),s);else{if(r&&u.charAt(0)===" "&&M(" ",e,s),C&&p===1&&!z&&b.indexOf(C.parentNode)>-1?(x=b[b.length-1],x.appendChild(document.createTextNode(n?"":u))):(x=i(n?"":u),M(x,e,s),C&&p===1&&!z&&x.insertBefore(C,x.firstChild)),n)for(S=$?ne([...$.segment(u)].map(H=>H.segment),d):u.match(o)||Q,v=0;v<S.length;v++)x.appendChild(S[v]===" "?document.createTextNode(" "):n(S[v]));if(c&&_){if(w=s.textContent=w.substring(u.length+1,w.length),W=x.getBoundingClientRect(),W.top>j.top&&W.left<=j.left){for(T=e.cloneNode(),N=e.childNodes[0];N&&N!==x;)F=N,N=N.nextSibling,T.appendChild(F);e.parentNode.insertBefore(T,e),a&&le(T)}j=W}(p<g.length||h)&&M(p>=g.length?" ":r&&u.slice(-1)===" "?" "+f:f,e,s)}e.removeChild(s),C=0}else s.nodeType===1&&(l&&l.indexOf(s)>-1?(b.indexOf(s.previousSibling)>-1&&b[b.length-1].appendChild(s),C=s):(se(s,t,i,n,a,c,l,o,d,!0),C=0),a&&le(s))};const re=class ae{constructor(t,i){this.isSplit=!1,he(),this.elements=ee(t),this.chars=[],this.words=[],this.lines=[],this.masks=[],this.vars=i,this.elements.forEach(l=>{var o;i.overwrite!==!1&&((o=l[Z])==null||o._data.orig.filter(({element:d})=>d===l).forEach(ie)),l[Z]=this}),this._split=()=>this.isSplit&&this.split(this.vars);let n=[],a,c=()=>{let l=n.length,o;for(;l--;){o=n[l];let d=o.element.offsetWidth;if(d!==o.width){o.width=d,this._split();return}}};this._data={orig:n,obs:typeof ResizeObserver!="undefined"&&new ResizeObserver(()=>{clearTimeout(a),a=setTimeout(c,200)})},U(this),this.split(i)}split(t){return(this._ctx||de).add(()=>{this.isSplit&&this.revert(),this.vars=t=t||this.vars||{};let{type:i="chars,words,lines",aria:n="auto",deepSlice:a=!0,smartWrap:c,onSplit:l,autoSplit:o=!1,specialChars:d,mask:_}=this.vars,y=i.indexOf("lines")>-1,m=i.indexOf("chars")>-1,E=i.indexOf("words")>-1,R=m&&!E&&!y,B=d&&("push"in d?new RegExp("(?:"+d.join("|")+")","gu"):d),V=B?new RegExp(B.source+"|"+te.source,"gu"):te,G=!!t.ignore&&ee(t.ignore),{orig:j,animTime:q,obs:C}=this._data,b;(m||E||y)&&(this.elements.forEach((r,f)=>{j[f]={element:r,html:r.innerHTML,ariaL:r.getAttribute("aria-label"),ariaH:r.getAttribute("aria-hidden")},n==="auto"?r.setAttribute("aria-label",(r.textContent||"").trim()):n==="hidden"&&r.setAttribute("aria-hidden","true");let O=[],s=[],g=[],x=m?X("char",t,O):null,z=X("word",t,s),h,p,W,S;if(se(r,t,z,x,R,a&&(y||R),G,V,B,!1),y){let T=I(r.childNodes),N=fe(r,T,t,g),F,w=[],u=0,L=T.map(P=>P.nodeType===1?P.getBoundingClientRect():J),v=J,H;for(h=0;h<T.length;h++)F=T[h],F.nodeType===1&&(F.nodeName==="BR"?((!h||T[h-1].nodeName!=="BR")&&(w.push(F),N(u,h+1)),u=h+1,v=ue(L,h)):(H=L[h],h&&H.top>v.top&&H.left<v.left+v.width-1&&(N(u,h),u=h),v=H));u<h&&N(u,h),w.forEach(P=>{var oe;return(oe=P.parentNode)==null?void 0:oe.removeChild(P)})}if(!E){for(h=0;h<s.length;h++)if(p=s[h],m||!p.nextSibling||p.nextSibling.nodeType!==3)if(c&&!y){for(W=document.createElement("span"),W.style.whiteSpace="nowrap";p.firstChild;)W.appendChild(p.firstChild);p.replaceWith(W)}else p.replaceWith(...p.childNodes);else S=p.nextSibling,S&&S.nodeType===3&&(S.textContent=(p.textContent||"")+(S.textContent||""),p.remove());s.length=0,r.normalize()}this.lines.push(...g),this.words.push(...s),this.chars.push(...O)}),_&&this[_]&&this.masks.push(...this[_].map(r=>{let f=r.cloneNode();return r.replaceWith(f),f.appendChild(r),r.className&&(f.className=r.className.trim().split(" ").map(O=>O+"-mask").join(" ")),f.style.overflow="clip",f}))),this.isSplit=!0,D&&y&&o&&D.addEventListener("loadingdone",this._split),(b=l&&l(this))&&b.totalTime&&(this._data.anim=q?b.totalTime(q):b),y&&o&&this.elements.forEach((r,f)=>{j[f].width=r.offsetWidth,C&&C.observe(r)})}),this}kill(){let{obs:t}=this._data;t&&t.disconnect(),D==null||D.removeEventListener("loadingdone",this._split)}revert(){var t,i;if(this.isSplit){let{orig:n,anim:a}=this._data;this.kill(),n.forEach(ie),this.chars.length=this.words.length=this.lines.length=n.length=this.masks.length=0,this.isSplit=!1,a&&(this._data.animTime=a.totalTime(),a.revert()),(i=(t=this.vars).onRevert)==null||i.call(t,this)}return this}static create(t,i){return new ae(t,i)}static register(t){A=A||t||window.gsap,A&&(I=A.utils.toArray,U=A.core.context||U),!K&&window.innerWidth>0&&(D=document.fonts,K=!0)}};re.version="3.15.0";let Y=re;k.SplitText=Y,k.default=Y;if (typeof(window)==="undefined"||window!==k){Object.defineProperty(k,"__esModule",{value:!0})} else {delete k.default}});
+
+if (window.gsap && window.SplitText) gsap.registerPlugin(SplitText);
+</script>
+<script>
 (function(){
   var WX_ICON = "<svg viewBox=\"0 0 40 40\" fill=\"none\"><path d=\"M29.0806 19.7335C28.8905 18.4773 28.4566 17.3657 27.7789 16.3988C27.1012 15.4236 26.2376 14.6467 25.188 14.0682C24.1384 13.4814 22.9566 13.1426 21.6426 13.0517C21.4442 12.6798 21.2252 12.3368 20.9855 12.0227C20.7541 11.7004 20.5021 11.3988 20.2293 11.1178C20.7417 10.25 21.469 9.53926 22.4112 8.98554C23.3616 8.42355 24.4112 8.14256 25.5599 8.14256C26.7252 8.14256 27.7831 8.42769 28.7335 8.99793C29.6921 9.56818 30.4525 10.3326 31.0145 11.2913C31.5847 12.2417 31.8698 13.2955 31.8698 14.4525C31.8698 15.5434 31.6178 16.5517 31.1136 17.4773C30.6095 18.3946 29.9318 19.1467 29.0806 19.7335Z\" fill=\"#F3B53A\"/> <path d=\"M17.8988 8.61364L16.2252 6.94008C15.9773 6.69215 15.8492 6.3905 15.8409 6.03512C15.8409 5.67975 15.9649 5.3781 16.2128 5.13017C16.4607 4.88223 16.7624 4.75826 17.1178 4.75826C17.4814 4.75826 17.7831 4.88223 18.0227 5.13017L19.6963 6.82851C19.9442 7.07645 20.0682 7.3781 20.0682 7.73347C20.0764 8.08058 19.9566 8.3781 19.7087 8.62603C19.469 8.87397 19.1674 8.99793 18.8037 8.99793C18.4483 8.99793 18.1467 8.86983 17.8988 8.61364Z\" fill=\"#F3B53A\"/> <path d=\"M25.5475 6.19628C25.2004 6.19628 24.8988 6.07231 24.6426 5.82438C24.3946 5.56818 24.2707 5.2624 24.2707 4.90702V2.53926C24.2707 2.18388 24.3946 1.88223 24.6426 1.6343C24.8988 1.3781 25.2004 1.25 25.5475 1.25C25.9029 1.25 26.2045 1.3781 26.4525 1.6343C26.7004 1.88223 26.8244 2.18388 26.8244 2.53926V4.90702C26.8244 5.2624 26.7004 5.56818 26.4525 5.82438C26.2045 6.07231 25.9029 6.19628 25.5475 6.19628Z\" fill=\"#F3B53A\"/> <path d=\"M31.3988 8.63843C31.1508 8.3905 31.0269 8.08884 31.0269 7.73347C31.0269 7.36983 31.1508 7.06818 31.3988 6.82851L33.0971 5.15496C33.345 4.89876 33.6426 4.77066 33.9897 4.77066C34.345 4.77066 34.6467 4.8905 34.8946 5.13017C35.1426 5.3781 35.2665 5.68388 35.2665 6.04752C35.2665 6.40289 35.1426 6.70455 34.8946 6.95248L33.2087 8.62603C32.9607 8.87397 32.655 9.00207 32.2913 9.01033C31.9359 9.01033 31.6384 8.88636 31.3988 8.63843Z\" fill=\"#F3B53A\"/> <path d=\"M35.0806 15.7293C34.7335 15.7293 34.4318 15.6095 34.1756 15.3698C33.9194 15.1219 33.7913 14.8202 33.7913 14.4649C33.7913 14.1178 33.9194 13.8161 34.1756 13.5599C34.4318 13.3037 34.7335 13.1756 35.0806 13.1756H37.4607C37.8161 13.1756 38.1178 13.3037 38.3657 13.5599C38.6219 13.8161 38.75 14.1178 38.75 14.4649C38.75 14.8202 38.6219 15.1219 38.3657 15.3698C38.1178 15.6095 37.8161 15.7293 37.4607 15.7293H35.0806Z\" fill=\"#F3B53A\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M6.59297 27.593C5.53512 27.593 4.60537 27.3864 3.80372 26.9731C3.00207 26.5517 2.37397 25.969 1.91942 25.2252C1.47314 24.4814 1.25 23.6178 1.25 22.6343C1.25 21.469 1.58058 20.4525 2.24174 19.5847C2.91116 18.7087 3.79959 18.1178 4.90702 17.812C4.99793 16.7459 5.27066 15.7583 5.72521 14.8492C6.18802 13.9401 6.79132 13.1467 7.53512 12.469C8.28719 11.7913 9.13843 11.2665 10.0888 10.8946C11.0393 10.5145 12.0517 10.3244 13.126 10.3244C14.3161 10.3244 15.3822 10.5227 16.3244 10.9194C17.2748 11.3079 18.0971 11.8409 18.7913 12.5186C19.4938 13.188 20.0682 13.9442 20.5145 14.7872C21.812 14.7872 22.969 15.0682 23.9855 15.6302C25.0021 16.1921 25.8037 16.9566 26.3905 17.9236C26.9773 18.8905 27.2707 19.9938 27.2707 21.2335C27.2707 22.4401 26.9897 23.5227 26.4277 24.4814C25.874 25.4401 25.1219 26.2004 24.1715 26.7624C23.2211 27.3161 22.1467 27.593 20.9483 27.593H6.59297ZM6.95248 33.7417C6.82025 33.9566 6.6343 34.1012 6.39463 34.1756C6.15496 34.2583 5.92355 34.2335 5.70041 34.1012C5.46901 33.969 5.32438 33.7831 5.26653 33.5434C5.21694 33.3037 5.25413 33.0764 5.3781 32.8616L6.95248 30.1219C7.09297 29.8905 7.27893 29.7376 7.51033 29.6632C7.74174 29.5971 7.97314 29.6302 8.20455 29.7624C8.42769 29.8946 8.56818 30.0806 8.62603 30.3202C8.68388 30.5682 8.64669 30.8037 8.51446 31.0269L6.95248 33.7417ZM10.8574 37.2252C10.7252 37.4401 10.5393 37.5847 10.2996 37.6591C10.0682 37.7335 9.83678 37.7087 9.60537 37.5847C9.37397 37.4442 9.22934 37.2541 9.17149 37.0145C9.1219 36.7831 9.15909 36.5558 9.28306 36.3326L10.8574 33.6054C10.9979 33.374 11.1839 33.2211 11.4153 33.1467C11.6467 33.0806 11.8781 33.1136 12.1095 33.2459C12.3326 33.3781 12.4731 33.564 12.531 33.8037C12.5888 34.0434 12.5517 34.2748 12.4194 34.4979L10.8574 37.2252ZM16.8202 33.7293C16.688 33.9525 16.5021 34.1012 16.2624 34.1756C16.0227 34.25 15.7913 34.2211 15.5682 34.0888C15.3368 33.9566 15.1921 33.7707 15.1343 33.531C15.0847 33.2913 15.1219 33.064 15.2459 32.8492L16.8202 30.1219C16.9607 29.8822 17.1467 29.7252 17.3781 29.6508C17.6095 29.5847 17.8368 29.6178 18.0599 29.75C18.2913 29.8905 18.4359 30.0806 18.4938 30.3202C18.5517 30.5599 18.5186 30.7913 18.3946 31.0145L16.8202 33.7293ZM20.7128 37.2128C20.5888 37.4359 20.407 37.5847 20.1674 37.6591C19.9277 37.7335 19.6963 37.7045 19.4731 37.5723C19.2417 37.4401 19.0971 37.2541 19.0393 37.0145C18.9897 36.7748 19.0269 36.5475 19.1508 36.3326L20.7252 33.6054C20.8657 33.3657 21.0517 33.2087 21.2831 33.1343C21.5145 33.0682 21.7459 33.1012 21.9773 33.2335C22.2087 33.3657 22.3492 33.5517 22.3988 33.7913C22.4566 34.0393 22.4236 34.2748 22.2996 34.4979L20.7128 37.2128Z\" fill=\"#9ABAF2\"/> <path d=\"M33.0847 23.7996L31.3988 22.1136C31.1508 21.874 31.0227 21.5764 31.0145 21.2211C31.0145 20.8574 31.1384 20.5558 31.3864 20.3161C31.6343 20.0682 31.9359 19.9442 32.2913 19.9442C32.655 19.9442 32.9566 20.0682 33.1963 20.3161L34.8822 22.0021C35.1219 22.25 35.2459 22.5517 35.2541 22.907C35.2624 23.2624 35.1426 23.564 34.8946 23.812C34.6467 24.0517 34.345 24.1715 33.9897 24.1715C33.6343 24.1715 33.3326 24.0475 33.0847 23.7996Z\" fill=\"#F3B53A\"/></svg>";
 
@@ -1410,53 +1350,56 @@
   /* ---- билет ----
      Один шаблон на все рейсы: разметка живёт здесь, в панелях остаются только
      контейнеры [data-ticket]. Новый рейс — запись в TICKETS, а не копия блока. */
-  var PLANE_SVG = '<svg viewBox="0 0 17 15" fill="none"><path d="M16.5088 7.45605C16.5088 7.73926 16.3916 7.99316 16.1572 8.21777C15.9229 8.4375 15.6104 8.61328 15.2197 8.74512C14.8291 8.87207 14.4019 8.93555 13.938 8.93555H10.9863C10.7812 8.93555 10.625 8.95752 10.5176 9.00146C10.415 9.04541 10.3027 9.13574 10.1807 9.27246L5.25879 14.6484C5.09766 14.8242 4.90967 14.9121 4.69482 14.9121H3.84521C3.75244 14.9121 3.68164 14.8755 3.63281 14.8022C3.58887 14.729 3.59131 14.6411 3.64014 14.5386L6.17432 8.93555L2.45361 8.51074L1.12793 10.9424C1.03027 11.1133 0.864258 11.1987 0.629883 11.1987H0.314941C0.222168 11.1987 0.146484 11.1719 0.0878906 11.1182C0.0292969 11.0596 0 10.9839 0 10.8911V4.021C0 3.92334 0.0292969 3.84766 0.0878906 3.79395C0.146484 3.73535 0.222168 3.70605 0.314941 3.70605H0.629883C0.864258 3.70605 1.03027 3.79395 1.12793 3.96973L2.45361 6.40137L6.17432 5.97656L3.64014 0.373535C3.59131 0.270996 3.58887 0.183105 3.63281 0.109863C3.68164 0.0366211 3.75244 0 3.84521 0H4.69482C4.90967 0 5.09766 0.0878906 5.25879 0.263672L10.1807 5.63232C10.3027 5.76904 10.415 5.86182 10.5176 5.91064C10.625 5.95459 10.7812 5.97656 10.9863 5.97656H13.938C14.4019 5.97656 14.8291 6.04248 15.2197 6.17432C15.6104 6.30127 15.9229 6.47705 16.1572 6.70166C16.3916 6.92139 16.5088 7.17285 16.5088 7.45605Z" fill="currentColor"/></svg>';
   /* Общее у билета: pax — сколько летит, bag — норма провоза.
      legs — сегменты маршрута: один у прямого рейса, два и больше у рейса
      с пересадкой. stop на сегменте значит, что после него ждём стыковку.
      У каждого сегмента свои номер рейса, регистрация, терминал и гейт —
      на пересадке они меняются, поэтому это не общие поля билета. */
-  var CI_STATES = ["Открываю регистрацию", "Выбираю места", "Оформляю талоны"];
-  var GATE_SVG = '<svg viewBox="0 0 16 16" fill="none"><path fill="#fff" d="M7.63916 15.2783C6.58447 15.2783 5.5957 15.0781 4.67285 14.6777C3.75 14.2822 2.93701 13.7329 2.23389 13.0298C1.53564 12.3315 0.98877 11.5234 0.593262 10.6055C0.197754 9.68262 0 8.69385 0 7.63916C0 6.58447 0.197754 5.5957 0.593262 4.67285C0.98877 3.75 1.53564 2.93945 2.23389 2.24121C2.93701 1.53809 3.75 0.98877 4.67285 0.593262C5.5957 0.197754 6.58447 0 7.63916 0C8.69385 0 9.68262 0.197754 10.6055 0.593262C11.5283 0.98877 12.3389 1.53809 13.0371 2.24121C13.7354 2.93945 14.2822 3.75 14.6777 4.67285C15.0781 5.5957 15.2783 6.58447 15.2783 7.63916C15.2783 8.69385 15.0781 9.68262 14.6777 10.6055C14.2822 11.5234 13.7354 12.3315 13.0371 13.0298C12.3389 13.7329 11.5283 14.2822 10.6055 14.6777C9.68262 15.0781 8.69385 15.2783 7.63916 15.2783ZM11.4697 7.63184C11.4697 7.5293 11.4502 7.4292 11.4111 7.33154C11.3721 7.23389 11.3037 7.13379 11.2061 7.03125L8.81836 4.55566C8.75 4.4873 8.67676 4.43604 8.59863 4.40186C8.52539 4.36279 8.4375 4.34326 8.33496 4.34326C8.14453 4.34326 7.98828 4.41162 7.86621 4.54834C7.74414 4.68018 7.68311 4.83887 7.68311 5.02441C7.68311 5.22461 7.75635 5.39307 7.90283 5.52979L8.97217 6.5332L9.48486 6.92139L8.37158 6.85547H4.50439C4.29932 6.85547 4.12109 6.93115 3.96973 7.08252C3.82324 7.23389 3.75 7.41699 3.75 7.63184C3.75 7.84668 3.82324 8.02979 3.96973 8.18115C4.12109 8.33252 4.29932 8.4082 4.50439 8.4082H8.37158L9.49219 8.34229L8.97217 8.73047L7.90283 9.73389C7.75635 9.87061 7.68311 10.0415 7.68311 10.2466C7.68311 10.4272 7.74414 10.5859 7.86621 10.7227C7.98828 10.8545 8.14453 10.9204 8.33496 10.9204C8.4375 10.9204 8.52539 10.9033 8.59863 10.8691C8.67676 10.8301 8.75 10.7764 8.81836 10.708L11.2061 8.23242C11.3037 8.12988 11.3721 8.02979 11.4111 7.93213C11.4502 7.83447 11.4697 7.73438 11.4697 7.63184Z"/></svg>';
-  /* Логотипы перевозчиков вместо самолёта: борт узнаётся по знаку быстрее,
-     чем по номеру. Знаки брендовые и цветные, поэтому currentColor им
-     не навязываем — в отличие от служебных иконок */
-  var LOGOS = {
-    S7: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32Z" fill="white"/><path d="M16 0C7.16128 0 0 7.16129 0 16C0 24.8387 7.16128 32 16 32C24.8387 32 32 24.8387 32 16C32 7.16129 24.8387 0 16 0ZM15.9839 10.4354H14.4193C12.742 10.4354 11.6774 10.4354 11.0967 10.629C10.5323 10.8064 10.1129 11.0161 9.88707 11.3549C9.6774 11.629 9.61293 11.9839 9.61293 12.3064C9.61293 12.6452 9.64512 12.9516 9.98391 13.3871C10.3871 13.7903 11.0646 14.3226 12.3871 15.129C15.0161 16.7742 15.7903 18.0646 15.7903 19.7742C15.7903 22.5646 13.1613 25.2258 8.75807 25.2258C7.43548 25.2258 5.58064 25.0323 4.80645 24.7903L4.40323 24.6774C4.56451 24.1451 5.08064 22.6936 5.32258 22.0646L5.74193 22.1613C6.6129 22.371 7.96774 22.5 8.85484 22.5C11.4354 22.5 12.4354 21.3387 12.4354 20.3226C12.4354 19.3871 11.9193 18.871 9.37098 17.3226C6.96774 15.8387 6.14516 14.5484 6.14516 12.7742C6.14516 10.6451 7.51612 9.01613 9.5 8.24193C10.6774 7.80646 12.3226 7.66129 14.8387 7.66129H17.1129L15.9839 10.4354ZM26.9033 8.19355C26.3871 9.46772 21.5645 21.5646 21.5645 21.5646H18.3387C18.3387 21.5646 22.1613 11.8387 22.7903 10.3871C22.3548 10.3871 22.0161 10.4193 20.2742 10.4193H17.6774L18.7903 7.64516H26.6129C26.9677 7.66129 27.0484 7.91936 26.9033 8.19355Z" fill="#BDDC03"/></svg>',
-    UA: '<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="16" fill="#00529C"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.44224 17.9502L8.26293 17.4463L13.1513 16.8591C13.2364 16.9986 13.3219 17.1249 13.4215 17.2511L9.44224 17.9502ZM22.5578 17.9502L23.7371 17.4187L18.8772 16.8448C18.8347 16.9991 18.7066 17.1249 18.6216 17.2511L22.5578 17.9502ZM21.8478 18.035L20.3698 18.525L18.2668 17.8954L18.0817 17.8397C18.1527 17.783 18.2098 17.7268 18.2668 17.6578C18.3519 17.5873 18.4229 17.4892 18.5085 17.4192L21.8478 18.035ZM25.7555 16.6772L24.4055 17.2935L19.0058 16.6772C19.0483 16.552 19.0914 16.4258 19.1339 16.2986L25.7555 16.6772ZM26.2383 16.4953L28 15.389H18.4514C18.4514 15.7819 18.3944 16.1181 18.2668 16.4115C17.8971 17.3492 16.9739 17.7973 16.0498 17.7825C15.1407 17.7544 14.217 17.2935 13.8047 16.4381C13.6626 16.13 13.5776 15.7937 13.5776 15.3885H4L5.7482 16.4948L13.0662 16.1171C13.2078 16.6343 13.4635 17.083 13.8047 17.4182C14.3876 18.0212 15.2257 18.3569 16.0498 18.3569C16.8598 18.3712 17.6844 18.0778 18.2668 17.4325C18.5795 17.0963 18.8207 16.6619 18.9628 16.1443L26.2383 16.4953ZM18.2668 19.3503L18.4514 19.6875L18.2668 19.7723L17.7695 19.9957L17.2011 18.8893C16.8463 19.0156 16.4481 19.0856 16.0498 19.0994C15.6235 19.1137 15.1832 19.057 14.7994 18.9308L14.3161 19.9957C14.1595 20.009 13.9463 19.9957 13.8047 19.8985C13.7337 19.8561 13.6626 19.7856 13.6346 19.6875L13.8047 19.4075L14.217 18.6783C14.0889 18.5955 13.9754 18.5398 13.8618 18.4269L14.203 18.0216C14.7854 18.3722 15.4249 18.5674 16.0498 18.5674C16.6752 18.5817 17.3001 18.3845 17.883 17.9792L18.2673 18.0912L18.4234 18.1479C18.3669 18.1893 18.3238 18.2317 18.2673 18.2741C18.1532 18.385 18.0542 18.4974 17.8695 18.5955L18.2668 19.3503ZM18.2668 13.6245C18.6361 14.0588 18.9057 14.5913 19.0483 15.2065H18.4374C18.3949 15.0236 18.3384 14.8427 18.2673 14.6751C17.855 13.6112 17.0164 12.8544 16.0503 12.2233C15.9227 12.1538 15.8091 12.07 15.681 12C15.8091 12.0424 15.9227 12.0848 16.0503 12.1272C16.9309 12.4758 17.7124 12.9525 18.2668 13.6245ZM16.6182 17.5725C16.7748 17.5444 17.0159 17.4606 17.2011 17.3211L16.2344 15.4309L17.2436 14.9541L16.391 14.2259L16.0498 14.3812L14.5863 15.0379L15.0126 15.9904L15.709 15.6833L16.6182 17.5725ZM13.9754 17.8392C13.9183 17.7968 13.8613 17.7411 13.8047 17.6987C13.6912 17.6016 13.5916 17.5035 13.5205 17.4049L10.1838 18.0261L11.6042 18.4959L13.9754 17.8392ZM13.0662 16.6772C13.0092 16.552 12.9667 16.4258 12.9236 16.2986L6.24504 16.6772L7.59497 17.3216L13.0662 16.6772Z" fill="white"/></svg>'
-  };
-  /* код перевозчика — часть номера до дефиса: S7-5014 → S7.
-     Незнакомый борт откатывается на самолёт, чтобы строка не поехала */
-  function airlineLogo(no){
-    return LOGOS[String(no).split("-")[0]] || PLANE_SVG;
+  /* Билеты складывают сюда «применить регистрацию»: нудж агента дёргает их
+     все разом, когда договорился. Так билет не знает про агента, а агент
+     не знает про вёрстку билета */
+  var PAX_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.4c2.3 0 4.2-1.9 4.2-4.2S14.3 4 12 4 7.8 5.9 7.8 8.2s1.9 4.2 4.2 4.2Zm0 1.7c-3.8 0-6.9 2-6.9 4.5 0 1 .8 1.8 1.8 1.8h10.2c1 0 1.8-.8 1.8-1.8 0-2.5-3.1-4.5-6.9-4.5Z"/></svg>';
+  /* «2 гостя» это про отель; в билете летят пассажиры */
+  function paxWord(n){
+    var t = n % 10, h = n % 100;
+    if (t === 1 && h !== 11) return "\u043f\u0430\u0441\u0441\u0430\u0436\u0438\u0440";
+    if (t >= 2 && t <= 4 && (h < 12 || h > 14)) return "\u043f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u0430";
+    return "\u043f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u043e\u0432";
   }
-  /* Часовые пояса аэропортов, смещение от UTC. Время в билете всегда
-     местное для своего аэропорта — так его объявляют на табло и так его
-     ищет гость. Чтобы не подписывать «местное» у каждой строки, у времени
-     прилёта стоит разница с точкой вылета: SVX 08:00 -> SVO 08:00 −2 —
-     цифры совпали, но Москва на два часа позади.
-     Ноль не показываем: внутри одной зоны разницы нет и метка только мешает */
-  var TZ = { SVX: 5, OVB: 7, RGK: 7 };
-  function tzDelta(a, b){
-    if (TZ[a] === undefined || TZ[b] === undefined) return 0;
-    return TZ[b] - TZ[a];
+  var TICKET_CHECKIN = [];
+  function applyCheckin(){ TICKET_CHECKIN.forEach(function(f){ f(); }); }
+  /* Влёт букв по демо GSAP «Revert after animation»: строка разбивается
+     на буквы, буквы влетают по одной, и сразу после анимации split.revert()
+     возвращает обычный текстовый узел. Revert тут не украшение: без него
+     в теге навсегда остаются десятки <span>, их читает скринридер по буквам.
+     Применяем там, где текст правда меняется — в теге билета: «Регистрация
+     до 05:40» превращается в «Зарегистрирован».
+     Параметры из демо (scale 0, rotationX 180, ease back, stagger), кроме
+     дистанций: в демо заголовок 6rem и буквы летят с y:80, у нас кегль 16 —
+     сдвиг и z уменьшены, иначе буквы улетали бы за пределы тега */
+  function splitIn(el){
+    if (!el || !window.gsap || !window.SplitText) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var split = SplitText.create(el, { type: "chars,words" });
+    gsap.from(split.chars, {
+      duration: .5,
+      opacity: 0,
+      scale: 0,
+      y: 16,
+      rotationX: 180,
+      transformOrigin: "0% 50% -9",
+      ease: "back",
+      stagger: .03,
+      onComplete: function(){ split.revert(); }
+    });
   }
-  /* − это минус U+2212, а не дефис: рядом с цифрами дефис короткий и рябит */
-  function tzLabel(d){
-    return d ? (d > 0 ? "+" : "\u2212") + Math.abs(d) : "";
-  }
-  /* день недели к дате: в компактной строке дата — единственная привязка
-     ко времени, и «пт, 14 авг» планируется быстрее, чем просто «14 авг» */
-  var DOW = { "14 \u0430\u0432\u0433": "\u043f\u0442", "17 \u0430\u0432\u0433": "\u043f\u043d",
-              "18 \u0430\u0432\u0433": "\u0432\u0442" };
-  function dateLabel(d){ return DOW[d] ? DOW[d] + ", " + d : d; }
-  /* Метка регистрации одна для полного билета и компактной строки: текст
-     и состояния должны совпадать, иначе два варианта начнут расходиться */
+  /* Метка регистрации: один текст на все три состояния */
   function regLabel(l){
     return l.state === "open" ? "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0434\u043e " + l.reg
          : l.state === "soon" ? "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0441 " + l.opens
          : "\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f \u0437\u0430\u043a\u0440\u044b\u0442\u0430";
   }
+  var GATE_SVG = '<svg viewBox="0 0 16 16" fill="none"><path fill="#fff" d="M7.63916 15.2783C6.58447 15.2783 5.5957 15.0781 4.67285 14.6777C3.75 14.2822 2.93701 13.7329 2.23389 13.0298C1.53564 12.3315 0.98877 11.5234 0.593262 10.6055C0.197754 9.68262 0 8.69385 0 7.63916C0 6.58447 0.197754 5.5957 0.593262 4.67285C0.98877 3.75 1.53564 2.93945 2.23389 2.24121C2.93701 1.53809 3.75 0.98877 4.67285 0.593262C5.5957 0.197754 6.58447 0 7.63916 0C8.69385 0 9.68262 0.197754 10.6055 0.593262C11.5283 0.98877 12.3389 1.53809 13.0371 2.24121C13.7354 2.93945 14.2822 3.75 14.6777 4.67285C15.0781 5.5957 15.2783 6.58447 15.2783 7.63916C15.2783 8.69385 15.0781 9.68262 14.6777 10.6055C14.2822 11.5234 13.7354 12.3315 13.0371 13.0298C12.3389 13.7329 11.5283 14.2822 10.6055 14.6777C9.68262 15.0781 8.69385 15.2783 7.63916 15.2783ZM11.4697 7.63184C11.4697 7.5293 11.4502 7.4292 11.4111 7.33154C11.3721 7.23389 11.3037 7.13379 11.2061 7.03125L8.81836 4.55566C8.75 4.4873 8.67676 4.43604 8.59863 4.40186C8.52539 4.36279 8.4375 4.34326 8.33496 4.34326C8.14453 4.34326 7.98828 4.41162 7.86621 4.54834C7.74414 4.68018 7.68311 4.83887 7.68311 5.02441C7.68311 5.22461 7.75635 5.39307 7.90283 5.52979L8.97217 6.5332L9.48486 6.92139L8.37158 6.85547H4.50439C4.29932 6.85547 4.12109 6.93115 3.96973 7.08252C3.82324 7.23389 3.75 7.41699 3.75 7.63184C3.75 7.84668 3.82324 8.02979 3.96973 8.18115C4.12109 8.33252 4.29932 8.4082 4.50439 8.4082H8.37158L9.49219 8.34229L8.97217 8.73047L7.90283 9.73389C7.75635 9.87061 7.68311 10.0415 7.68311 10.2466C7.68311 10.4272 7.74414 10.5859 7.86621 10.7227C7.98828 10.8545 8.14453 10.9204 8.33496 10.9204C8.4375 10.9204 8.52539 10.9033 8.59863 10.8691C8.67676 10.8301 8.75 10.7764 8.81836 10.708L11.2061 8.23242C11.3037 8.12988 11.3721 8.02979 11.4111 7.93213C11.4502 7.83447 11.4697 7.73438 11.4697 7.63184Z"/></svg>';
   /* Состояние сегмента, от него зависит, что вообще показывать:
        soon   — регистрация ещё не открыта. Гейта и терминала не существует:
                 гейт назначают за несколько часов до вылета. Пишем, когда
@@ -1491,56 +1434,6 @@
                to:   { time: "02:20", city: "Екатеринбург", iata: "SVX", date: "18 авг" } }
            ] }
   };
-  /* один сегмент: шильдик регистрации свой у каждого сегмента — у сегментов
-     с пересадкой разное время открытия, общий шильдик на весь билет прятал
-     второй срок. Дальше номер рейса, маршрут, терминал/гейт.
-     Если у сегмента есть stop — снизу дописывается строка ожидания стыковки */
-  /* Служебная строка сегмента. Терминал и гейт пишем только пока регистрация
-     открыта: до открытия гейта ещё не существует, а после регистрации нужны
-     не стойки, а место — оно и встаёт на их место (см. обработчик ниже). */
-  function leg(l){
-    var nextDay = l.from.date !== l.to.date;
-    var badgeText = regLabel(l);
-    /* гейт назначают за несколько часов: пока его нет, в пилюле прочерк,
-       как на табло и в билетах авиакомпаний */
-    return '<div class="tkt-leg">' +
-             '<div class="tkt-meta">' +
-               '<span class="tkt-badge' + (l.state === "open" ? "" : " soon") +
-                 '" data-legbadge>' + badgeText + "</span>" +
-               '<span class="tkt-no">' + l.no + "</span></div>" +
-             '<div class="tkt-route">' + side(l.from) +
-               '<div class="tkt-mid"><span class="tkt-dur">' + l.dur + "</span>" +
-                 '<i class="tkt-line"><b class="tkt-beam"></b></i>' +
-                 '<span class="tkt-plane">' + PLANE_SVG + "</span></div>" +
-               side(l.to, true, nextDay, tzDelta(l.from.iata, l.to.iata)) +
-             "</div>" +
-             '<div class="tkt-foot">' +
-               "<div><u>\u0422\u0435\u0440\u043c\u0438\u043d\u0430\u043b</u><b>" + l.terminal + "</b></div>" +
-               "<div><u>\u0421\u0442\u043e\u0439\u043a\u0438</u><b>" + l.counter + "</b></div>" +
-               '<div data-seatslot hidden><u>\u041c\u0435\u0441\u0442\u0430</u><b></b></div>' +
-               '<span class="tkt-gate">' + GATE_SVG + (l.gate || "\u2014") + "</span>" +
-             "</div>" +
-           "</div>" +
-           (l.stop
-             ? '<div class="tkt-stop">Пересадка в ' + l.stop.city +
-                 "<b>" + l.stop.wait + "</b></div>"
-             : "");
-  }
-  function side(p, right, nextDay, tz){
-    /* под городом — аэропорт: в крупных городах их несколько, и знать,
-       Кольцово это или Толмачёво, полезнее, чем видеть код и дату.
-       Там, где имя аэропорта совпадает с городом, остаётся код.
-       Дата не потерялась: если рейс переходит через полночь, у времени
-       прилёта появляется +1 — так это помечают в авиабилетах */
-    var sub = p.iata;
-    return '<div class="tkt-side' + (right ? " right" : "") + '">' +
-             '<div class="tkt-time">' + p.time +
-               (nextDay ? "<sup>+1</sup>" : "") +
-               (tz ? "<sup>" + tzLabel(tz) + "</sup>" : "") + "</div>" +
-             '<div class="tkt-city">' + p.city + "</div>" +
-             '<div class="tkt-sub">' + sub + "</div>" +
-           "</div>";
-  }
   /* Компактная строка того же сегмента. Данные те же, что у полного билета —
      отдельного набора полей не появляется, иначе они разъедутся */
   /* Компактная строка — только главное: борт с датой или сроком регистрации,
@@ -1550,130 +1443,105 @@
      бронь, поэтому срок показываем только у первого открытого рейса: писать
      «Регистрация до» на каждом сегменте значит показывать одно действие дважды.
      У остальных в том же слое дата рейса — делать по ним пока нечего */
-  /* Третий вариант того же сегмента: крупное время сверху, полоска между,
-     город с кодом аэропорта снизу. Данные те же поля legs — своего набора
-     не заводит, иначе варианты разъедутся при первой правке */
-  function bigLeg(l, live){
-    /* город и код без тире: их разводит строка и цвет, а тире между ними
-       читалось как связка между городами, чем оно тут не является */
-    function place(p){
-      return "<span>" + p.city + "<u>" + p.iata + "</u></span>";
-    }
-    /* Надстрочных +1 и разницы поясов тут пока нет: рядом с 28px они спорят
-       за внимание со временем. Вернуть — дописать sup к времени прилёта,
-       tzDelta и tzLabel на месте */
-    return '<div class="tkt-b">' +
-             /* тот же тег, что в компактном варианте: знак борта, номер рейса,
-                дата справа */
-             '<div class="tkt-c-top">' + airlineLogo(l.no) +
-               "<span>" + l.no + "</span>" +
-               /* тот же слот состояния, что в компактном варианте, и тот же
-                  .tkt-badge: срок регистрации у live-сегмента, дата у прочих */
-               '<span class="tkt-badge' + (live ? " live" : " soon") +
-                 '" data-legbadge>' +
-                 (live ? regLabel(l) : dateLabel(l.from.date)) + "</span>" +
-             "</div>" +
+  /* Маршрут по сегментам: у каждого рейса свой ряд дат, времён, городов
+     и кодов аэропортов, а пересадка идёт полосой между ними. Раньше весь
+     маршрут был свёрнут в один блок с чипом «1 пересадка» — по макету
+     сегменты показываются целиком, каждый со своим временем в пути.
+     Тег регистрации и номер рейса — только над первым сегментом:
+     регистрация одна на бронь, и повторять её у каждого рейса значит
+     показывать одно действие дважды. */
+  function journey(t){
+    var legs = t.legs, first = legs[0];
+    /* тег берёт состояние у первого открытого сегмента, а если открытых
+       нет — у первого */
+    var regLeg = first;
+    for (var i = 0; i < legs.length; i++)
+      if (legs[i].state === "open"){ regLeg = legs[i]; break; }
+    var live = regLeg.state === "open";
+    function place(p){ return "<span>" + p.city + "<u>" + p.iata + "</u></span>"; }
+    /* один сегмент: даты, времена с временем в пути между ними, города */
+    function seg(l){
+      return '<div class="tkt-j-dates"><span>' + l.from.date + "</span>" +
+               "<span>" + l.to.date + "</span></div>" +
              '<div class="tkt-b-times">' +
                '<span class="tkt-time">' + l.from.time + "</span>" +
-               '<div class="tkt-mid"><span class="tkt-dur">' + l.dur + "</span>" +
-                 '<i class="tkt-line"><b class="tkt-beam"></b></i></div>' +
+               '<div class="tkt-mid">' +
+                 '<i class="tkt-line"></i>' +
+                 '<span class="tkt-dur">' + l.dur + "</span>" +
+                 '<i class="tkt-line"></i>' +
+               "</div>" +
                '<span class="tkt-time">' + l.to.time + "</span>" +
              "</div>" +
-             '<div class="tkt-b-places">' + place(l.from) + place(l.to) + "</div>" +
-             /* Служебный ряд только у live-сегмента: терминал, стойки и выход
-                нужны на том рейсе, к которому идёшь сейчас. У второго сегмента
-                это справка на будущее — в этом варианте она только шумит.
-                Класс .tkt-c-svc остался от компактной строки; там ряда больше
-                нет, стили живут здесь и правятся здесь же */
-             (live
-               ? '<div class="tkt-c-svc">' +
-                   "<span><u>\u0422\u0435\u0440\u043c\u0438\u043d\u0430\u043b</u><b>" + l.terminal + "</b></span>" +
-                   "<span><u>\u0421\u0442\u043e\u0439\u043a\u0438</u><b>" + l.counter + "</b></span>" +
-                   (l.seat
-                     ? '<span hidden data-cseat><u>\u041c\u0435\u0441\u0442\u0430</u><b>' +
-                         l.seat + "</b></span>"
-                     : "") +
-                   '<span class="tkt-gate">' + GATE_SVG +
-                     (l.gate || "\u2014") + "</span>" +
-                 "</div>" +
-                 /* Кнопка — только у live-сегмента: регистрация одна на всю
-                    бронь, нажимать её на каждом рейсе нечего. Живёт в этом
-                    варианте, потому что остальные скрыты: обработчик берёт
-                    первый [data-ci] в билете, и вторая копия его бы перехватила */
-                 '<div class="tkt-ci" data-ci>' +
-                   '<button class="pill" data-checkin>' + "\u041e\u043d\u043b\u0430\u0439\u043d-\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f" +
-                   "</button><b hidden data-cistate></b></div>"
-               : "") +
-           "</div>" +
-           (l.stop
-             ? '<div class="tkt-c-stop">\u041f\u0435\u0440\u0435\u0441\u0430\u0434\u043a\u0430 \u0432 ' + l.stop.city +
-                 " \u00b7 " + l.stop.wait + "</div>"
-             : "");
-  }
-  function compactLeg(l, live){
-    var nextDay = l.from.date !== l.to.date;
-    var tzc = tzDelta(l.from.iata, l.to.iata);
-    return '<div class="tkt-c">' +
-             '<div class="tkt-c-top">' + airlineLogo(l.no) +
-               "<span>" + l.no + "</span>" +
-               '<span class="tkt-badge' + (live ? " live" : " soon") +
-                 '" data-legbadge>' +
-                 (live ? regLabel(l) : dateLabel(l.from.date)) + "</span>" +
+             '<div class="tkt-b-places">' + place(l.from) + place(l.to) + "</div>";
+    }
+    /* Служебный ряд — у своего сегмента, и только пока регистрация на него
+       открыта. Раньше он стоял один на весь билет и брал данные у первого
+       рейса: на стыковке это врало, потому что терминал, стойки и выход
+       у второго рейса свои. Пока регистрация не открыта, ряда нет вовсе —
+       гейта в этот момент ещё не существует */
+    function svc(l){
+      /* Только у первого открытого рейса. Раньше ряд появлялся у каждого
+         открытого сегмента, и на стыковке их было два — но гость сейчас
+         в аэропорту вылета, а терминал и выход пересадки это справка на
+         потом, и к моменту стыковки гейт всё равно могут поменять */
+      if (l !== regLeg || l.state !== "open") return "";
+      return '<div class="tkt-c-svc">' +
+               "<span><u>\u0422\u0435\u0440\u043c\u0438\u043d\u0430\u043b</u><b>" + l.terminal + "</b></span>" +
+               "<span><u>\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f</u><b>" + l.counter + "</b></span>" +
+               (l.seat
+                 ? '<span hidden data-cseat><u>\u041c\u0435\u0441\u0442\u0430</u><b>' +
+                     l.seat + "</b></span>"
+                 : "") +
+               '<span class="tkt-gate">' + GATE_SVG + (l.gate || "\u2014") + "</span>" +
+             "</div>";
+    }
+    /* полоса пересадки: город в предложном падеже уже лежит в данных */
+    function stopbar(s){
+      return '<button class="tkt-stopbar" data-stopinfo>' +
+               "\u041f\u0435\u0440\u0435\u0441\u0430\u0434\u043a\u0430 \u0432 " +
+               s.city + ", " + s.wait + "</button>";
+    }
+    return '<div class="tkt-b">' +
+             /* Тег состояния слева, номер рейса справа: состояние — то, что
+                читают первым, борт при нём уточнение.
+                Тег — только состояние, не кнопка: регистрацию предлагает агент
+                сообщением под билетом, инициатива его, а не гостя, который
+                должен догадаться тапнуть по тегу */
+             '<div class="tkt-j-top">' +
+               '<span class="tkt-badge ' + (live ? "live" : "soon") +
+                 '" data-legbadge>' + regLabel(regLeg) + "</span>" +
+               '<span class="tkt-j-no">' + first.no + "</span>" +
              "</div>" +
-             '<div class="tkt-c-cities">' + l.from.city +
-               '<i class="tkt-c-dash">\u2014</i>' + l.to.city + "</div>" +
-             '<div class="tkt-c-times">' +
-               '<span class="tkt-c-pt">' +
-                 "<u>" + l.from.iata + "</u><b>" + l.from.time + "</b></span>" +
-               '<i class="tkt-c-dash">\u2014</i>' +
-               '<span class="tkt-c-pt">' +
-                 "<u>" + l.to.iata + "</u><b>" + l.to.time + "</b>" +
-                 (nextDay ? "<sup>+1</sup>" : "") +
-                 (tzc ? "<sup>" + tzLabel(tzc) + "</sup>" : "") + "</span>" +
+             legs.map(function(l){
+               return seg(l) + svc(l) + (l.stop ? stopbar(l.stop) : "");
+             }).join("") +
+             /* Ряды-переходы, точная копия «Удобства в номере» в карточке
+                номера: тот же .nav, та же высота, тот же разделитель.
+                Общие на бронь, поэтому стоят после всех рейсов.
+                Скрыты, но не удалены: разметка и обработчики [data-pax]
+                и [data-fare] на месте, тап открывает чат.
+                Вернуть: убрать hidden */
+             '<div class="navs" hidden>' +
+               '<button class="nav" data-pax>' +
+                 "\u041f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u044b" +
+                 "<span>" + new Array(t.pax + 1).join(PAX_SVG) +
+                 "</span><i>\u203a</i></button>" +
+               '<button class="nav" data-fare>' +
+                 "\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0442\u0430\u0440\u0438\u0444\u0430" +
+                 "<i>\u203a</i></button>" +
              "</div>" +
-           "</div>" +
-           /* пересадка между сегментами, отбита линейками, без подложки:
-              подложка полного билета была бы тут единственной на весь блок */
-           (l.stop
-             ? '<div class="tkt-c-stop">\u041f\u0435\u0440\u0435\u0441\u0430\u0434\u043a\u0430 \u0432 ' + l.stop.city +
-                 " \u00b7 " + l.stop.wait + "</div>"
-             : "");
+           "</div>";
   }
+
   [].forEach.call(document.querySelectorAll("[data-ticket]"), function(el){
     var t = TICKETS[el.dataset.ticket];
     if (!t) return;
-    /* первый открытый сегмент — тот, на котором висит срок регистрации */
-    var regLeg = -1;
-    for (var i = 0; i < t.legs.length; i++) {
-      if (t.legs[i].state === "open") { regLeg = i; break; }
-    }
-    el.innerHTML =
-      /* Верхний вариант скрыт, но не удалён: разметка на месте, поэтому
-         data-legbadge и data-seatslot внутри неё продолжают обновляться
-         регистрацией — если снять hidden, билет окажется в актуальном
-         состоянии, а не в том, каким его отрендерили.
-         Вернуть: убрать hidden у .tkt-full */
-      '<div class="tkt-full" hidden>' + t.legs.map(leg).join("") + "</div>" +
-      /* Компактный вариант скрыт, но не удалён: разметка и compactLeg на месте,
-         data-legbadge внутри продолжает обновляться регистрацией.
-         Вернуть: убрать hidden */
-      '<div class="tkt-compact" hidden>' +
-        t.legs.map(function(l, i){ return compactLeg(l, i === regLeg); }).join("") +
-      "</div>" +
-      /* Условия тарифа скрыты, не удалены: обработчик [data-fare] на месте.
-         Вернуть: убрать hidden. Общие на бронь, а не на сегмент, поэтому
-         их место — после всех рейсов, а не между ними */
-      '<div class="navs" hidden>' +
-        '<button class="nav" data-fare>' +
-          "\u0423\u0441\u043b\u043e\u0432\u0438\u044f \u0442\u0430\u0440\u0438\u0444\u0430" +
-          "<i>\u203a</i></button>" +
-      "</div>" +
-      /* вариант с крупным временем — единственный видимый, поэтому свой
-         класс без верхнего отступа: 34px у .tkt-compact отбивали его от
-         билета, которого больше не видно */
-      '<div class="tkt-big">' +
-        t.legs.map(function(l, i){ return bigLeg(l, i === regLeg); }).join("") +
-      "</div>";
+    /* Раскладка одна. Раньше рядом лежали два скрытых варианта вёрстки —
+       полный и компактный — со своими функциями и своим CSS; после того как
+       раскладка утвердилась, они остались мёртвым весом и тянули за собой
+       двадцать с лишним правил. Условия тарифа тоже были скрыты: их место
+       заняли ряды «Пассажиры / Условия тарифа» ниже. */
+    el.innerHTML = journey(t);
     /* Регистрация одна на всю бронь: нажатие → бегущие статусы → итог.
        После неё меняется вся картина билета, потому что меняется задача гостя:
          шильдик  «Регистрация до 05:40» → «Ожидает посадки» — срок отработал;
@@ -1682,60 +1550,57 @@
          кнопка   исчезает, вместо неё итог.
        Место пишем у своего рейса, а не списком в итоге: «места 12A и 12B,
        7A и 7B» не читается — непонятно, какая пара к какому сегменту. */
-    (function(){
-      var box = el.querySelector("[data-ci]");
-      if (!box) return;
-      var btn = box.querySelector("[data-checkin]");
-      var state = box.querySelector("[data-cistate]");
-      var badges = el.querySelectorAll("[data-legbadge]");
-      var slots = el.querySelectorAll("[data-seatslot]");
-      var cycle = null, timer = null;
-      if (!btn) return;
-      btn.onclick = function(){
-        /* места подбирает агент: спрашивать о них отдельно нечего,
-           одно нажатие — и он всё оформил */
-        btn.hidden = true;
-        state.hidden = false;
-        state.classList.add("is-wait");
-        var si = 0;
-        state.textContent = CI_STATES[0];
-        clearInterval(cycle);
-        cycle = setInterval(function(){
-          si = Math.min(si + 1, CI_STATES.length - 1);
-          state.textContent = CI_STATES[si];
-        }, 800);
-        clearTimeout(timer);
-        timer = setTimeout(function(){
-          clearInterval(cycle);
-          state.classList.remove("is-wait");
-          [].forEach.call(badges, function(b){
-            /* тег свой у сегмента — про его регистрацию, а не про рейс:
-               статус рейса живёт в своей строке, на табло-строке */
-            b.textContent = "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d";
-            b.classList.remove("soon");
-            b.classList.remove("live");
-            b.classList.add("done");
-          });
-          /* места встают в ряд аэропорта, рядом с терминалом и гейтом:
-             всё это нужно в один момент — когда идёшь на посадку */
-          [].forEach.call(slots, function(node, k){
-            var l = t.legs[k];
-            if (!l || !l.seat) return;
-            node.querySelector("b").textContent = l.seat;
-            node.hidden = false;
-          });
-          /* значение места уже стоит в разметке, обработчику остаётся показать */
-          [].forEach.call(el.querySelectorAll("[data-cseat]"), function(node){
-            node.hidden = false;
-          });
-          state.textContent = t.legs.length > 1
-            ? "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043b \u043d\u0430 \u043e\u0431\u0430 \u0440\u0435\u0439\u0441\u0430"
-            : "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043b \u043d\u0430 \u0440\u0435\u0439\u0441";
-        }, 800 * CI_STATES.length);
-      };
-    })();
+    /* Итог регистрации билет применяет сам, но запускает его агент: нудж
+       с data-action="checkin" вызывает эту функцию, когда договорился.
+       Бегущих статусов здесь нет — их показывает сам агент («думает»),
+       дублировать их в билете значило бы показывать одно ожидание дважды */
+    TICKET_CHECKIN.push(function(){
+      /* тег меняет смысл: срок отработал, теперь важен факт.
+         Влёт букв (SplitText) здесь — на теге меняется текст, а места
+         просто появляются */
+      [].forEach.call(el.querySelectorAll("[data-legbadge]"), function(b){
+        b.textContent = "\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d";
+        b.classList.remove("soon");
+        b.classList.remove("live");
+        b.classList.add("done");
+        splitIn(b);
+      });
+      /* места встают в ряд аэропорта, рядом с терминалом и гейтом: всё это
+         нужно в один момент — когда идёшь на посадку */
+      [].forEach.call(el.querySelectorAll("[data-cseat]"), function(node){
+        node.hidden = false;
+      });
+    });
+    /* пересадка: тап по плашке открывает разговор о стыковке. Успею ли,
+       где ждать, забирать ли багаж — это вопросы к агенту, а не текст,
+       который поместился бы в плашку на 100px */
+    var stopChip = el.querySelector("[data-stopinfo]");
+    if (stopChip) stopChip.onclick = function(){
+      var parts = [];
+      t.legs.forEach(function(l, i){
+        if (!l.stop) return;
+        var next = t.legs[i + 1];
+        parts.push(l.stop.city + " \u2014 " + l.stop.wait +
+          (next ? ", \u0434\u0430\u043b\u044c\u0448\u0435 " + next.no +
+                  " \u0432 " + next.from.time : ""));
+      });
+      openAskSheet("\u041f\u0435\u0440\u0435\u0441\u0430\u0434\u043a\u0430 \u0432 " +
+        parts.join("; ") + ". \u0427\u0442\u043e \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u044c?",
+        ["\u0423\u0441\u043f\u0435\u044e \u043d\u0430 \u0441\u0442\u044b\u043a\u043e\u0432\u043a\u0443?",
+         "\u0413\u0434\u0435 \u0436\u0434\u0430\u0442\u044c?",
+         "\u0417\u0430\u0431\u0438\u0440\u0430\u0442\u044c \u043b\u0438 \u0431\u0430\u0433\u0430\u0436?"]);
+    };
     /* условия тарифа: подробности не занимают место в билете, а открываются
        разговором с агентом — там же можно сразу доплатить или уточнить */
+    /* пассажиры: состав и документы — тоже разговор, а не таблица в билете */
+    var pax = el.querySelector("[data-pax]");
+    if (pax) pax.onclick = function(){
+      openAskSheet("\u041b\u0435\u0442\u044f\u0442 " + t.pax + " " + paxWord(t.pax) +
+        ". \u0427\u0442\u043e \u043d\u0443\u0436\u043d\u043e?",
+        ["\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043f\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u0430",
+         "\u041f\u0440\u043e\u0432\u0435\u0440\u0438\u0442\u044c \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u044b",
+         "\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0434\u0430\u043d\u043d\u044b\u0435"]);
+    };
     var fare = el.querySelector("[data-fare]");
     if (fare) fare.onclick = function(){
       openAskSheet(t.bag + ". \u041e\u0431\u043c\u0435\u043d \u0438 \u0432\u043e\u0437\u0432\u0440\u0430\u0442 " +
@@ -1789,7 +1654,6 @@
       if (pane) [].forEach.call(pane.querySelectorAll("[data-nudge]"), function(n){
         if (n.__run) n.__run();
       });
-      if (pane) flyPlanes(pane);
     });
   }
 
@@ -1969,56 +1833,6 @@
      Пружина той же модели, что spring() в motion: кадры считаем один раз и
      отдаём в WAAPI. Полёт повторяется при каждом показе панели, поэтому
      выглядит одинаково и на «Подготовке», и на «Выезде». */
-  function flyPlanes(root){
-    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    [].forEach.call((root || document).querySelectorAll(".tkt-plane"), function(pl){
-      if (reduce || !pl.animate) return;
-      var w = pl.parentNode.offsetWidth;
-      if (!w) return;                       /* панель скрыта — взлетим при показе */
-      var art = pl.firstElementChild;       /* сам svg внутри слота */
-      if (!art) return;
-      /* путь почти во всю дорожку: отступ 2 от края блока, плюс половина
-         самолёта 8.5 — до времени и городов рядом остаётся зазор */
-      var PAD = 2;
-      var from = -w / 2 + PAD, to = w / 2 - PAD;
-      /* полёт 1.7 c, потом передышка 2.6 c; f — доля полёта в цикле */
-      var DUR = 1700, REST = 2600, total = DUR + REST, f = DUR / total;
-      /* Кадры больше не считаем вручную. Раньше здесь было 102 сэмпла,
-         склеенных линейными отрезками — из-за этого движение и дёргалось:
-         на каждой границе кадра менялась скорость. Теперь ключевых точек
-         минимум, а интерполирует их браузер на композиторе — непрерывно.
-         Ход, масштаб и прозрачность живут своими кривыми, поэтому они
-         разнесены по двум элементам: слот везёт, svg внутри дышит. */
-      var GLIDE = "cubic-bezier(.37,0,.63,1)";   /* мягкий in-out, ровная середина */
-      var SOFT  = "cubic-bezier(.4,0,.6,1)";
-      function stop(el){ el.getAnimations().forEach(function(a){ a.cancel(); }); }
-      stop(pl); stop(art);
-
-      /* ход слева направо, потом стоит невидимым до конца цикла */
-      pl.animate([
-        { transform: "translateX(calc(-50% + " + from.toFixed(1) + "px))", easing: GLIDE, offset: 0 },
-        { transform: "translateX(calc(-50% + " + to.toFixed(1) + "px))", offset: f },
-        { transform: "translateX(calc(-50% + " + to.toFixed(1) + "px))", offset: 1 }
-      ], { duration: total, iterations: Infinity, easing: "linear" });
-
-      /* высота: набор до 45% пути и посадка. Крена нет, только масштаб */
-      art.animate([
-        { transform: "scale(1)",    easing: GLIDE, offset: 0 },
-        { transform: "scale(1.22)", easing: GLIDE, offset: f * .45 },
-        { transform: "scale(.86)",  offset: f },
-        { transform: "scale(.86)",  offset: 1 }
-      ], { duration: total, iterations: Infinity, easing: "linear" });
-
-      /* появление за первую пятую пути, долгое растворение к концу */
-      art.animate([
-        { opacity: 0, easing: SOFT, offset: 0 },
-        { opacity: 1, easing: SOFT, offset: f * .2 },
-        { opacity: 1, easing: SOFT, offset: f * .5 },
-        { opacity: 0, offset: f * .96 },
-        { opacity: 0, offset: 1 }
-      ], { duration: total, iterations: Infinity, easing: "linear" });
-    });
-  }
 
   /* ---- hero parallax ----
      Same law as the bundle: heroY = useTransform(scrollY, [0, HERO], [0, -HERO*0.5]),
@@ -2127,7 +1941,7 @@
      только с полем ввода. Ответ (пилюля или свой текст) сразу закрывает
      чат и уходит в думает()/think() самой карточки, а не в общий FAQ-чат */
   var askAnswer = null;
-  function openNudgeAsk(message, onAnswer){
+  function openNudgeAsk(message, onAnswer, chips){
     mode = "ask";
     askAnswer = onAnswer;
     msgsBox.innerHTML = "";
@@ -2135,7 +1949,9 @@
     chatIn.placeholder = "Ответьте или выберите вариант";
     syncSend();
     bubble("bub-agent", message);
-    pills(["Да", "Нет"], function(t){ closeSheet(); onAnswer(t); });
+    /* подсказки задаёт вызывающий: у сообщения агента это «Да / Нет»,
+       у брони — времена. Свой текст в поле работает в обоих случаях */
+    pills(chips || ["Да", "Нет"], function(t){ closeSheet(); onAnswer(t); });
     document.body.classList.add("sheet-open");
   }
   /* набор без списка сообщений: поднимаем только поле и клавиатуру,
@@ -2264,33 +2080,23 @@
   });
   document.addEventListener("keydown", function(e){ if (e.key === "Escape") closeSheet(); });
 
-  /* ---- agent stack ----
-     Two-phase reveal borrowed from the bundle: space opens first
-     (height 0.42s, [0.33,0,0.15,1]), content fades in after (0.5s,
-     [0.4,0,0.2,1]) with a 60ms stagger. Heights are animated between
-     explicit pixel values so both halves move over the same 0.42s and
-     the block never jumps. */
+  /* ---- стопка агента ----
+     Двухфазное раскрытие из бандла: сначала открывается место (высота 0.42s,
+     [0.33,0,0.15,1]), потом выпадают карты со сдвигом по времени.
+     Лицевую карту не трогаем: она остаётся первой, а высоту анимирует только
+     остаток. Раньше здесь мерялась и складывалась в ноль высота лицевой части
+     (offsetHeight на первом тапе, потому что экран мог быть display:none) —
+     всё это стало ненужным вместе с подменой. */
   [].forEach.call(document.querySelectorAll("[data-deck]"), function(deck){
-    var face = deck.querySelector("[data-face]"), rest = deck.querySelector("[data-rest]");
-    if (!face || !rest) return;
-    var faceH = 0;
-    /* The screen may be display:none when the script runs, and offsetHeight is 0
-       inside a hidden parent. Measuring at init would lock the face to zero and
-       the stack would vanish, so it is measured on the first real tap instead. */
+    var rest = deck.querySelector("[data-rest]");
+    if (!rest) return;
     function open(){
-      faceH = face.offsetHeight || faceH;
-      if (!faceH) return;
-      face.style.height = faceH + "px";
-      void face.offsetHeight;
       rest.style.height = rest.scrollHeight + "px";
-      face.style.height = "0px";
       deck.classList.add("open");
     }
     function close(){
       deck.classList.remove("open");
       rest.style.height = "0px";
-      face.style.height = faceH ? faceH + "px" : "";
-      setTimeout(function(){ if (!deck.classList.contains("open")) face.style.height = ""; }, 460);
     }
     /* раскрытие теперь чисто визуальное: карточки выпадают на месте,
        страница сама больше никуда не едет */
@@ -2351,39 +2157,46 @@
       row.classList.add("fade");
       setTimeout(function(){ row.hidden = true; row.classList.remove("fade"); }, 360);
     }
-    [].forEach.call(ev.querySelectorAll("[data-times] .pill"), function(b){
-      b.onclick = function(){
-        var t = b.textContent;
-        if (t === "Другое") return;
-        foldNudges();
-        ask.hidden = true;
-        state.hidden = false;
-        state.classList.add("is-wait");
-        if (chip) chip.hidden = true;
-        state.classList.remove("is-done");
-        /* бегущие статусы, как ADDING_STATES в бандле */
-        var si = 0;
-        msg.textContent = STATES[0];
+    /* Сама бронь вынесена в функцию на карточке: её зовёт и свайп «Бронь»
+       через чат, и пилюли под фото (они скрыты, но живы). Раньше логика
+       висела внутри onclick пилюли, и добраться до неё из чата было нельзя */
+    ev.__book = function(t){
+      if (!t || t === "Другое") return;
+      foldNudges();
+      /* спрашивали в чате, поэтому строка выбора под фото не показывается —
+         сразу бегущие статусы и итог */
+      ask.hidden = true;
+      row.hidden = false;
+      row.classList.remove("fade");
+      state.hidden = false;
+      state.classList.add("is-wait");
+      if (chip) chip.hidden = true;
+      state.classList.remove("is-done");
+      /* бегущие статусы, как ADDING_STATES в бандле */
+      var si = 0;
+      msg.textContent = STATES[0];
+      clearInterval(cycle);
+      cycle = setInterval(function(){
+        si = Math.min(si + 1, STATES.length - 1);
+        msg.textContent = STATES[si];
+      }, 800);
+      clearTimeout(timer);
+      timer = setTimeout(function(){
         clearInterval(cycle);
-        cycle = setInterval(function(){
-          si = Math.min(si + 1, STATES.length - 1);
-          msg.textContent = STATES[si];
-        }, 800);
-        clearTimeout(timer);
-        timer = setTimeout(function(){
-          clearInterval(cycle);
-          state.classList.remove("is-wait");
-          msg.textContent = "Забронировал столик на " + t;
-          booked = t;
-          if (chip){ chip.textContent = "бронь " + t; chip.hidden = false; }
-          /* результат живёт HOLD, потом строка сама уходит; чип с бронью остаётся.
-             Кольцо вокруг крестика идёт ровно те же HOLD, отсюда и длительность. */
-          ring.style.animationDuration = HOLD + "ms";
-          state.classList.add("is-done");
-          clearTimeout(hide);
-          hide = setTimeout(closeRow, HOLD);
-        }, 800 * STATES.length);
-      };
+        state.classList.remove("is-wait");
+        msg.textContent = "Забронировал столик на " + t;
+        booked = t;
+        if (chip){ chip.textContent = "бронь " + t; chip.hidden = false; }
+        /* результат живёт HOLD, потом строка сама уходит; чип с бронью остаётся.
+           Кольцо вокруг крестика идёт ровно те же HOLD, отсюда и длительность. */
+        ring.style.animationDuration = HOLD + "ms";
+        state.classList.add("is-done");
+        clearTimeout(hide);
+        hide = setTimeout(closeRow, HOLD);
+      }, 800 * STATES.length);
+    };
+    [].forEach.call(ev.querySelectorAll("[data-times] .pill"), function(b){
+      b.onclick = function(){ ev.__book(b.textContent); };
     });
     var closeBtnEl = ev.querySelector("[data-bookclose]");
     if (closeBtnEl) closeBtnEl.onclick = function(e){ e.stopPropagation(); closeRow(); };
@@ -2590,16 +2403,21 @@
     }
     /* бронь: под картинкой она больше не висит постоянно, а раскрывается
        по этой кнопке — тот же initBooking() ниже ведёт весь цикл дальше */
+    /* Бронь: время выбирают в чате, а не пилюлями под фото. Раньше свайп
+       раскрывал строку с кнопками — но время это разговор с агентом, там же
+       его можно обсудить и перенести. Времена берём из самой карточки,
+       чтобы у разных событий были свои слоты, а не общий список */
     function book(st){
       close(st);
-      var row = st.ev.querySelector("[data-bookrow]");
-      if (!row) return;
-      row.hidden = false;
-      row.classList.remove("fade");
-      var ask = row.querySelector("[data-bookask]"), state = row.querySelector("[data-bookstate]");
-      if (ask) ask.hidden = false;
-      if (state) state.hidden = true;
-      lift(st.ev);
+      var ev = st.ev;
+      if (!ev.__book) return;
+      var times = [].map.call(ev.querySelectorAll("[data-times] .pill"),
+                              function(b){ return b.textContent; });
+      openNudgeAsk("\u041d\u0430 \u043a\u0430\u043a\u043e\u0435 \u0432\u0440\u0435\u043c\u044f " +
+        "\u0437\u0430\u0431\u0440\u043e\u043d\u0438\u0440\u043e\u0432\u0430\u0442\u044c " +
+        q(titleOf(st)) + "?",
+        function(t){ ev.__book(t); }, times);
+      lift(ev);
     }
 
     frame.addEventListener("pointerdown", function(e){
@@ -2975,6 +2793,10 @@
       say(DONE);
       added = true;
       if (makeEvent) addEvent();
+      /* договорился — значит пора менять то, о чём договорились. Действие
+         объявлено в разметке (data-action), поэтому нудж не знает, что именно
+         произойдёт, а билет не знает, кто его попросил */
+      if (n.dataset.action === "checkin") applyCheckin();
       /* итог остаётся на экране: разговор закрывает гость, крестиком */
     }
     function vanish(){
