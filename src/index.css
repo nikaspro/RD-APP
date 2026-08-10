@@ -1,22 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind 4. Слои подключены поимённо и БЕЗ preflight: базовые стили задаёт
+   src/styles/chiposh.css, перенесённый из legacy/ChiposhPark.html, и сбрасывать
+   их под себя Tailwind не должен (иначе поедут img, button и h1).
+   В третьей версии за это отвечал corePlugins.preflight = false. */
+@layer theme, components, utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
 
-html, body, #root {
-  height: 100%;
-  width: 100%;
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Анимации для компонентов библиотеки — тот же пакет, что подключает сам
+   shadcn в четвёртой версии (в третьей это был плагин tailwindcss-animate). */
+@import 'tw-animate-css';

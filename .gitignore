@@ -30,3 +30,11 @@ dist-ssr
 # OS
 .DS_Store
 Thumbs.db
+
+# Build artifacts
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Сборка предпросмотра
+dist-preview

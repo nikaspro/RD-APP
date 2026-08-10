@@ -1,0 +1,160 @@
+/* Тема проекта для shadcn. Tailwind 4.
+ *
+ * Смысл файла: shadcn ставит свои дефолтные переменные (нейтральная серая
+ * палитра, один глобальный радиус, бордеры и тени на карточках, кольца
+ * фокуса). Ни одно из этих значений в Чепош Парке не годится, поэтому
+ * переменные переопределены здесь явно, а не оставлены на дефолты.
+ *
+ * Источник значений — src/styles/chiposh.css, перенесённый из
+ * legacy/ChiposhPark.html. Здесь они только переложены в имена, которые
+ * читают компоненты shadcn.
+ *
+ * Структура как у самого shadcn: сырые значения в :root, а @theme inline
+ * связывает их с утилитами Tailwind (bg-background, text-muted-foreground).
+ *
+ * Подключается после index.css и до chiposh.css — см. src/main.tsx.
+ */
+
+/* варианты data-active, data-open и прочие, на которых держатся
+   компоненты библиотеки */
+@import 'shadcn/tailwind.css';
+
+:root {
+  /* --- палитра ---
+     ink #060708. Заметка на будущее: в старых экранах из бандла встречается
+     ink #14202A — это наследство, новая работа идёт на #060708. */
+  --background: #ffffff;
+  --foreground: #060708;
+
+  --card: #ffffff;
+  --card-foreground: #060708;
+
+  --popover: #ffffff;
+  --popover-foreground: #060708;
+
+  /* основное действие — ink */
+  --primary: #060708;
+  --primary-foreground: #ffffff;
+
+  /* подложка тегов: холодный светло-серый --tag из chiposh.css */
+  --secondary: #f0f5f7;
+  --secondary-foreground: #060708;
+
+  --muted: #f0f5f7;
+  /* вторичный текст rgba(6,7,8,.4) */
+  --muted-foreground: rgba(6, 7, 8, 0.4);
+
+  /* акцент — лаймовый, им помечено всё, что добавил агент */
+  --accent: #efff5d;
+  --accent-foreground: #060708;
+
+  --destructive: #d92d20;
+  --destructive-foreground: #ffffff;
+
+  /* волосяные линии rgba(6,7,8,.1) */
+  --border: rgba(6, 7, 8, 0.1);
+  --input: rgba(6, 7, 8, 0.1);
+
+  /* кольца фокуса в этом дизайне не показываются — см. блок ниже */
+  --ring: #060708;
+
+  /* фирменные цвета, которых у shadcn нет */
+  --brand-lime: #efff5d;
+  --brand-mint: #34ddc6; /* блеск «думает» */
+  --brand-ok: #1ca658;
+  --brand-ok-bg: #d9ffd9;
+  --brand-hair: #cccccc;
+
+  /* Радиусы у каждого компонента свои — одного радиуса на проект мало.
+     Значения из макета: медиа 12, чипы 12, пилюли 18, пилюли брони 22,
+     панель агента 20, тег брони 14. */
+  --radius: 12px;
+  --radius-media: 12px;
+  --radius-chip: 12px;
+  --radius-pill: 18px;
+  --radius-pill-lg: 22px;
+  --radius-agent: 20px;
+  --radius-book-chip: 14px;
+
+  /* Кривые движения. Взяты из chiposh.css, чтобы новые компоненты
+     двигались так же, как перенесённые. */
+  --ease-open: cubic-bezier(0.33, 0, 0.15, 1); /* раскрытие пространства, .42s */
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1); /* мягкие сдвиги и фейды */
+  --ease-base: cubic-bezier(0.6, 0, 0.4, 1); /* общий */
+}
+
+/* Связка значений с утилитами Tailwind. Отсюда работают bg-background,
+   text-muted-foreground, rounded-pill и подобные классы в компонентах. */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand-lime: var(--brand-lime);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-ok: var(--brand-ok);
+  --color-brand-ok-bg: var(--brand-ok-bg);
+  --color-brand-hair: var(--brand-hair);
+
+  --radius-media: var(--radius-media);
+  --radius-chip: var(--radius-chip);
+  --radius-pill: var(--radius-pill);
+  --radius-pill-lg: var(--radius-pill-lg);
+  --radius-agent: var(--radius-agent);
+  --radius-book-chip: var(--radius-book-chip);
+
+  --ease-open: var(--ease-open);
+  --ease-soft: var(--ease-soft);
+  --ease-base: var(--ease-base);
+
+  --font-display: 'SF Pro Display', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-text: 'SF Pro Text', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Активный таб.
+   chiposh.css описывает его как .tab.is-on — так помечал таб старый код.
+   Примитив дизайн-системы помечает по-своему, атрибутом data-active.
+   Связываем одно с другим здесь, чтобы не править перенесённый файл. */
+.tab[data-active] {
+  color: var(--foreground);
+}
+.tab[data-active]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--foreground);
+}
+
+/* Карточки в этом проекте плоские: ни бордера, ни тени.
+   Правило намеренно широкое — оно снимает то, что shadcn кладёт по умолчанию
+   на Card и всё карточкоподобное. */
+[data-slot='card'] {
+  border: 0;
+  box-shadow: none;
+}
+
+/* Видимых колец фокуса в макете нет. Доступность держится на самом фокусе,
+   а не на обводке, поэтому :focus-visible оставлен для клавиатуры. */
+[data-slot]:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
