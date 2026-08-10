@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+
 /* Слой карты: подложка территории, круглые пины активностей и окошко пина.
    Сами пины (.terr-pin) рисует рантайм из PIN_SETS — набор меняется вместе с
    часом на линейке, поэтому разметка пинов не может быть статичной. Окошко
@@ -8,9 +10,9 @@ export function FacilityOrbs() {
       <img src="assets/img/territory-map.webp" alt="" draggable={false} />
       <div className="terr-tip" data-tip hidden>
         <div data-tiptext />
-        <button className="terr-more" data-tipmore>
+        <Button variant="secondary" className="terr-more" data-tipmore>
           Подробнее
-        </button>
+        </Button>
       </div>
     </div>
   )

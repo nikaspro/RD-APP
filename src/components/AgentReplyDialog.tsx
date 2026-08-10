@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+
 /* Разговор с агентом: затемнение, лист с лентой сообщений, поле ввода и
    экранная клавиатура.
    Ленту, пилюли-подсказки и раскладку ЙЦУКЕН наполняет рантайм — здесь
@@ -10,7 +12,7 @@ export function AgentReplyDialog() {
         <div className="chat-msgs" data-msgs />
         <div className="chat-bar">
           <input className="chat-input" data-chatinput placeholder="Спросите о чём угодно" />
-          <button className="chat-send" data-chatsend hidden aria-label="Отправить">
+          <Button className="chat-send" data-chatsend hidden aria-label="Отправить">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -21,11 +23,11 @@ export function AgentReplyDialog() {
             >
               <path d="M12 19V5M5 12l7-7 7 7" />
             </svg>
-          </button>
-          <button className="chat-skip" data-skip>
+          </Button>
+          <Button variant="secondary" className="chat-skip" data-skip>
             Пропустить
-          </button>
-          <button className="chat-close" data-close aria-label="Закрыть">
+          </Button>
+          <Button variant="secondary" className="chat-close" data-close aria-label="Закрыть">
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -35,7 +37,7 @@ export function AgentReplyDialog() {
             >
               <path d="M6 6l12 12M18 6L6 18" />
             </svg>
-          </button>
+          </Button>
         </div>
         <div className="kb" data-kb />
       </div>

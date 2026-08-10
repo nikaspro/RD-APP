@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button'
+
 /* Обложка виджета (.hero): фото, кнопки «назад» и «поделиться», логотип
    и даты поездки. Параллакс при прокрутке — в рантайме: картинка отстаёт
    от страницы вдвое, а её 150% высоты и есть тот запас, который съедает сдвиг.
@@ -8,16 +10,16 @@ export function Hero() {
     <div className="hero">
       <img src="assets/img/hero-photo.webp" alt="" className="hero-photo" />
       <img src="assets/img/hero-art.webp" alt="" className="hero-art" />
-      <button className="hero-btn hero-back" aria-label="Назад">
+      <Button variant="ghost" className="hero-btn hero-back" aria-label="Назад">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M15 4.5 7.5 12 15 19.5" />
         </svg>
-      </button>
-      <button className="hero-btn hero-share" aria-label="Поделиться">
+      </Button>
+      <Button variant="ghost" className="hero-btn hero-share" aria-label="Поделиться">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 3v11M8.2 6.6 12 2.8l3.8 3.8M5 12.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6.5" />
         </svg>
-      </button>
+      </Button>
       <div className="hero-city">
         <h1>Санкт-Петербург</h1>
         <p>4–6 июля · 2 человека</p>

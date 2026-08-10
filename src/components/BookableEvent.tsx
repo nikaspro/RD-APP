@@ -1,5 +1,6 @@
 import { BookingChip } from './StatusChip'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { Button } from '@/components/ui/button'
 
 /* Событие, у которого можно забронировать стол (.ev[data-book]).
    Ряд брони скрыт до тех пор, пока свайп по карточке не откроет его;
@@ -52,13 +53,13 @@ export function BookableEvent({ title, desc, image, times = ['12:00', '13:00', '
         </div>
         <div className="book-state" data-bookstate hidden>
           <span data-bookmsg />
-          <button className="book-x" data-bookclose aria-label="Скрыть">
+          <Button variant="ghost" className="book-x" data-bookclose aria-label="Скрыть">
             <svg viewBox="0 0 24 24" fill="none">
               <circle className="ring-bg" cx="12" cy="12" r="11" />
               <circle className="ring" cx="12" cy="12" r="11" data-ring />
               <path className="x" d="M9 9l6 6M15 9l-6 6" />
             </svg>
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { CloseIcon } from './icons'
 import { LottieStar } from './LottieStar'
+import { Button } from '@/components/ui/button'
 
 /* Плашка агента (.abub) — мятная капсула со светом из-под края.
    Состояния (st-msg / st-idle / st-wait / st-think) переключает рантайм,
@@ -24,9 +25,9 @@ export function AgentPanel({ children }: Props) {
         <span className="tx" data-nudgetx>
           {children}
         </span>
-        <button className="x" data-nudgex aria-label="Скрыть">
+        <Button variant="ghost" className="x" data-nudgex aria-label="Скрыть">
           <CloseIcon />
-        </button>
+        </Button>
       </div>
       <LottieStar />
     </div>
